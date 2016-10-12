@@ -15,3 +15,25 @@ class Application(models.Model):
 
     def __str__(self):
         return self.name()+" "+self.version()
+
+class Input(models.Model):
+    app=models.ForeignKey(Application, on_delete=models.CASCADE)
+    name=models.CharField(max_length=200)
+    requirement=models.BooleanField(default=False)
+    value=models.CharField(max_length=200)
+    label=models.CharField(max_length=200)
+    max_values=models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.name()+ " "+self.label()
+
+class Parameter(models.Model):
+    app=models.ForeignKey(Application, on_delete=models.CASCADE)
+    name=models.CharField(max_length=200)
+    #type_accepted= ######fix this to have choice????
+    visibility=models.BooleanField(default=True)
+    value=models.CharField(max_length=200)
+    label=models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name()+" "+self.label()
