@@ -33,9 +33,8 @@ class Parameter(models.Model):
     name=models.CharField(max_length=200)
     visibility=models.BooleanField(default=True)
     label=models.CharField(max_length=200)
-    re_validation="" ####here the validator expression from the json
-    #type_accepted=RegexValidator(regex=self.re_validation, message="the given value for %s is not valid." % self.name, code=None, inverse_match=None, flags=0)
-    value="" ######i think this depends on type_accepted
+    re_validation=models.CharField(max_length=200) ####here the validator expression from the json
+    value="" ######i think this depends on type_accepted and the validator, i should make a check function somewhere(not sure where is the appropriate place)
     max_values=models.IntegerField(default=1)
 
     def __str__(self):
