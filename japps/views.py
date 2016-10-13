@@ -1,7 +1,7 @@
-from djanfgo,view import generic
+from django.views import generic
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
-from django.url import reverse
+from django.urls import reverse
 
 from .forms import ApplicationForm
 
@@ -12,4 +12,4 @@ def get_name(request):
             return HttpResponseRedirect('/job_submitted/')
     else:
         form=ApplicationForm()
-    return render(request, 'japps/submission.html', {'form': form}) 
+    return render(request, 'japps/submission.html', {'form': form})
