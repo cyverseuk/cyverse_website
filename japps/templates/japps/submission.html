@@ -1,5 +1,14 @@
-<form action="/job-name/" method="post">
+<form action="/job/" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit" />
+<h3>Inputs</h3>
+{% for field in json_app.inputs %}
+    <p>{{ field.details.label }}</p>
+{% endfor %}
+<hr/>
+<h3>Parameters</h3>
+{% for field in json_app.parameters %}
+    <p>{{ field.details.label }}</p>
+{% endfor %}
 </form>
