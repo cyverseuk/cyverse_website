@@ -17,8 +17,9 @@ class Application(models.Model):
     def __str__(self):
         return self.name()+" "+self.version()
 
+@python_2_unicode_compatible
 class Input(models.Model):
-    app=models.ForeignKey(Application, on_delete=models.CASCADE)
+    app=models.ForeignKey(Application, on_delete=models.CASCADE, related_name="app")
     name=models.CharField(max_length=200)
     requirement=models.BooleanField(default=False)
     value=models.CharField(max_length=200)
@@ -28,14 +29,37 @@ class Input(models.Model):
     def __str__(self):
         return self.name()+ " "+self.label()
 
+@python_2_unicode_compatible
 class Parameter(models.Model):
+    """
+    abstract base class as base for the different types of
+    parammeters.
+    """
     app=models.ForeignKey(Application, on_delete=models.CASCADE)
-    name=models.CharField(max_length=200)
+    name=models.CharField(max_length=200) ###change this to FileField in future
     visibility=models.BooleanField(default=True)
     label=models.CharField(max_length=200)
     re_validation=models.CharField(max_length=200) ####here the validator expression from the json
-    value="" ######i think this depends on type_accepted and the validator, i should make a check function somewhere(not sure where is the appropriate place)
     max_values=models.IntegerField(default=1)
 
     def __str__(self):
         return self.name()+" "+self.label()
+
+    class Meta:
+        abstract=True
+
+class NumericalParameter(Parameter):
+    """
+    this class will be used for any number, including
+    integers. The discrimination will work accordingly to
+    the regex re_validation.
+    """
+    value=models.FloatField(default=0)
+
+class BooleanParameter(Parameter):
+    value=models.BooleanField(default=False)
+
+class TextParameter(Parameter):
+    value=models.CharField(max_length=200)
+
+####eliminated ChoiceParameter as that is dealt with somewhere else?
