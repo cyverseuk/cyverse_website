@@ -34,3 +34,12 @@
     {% endfor %}
     <input type="submit" value="Submit" />
 </form>
+
+<hr/>
+<hr/>
+
+<form action="/job/" method="post">
+  {% csrf_token %}
+  {{ nice_form }}
+  <input type="submit" value="Submit" />
+</form>
