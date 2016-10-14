@@ -19,12 +19,12 @@ class Application(models.Model):
 
 @python_2_unicode_compatible
 class Input(models.Model):
-    app=models.ForeignKey(Application, on_delete=models.CASCADE, related_name="app")
-    name=models.CharField(max_length=200)
-    requirement=models.BooleanField(default=False)
+    app=models.ForeignKey(Application, on_delete=models.CASCADE, related_name="app", editable=False)
+    name=models.CharField(max_length=200, editable=False)
+    requirement=models.BooleanField(default=False, editable=False)
     value=models.CharField(max_length=200)
-    label=models.CharField(max_length=200)
-    max_values=models.IntegerField(default=1)
+    label=models.CharField(max_length=200, editable=False)
+    max_values=models.IntegerField(default=1, editable=False)
 
     def __str__(self):
         return self.name()+ " "+self.label()
@@ -35,12 +35,12 @@ class Parameter(models.Model):
     abstract base class as base for the different types of
     parammeters.
     """
-    app=models.ForeignKey(Application, on_delete=models.CASCADE)
-    name=models.CharField(max_length=200) ###change this to FileField in future
-    visibility=models.BooleanField(default=True)
-    label=models.CharField(max_length=200)
-    re_validation=models.CharField(max_length=200) ####here the validator expression from the json
-    max_values=models.IntegerField(default=1)
+    app=models.ForeignKey(Application, on_delete=models.CASCADE, editable=False)
+    name=models.CharField(max_length=200, editable=False) ###change this to FileField in future
+    visibility=models.BooleanField(default=True, editable=False)
+    label=models.CharField(max_length=200, editable=False)
+    re_validation=models.CharField(max_length=200, editable=False) ####here the validator expression from the json
+    max_values=models.IntegerField(default=1, editable=False)
 
     def __str__(self):
         return self.name()+" "+self.label()

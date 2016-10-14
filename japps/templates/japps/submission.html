@@ -1,14 +1,36 @@
+<h2>{{ json_app.name }}</h2>
 <form action="/job/" method="post">
     {% csrf_token %}
-    {{ form }}
+    <div style="display: block">
+      {{ name_form }}
+    </div>
+    <hr/>
+    {% for field in json_app.inputs %}
+      <label>{{ field.details.label }}</label>
+      <div style="display:block"
+        {{ form }}
+      </div>
+    {% endfor %}
+    <hr/>
+    {% for field in json_app.parameters %}
+      {% ifequal field.value.type "number" %}
+        <label>{{ field.details.label }}</label>
+        <div style="display: block"
+          {{ num_form }}
+        </div>
+      {% endifequal %}
+      {% if field.value.type == "flag" or field.value.type == "bool" %}
+        <div style="display: block">
+          {{ bool_form }}
+          {{ field.details.label }}
+        </div>
+      {% endif %}
+      {% if field.value.type == "string" %}
+        <label>{{ field.details.label }}</label>
+        <div style="display: block">
+          {{ text_form }}
+        </div>
+      {% endif %}
+    {% endfor %}
     <input type="submit" value="Submit" />
-<h3>Inputs</h3>
-{% for field in json_app.inputs %}
-    <p>{{ field.details.label }}</p>
-{% endfor %}
-<hr/>
-<h3>Parameters</h3>
-{% for field in json_app.parameters %}
-    <p>{{ field.details.label }}</p>
-{% endfor %}
 </form>
