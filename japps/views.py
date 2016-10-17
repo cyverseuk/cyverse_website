@@ -20,9 +20,7 @@ def get_name(request):
         num_form=NumericalForm(request.POST)
         bool_form=BooleanForm(request.POST)
         text_form=TextForm(request.POST)
-        nice_form=ParameterForm(request.POST, field["id"])
-        for field in ex_json["parameters"]:
-            nice_form.addField(parameter_type=field["value"]["type"], parameter_label=field["details"]["label"], parameter_description=field["details"]["description"])
+        nice_form=ParameterForm(request.POST)
         if form.is_valid() and name_form.is_valid() and num_form.is_valid() and bool_form.is_valid() and text_form.is_valid() and nice_form.is_valid():
             return HttpResponseRedirect('/job_submitted/')
     else:

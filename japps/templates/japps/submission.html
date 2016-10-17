@@ -40,6 +40,8 @@
 
 <form action="/job/" method="post">
   {% csrf_token %}
-  {{ nice_form }}
+  <table>
+    {{ nice_form.as_table }}
+  </table>
   <input type="submit" value="Submit" />
 </form>
