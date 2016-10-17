@@ -37,27 +37,31 @@ class TextForm(ModelForm):
 
 class ParameterForm(forms.Form):
 
-    def __init__(self, valuename, *args, **kwargs) :
-        super(ParameterForm,self).__init__(*args,**kwargs)
-        if parameter_type=="string":
-            valuename=forms.CharField(max_length=50)
-            self.fields[valuename].label=parameter_label
-            self.fields[valuename].help_text=parameter_description ###note this may be empty
+    def __init__(self, **kwargs) :
+        super(ParameterForm,self).__init__(**kwargs)
+        namefield=kwargs.get("valuename")
+        #should never be undefined
+        if valuename==None or kwargs.get("parameter_type")==None:
+            return "error"
+        if kwargs["parameter_type"]=="string":
+            self.fields[namefield]=forms.CharField(max_length=50)
+            self.fields[namefield].label=kwargs.get("parameter_label", namefield)
+            self.fields[namefield].help_text=kwargs.get("parameter_description", "") ###note this may be empty
             #self.fields["value"].default=parameter_default ###note this may be empty as well
             #if parameter_regex!="": ###synthax? -set it as default if not given--
             #    self.fields["value"].validators=parameter_regex
             #else:
             #    pass #leaving this here as it may give errors?
-        elif parameter_type=="number":
-            valuename=forms.FloatField(label=parameter_label)
-            self.fields[valuename].help_text=parameter_description
+        elif kwargs["parameter_type"]=="number":
+            self.fields[namefield]=forms.FloatField(label=kwargs.get("parameter_label", namefield))
+            self.fields[namefield].help_text=kwargs.get("parameter_description", "")
             #if parameter_regex!="":
             #    value=forms.FloatField(label=parameter_label, validators=parameter_regex)
             #else:
             #    value=forms.FloatField(label=parameter_label, validators=parameter_regex)
-        elif parameter_type=="bool" or parameter_type=="flag":
-            valuename=forms.BooleanField(label=parameter_label)
-            self.fields[valuename].help_text=parameter_description
+        elif kwargs["parameter_type"]=="bool" or kwargs["parameter_type"]=="flag":
+            self.fields[namefield]=forms.BooleanField(label=kwargs.get("parameter_label", namefield))
+            self.fields[namefield].help_text=kwargs.get("parameter_description", "")
         else:
             #should never be here as agave validate the json
             return "error: parameter type not valid."

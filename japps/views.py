@@ -20,7 +20,8 @@ def get_name(request):
         bool_form=BooleanForm(request.POST)
         text_form=TextForm(request.POST)
         for field in ex_json["parameters"]:
-            nice_form=ParameterForm(request.POST, field["id"], parameter_type=field["value"]["type"], parameter_label=field["details"]["label"], parameter_description=field["details"]["description"])
+            kwargs={"valuename":field["id"],"parameter_type":field["value"]["type"], "parameter_label":field["details"]["label"], "parameter_description":field["details"]["description"]}
+            nice_form=ParameterForm(request.POST, **kwargs)
         if form.is_valid() and name_form.is_valid() and num_form.is_valid() and bool_form.is_valid() and text_form.is_valid() and nice_form.is_valid():
             return HttpResponseRedirect('/job_submitted/')
     else:
@@ -30,5 +31,6 @@ def get_name(request):
         bool_form=BooleanForm()
         text_form=TextForm()
         for field in ex_json["parameters"]:
-            nice_form=ParameterForm(field["id"], parameter_type=field["value"]["type"], parameter_label=field["details"]["label"], parameter_description=field["details"]["description"])
+            kwargs={"valuename": field["id"], "parameter_type":field["value"]["type"], "parameter_label":field["details"]["label"], "parameter_description":field["details"]["description"]}
+            nice_form=ParameterForm( **kwargs )
     return render(request, 'japps/submission.html', {'form': form, 'json_app': ex_json, 'name_form': name_form, 'num_form': num_form, "bool_form": bool_form, "text_form": text_form, "nice_form": nice_form } )
