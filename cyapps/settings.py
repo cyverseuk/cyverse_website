@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cyapps',
     'japps.apps.JappsConfig',
+    'parsley',
 ]
 
 MIDDLEWARE = [

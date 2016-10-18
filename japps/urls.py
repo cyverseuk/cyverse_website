@@ -10,5 +10,6 @@ urlpatterns = [
     TemplateView.as_view(template_name='japps/index.html'),
     name='index'),
     # ex: /japps/submission.html/
-    url(r'^submission/$', views.get_name, name='submission'),
+    url(r'^submission/$', views.create_form, name='submission'),
+    url(r'^job_submitted/$', views.create_json_run, name='job_submitted' )
 ]

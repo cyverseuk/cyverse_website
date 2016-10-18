@@ -4,36 +4,51 @@ from collections import OrderedDict
 
 from django import forms
 from django.views import generic
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.conf import settings
+from django.utils import timezone
+from django.core.validators import RegexValidator
 
 from .forms import ParameterForm
 
-a=open(os.path.join(settings.PROJECT_ROOT, 'MikadoApp.json'))
+a=open(os.path.join(settings.PROJECT_ROOT, 'GWasserApp.json'))
 ex_json=json.load(a)
+nameapp=ex_json["name"]
 
 def additional_features(field):
     global fields
     fields[field["id"]].label=field["details"].get("label", field["id"])
     fields[field["id"]].help_text=field["details"].get("description", "")
-    if field["value"].get("default")!=None:
-        fields[field["id"]].default=field["value"].get("default")
-    if field["value"].get("validator")!=None:
-        fields[field["id"]].validators=field["value"].get("validator")
+    if field["value"].get("default",None) is not None:
+        fields[field["id"]].initial=field["value"]["default"]
+    if field["value"].get("validator", None) is not None:
+        my_validator=RegexValidator(regex=field["value"]["validator"], message="Enter a valid value.")
+        fields[field["id"]].validators=[my_validator]
     if field["value"].get("required")!=True:
         fields[field["id"]].required=False
 
-def get_name(request):
+def create_form(request):
     global fields
     if request.method=='POST':
+        """
+        form is filled in
+        """
         nice_form=ParameterForm(request.POST)
         if nice_form.is_valid():
-            return HttpResponseRedirect('/job_submitted/')
+            """
+            if the form is valid the user is addressed to the
+            following page.
+            """
+            return HttpResponseRedirect('/japps/job_submitted/', request.POST)
+
     else:
+        """
+        dynamically create a form accordingly to the json file
+        """
         fields=OrderedDict()
-        fields["name_job"]=forms.CharField(initial=ex_json["name"])
+        fields["name_job"]=forms.CharField(initial=ex_json["name"]+"-"+str(timezone.now().date())+"-"+str(timezone.now().strftime('%H:%M:%S')))
         for field in ex_json["inputs"]:
             if field.get("semantics")!=None:
                 if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
@@ -57,4 +72,14 @@ def get_name(request):
                     fields[field["id"]]=forms.ChoiceField(choices=enumerate(field["value"]["enumValues"]))
             additional_features(field)
         nice_form=type('ParameterForm', (forms.BaseForm,), {'base_fields': fields})
-    return render(request, 'japps/submission.html', { 'json_app': ex_json, "nice_form": nice_form } )
+    return render(request, 'japps/submission.html', { "title": nameapp, "nice_form": nice_form } )
+
+def create_json_run(filled_form):
+    data={}
+    data["name"]=nameapp
+    data["appId"]=ex_json["version"]
+    data["archive"]=True
+    data["inputs"]=[]
+    data["parameters"]=[]
+    json_data=json.dumps(data)
+    return render(filled_form, "japps/job_submitted.html", {"json_data":json_data})

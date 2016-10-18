@@ -1,6 +1,6 @@
-<h2>{{ json_app.name }}</h2>
+<h2><em>{{ title }}</em></h2>
 
-<form action="/job/" method="post">
+<form method="post" data-parsley-validate>
   {% csrf_token %}
   <table>
     {{ nice_form.as_table }}
