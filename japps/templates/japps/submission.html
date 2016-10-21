@@ -1,6 +1,8 @@
 <h2><em>{{ title }}</em></h2>
 
-<form method="post" data-parsley-validate>
+<p>{{ description }}</p>
+
+<form action="/japps/job_submitted/" method="post" enctype="multipart/form-data" data-parsley-validate>
   {% csrf_token %}
   <table>
     {{ nice_form.as_table }}

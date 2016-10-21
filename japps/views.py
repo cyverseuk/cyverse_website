@@ -1,21 +1,31 @@
 import os
 import json
 from collections import OrderedDict
+import requests
+import urllib3.contrib.pyopenssl
+import certifi
+import urllib3
 
 from django import forms
 from django.views import generic
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
 from django.core.validators import RegexValidator
+from django import forms
 
 from .forms import ParameterForm
 
-a=open(os.path.join(settings.PROJECT_ROOT, 'GWasserApp.json'))
+a=open(os.path.join(settings.PROJECT_ROOT, 'KallistoApp.json'))
 ex_json=json.load(a)
 nameapp=ex_json["name"]
+a.close()
+with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
+    token=next(b).strip()
+urllib3.contrib.pyopenssl.inject_into_urllib3()
+http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
 def additional_features(field):
     global fields
@@ -35,12 +45,13 @@ def create_form(request):
         """
         form is filled in
         """
-        nice_form=ParameterForm(request.POST)
+        nice_form=forms.Form(request.POST, request.FILES)
         if nice_form.is_valid():
             """
             if the form is valid the user is addressed to the
             following page.
             """
+            json_data=nice_form.cleaned_data
             return HttpResponseRedirect('/japps/job_submitted/', request.POST)
 
     else:
@@ -50,13 +61,19 @@ def create_form(request):
         fields=OrderedDict()
         fields["name_job"]=forms.CharField(initial=ex_json["name"]+"-"+str(timezone.now().date())+"-"+str(timezone.now().strftime('%H:%M:%S')))
         for field in ex_json["inputs"]:
+            #####
+            #ideally here i want to have mutually exclusive options for the user to give URL for the file or to upload the file. additional problem with the url option is that apparently the widget doens't have an option to allows multiple entries.
+            #####
             if field.get("semantics")!=None:
                 if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
-                    fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+                    #fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+                    fields[field["id"]]=forms.URLField()
                 else:
-                    fields[field["id"]]=forms.FileField()
+                    #fields[field["id"]]=forms.FileField()
+                    fields[field["id"]]=forms.URLField()
             else:
-                fields[field["id"]]=forms.FileField()
+                #fields[field["id"]]=forms.FileField()
+                fields[field["id"]]=forms.URLField()
             additional_features(field)
         for field in ex_json["parameters"]:
             if field["value"].get("type")==None:
@@ -69,17 +86,28 @@ def create_form(request):
                 elif field["value"]["type"]=="bool" or field["value"]["type"]=="flag":
                     fields[field["id"]]=forms.BooleanField()
                 elif field["value"]["type"]=="enumeration":
-                    fields[field["id"]]=forms.ChoiceField(choices=enumerate(field["value"]["enumValues"]))
+                    choices=[]
+                    for pos in field["value"]["enumValues"]:
+                        choices.append((pos,pos))
+                    fields[field["id"]]=forms.ChoiceField(choices=choices)
             additional_features(field)
-        nice_form=type('ParameterForm', (forms.BaseForm,), {'base_fields': fields})
-    return render(request, 'japps/submission.html', { "title": nameapp, "nice_form": nice_form } )
+        nice_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
+    return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["longDescription"], "nice_form": nice_form } )
 
-def create_json_run(filled_form):
-    data={}
-    data["name"]=nameapp
-    data["appId"]=ex_json["version"]
-    data["archive"]=True
-    data["inputs"]=[]
-    data["parameters"]=[]
-    json_data=json.dumps(data)
-    return render(filled_form, "japps/job_submitted.html", {"json_data":json_data})
+def create_json_run(request):
+    json_run={}
+    json_run["name"]=request.POST["name_job"]
+    json_run["appId"]=ex_json["name"]+"-"+ex_json["version"]
+    json_run["inputs"]={}
+    json_run["parameters"]={}
+    json_run["archive"]=False
+    for field in request.POST:
+        if field!="csrfmiddlewaretoken" and field!="name_job":
+            if request.POST.get(field) not in [None, ""]:
+                json_run["parameters"][field]=request.POST.get(field)
+    for field in request.FILES:
+        json_run["inputs"][field]=request.FILES[field].name
+    json_run=json.dumps(json_run)
+    header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
+    r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
+    return render(request, "japps/job_submitted.html", {"json_run": json_run, "risposta": r.text, "codice": r.status_code, "t": token, "headers": r.request.headers})
