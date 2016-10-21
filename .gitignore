@@ -1,2 +1,9 @@
 cyapps/*.pyc
 japps/*.pyc
+cyapps/GWasserApp.json
+cyapps/KallistoApp.json
+cyapps/MikadoApp.json
+cyapps/PolymarkerApp.json
+cyapps/token.txt
+cyenv/
+db.sqlite3
