@@ -66,14 +66,14 @@ def create_form(request):
             #####
             if field.get("semantics")!=None:
                 if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
-                    #fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
-                    fields[field["id"]]=forms.URLField()
+                    fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+                    #fields[field["id"]]=forms.URLField()
                 else:
-                    #fields[field["id"]]=forms.FileField()
-                    fields[field["id"]]=forms.URLField()
+                    fields[field["id"]]=forms.FileField()
+                    #fields[field["id"]]=forms.URLField()
             else:
-                #fields[field["id"]]=forms.FileField()
-                fields[field["id"]]=forms.URLField()
+                fields[field["id"]]=forms.FileField()
+                #fields[field["id"]]=forms.URLField()
             additional_features(field)
         for field in ex_json["parameters"]:
             if field["value"].get("type")==None:
@@ -107,6 +107,10 @@ def create_json_run(request):
                 json_run["parameters"][field]=request.POST.get(field)
     for field in request.FILES:
         json_run["inputs"][field]=request.FILES[field].name
+        header={"Authorization": "Bearer "+token}
+        for fie in request.FILES.getlist(field):
+            ####check synthax for file= and fix the upload part for the field in the form
+            requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
     json_run=json.dumps(json_run)
     header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
     r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
