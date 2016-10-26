@@ -18,7 +18,7 @@ from django import forms
 
 from .forms import ParameterForm
 
-a=open(os.path.join(settings.PROJECT_ROOT, 'KallistoApp.json'))
+a=open(os.path.join(settings.PROJECT_ROOT, 'MikadoApp.json'))
 ex_json=json.load(a)
 nameapp=ex_json["name"]
 a.close()
@@ -41,6 +41,8 @@ def additional_features(field):
 
 def create_form(request):
     global fields
+    global job_time
+    job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
     if request.method=='POST':
         """
         form is filled in
@@ -59,7 +61,7 @@ def create_form(request):
         dynamically create a form accordingly to the json file
         """
         fields=OrderedDict()
-        fields["name_job"]=forms.CharField(initial=ex_json["name"]+"-"+str(timezone.now().date())+"-"+str(timezone.now().strftime('%H:%M:%S')))
+        fields["name_job"]=forms.CharField(initial=ex_json["name"]+"-"+job_time)
         for field in ex_json["inputs"]:
             #####
             #ideally here i want to have mutually exclusive options for the user to give URL for the file or to upload the file. additional problem with the url option is that apparently the widget doens't have an option to allows multiple entries.
@@ -95,22 +97,29 @@ def create_form(request):
     return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["longDescription"], "nice_form": nice_form } )
 
 def create_json_run(request):
+    global job_time
     json_run={}
     json_run["name"]=request.POST["name_job"]
     json_run["appId"]=ex_json["name"]+"-"+ex_json["version"]
     json_run["inputs"]={}
     json_run["parameters"]={}
     json_run["archive"]=False
+    header={"Authorization": "Bearer "+token}
     for field in request.POST:
         if field!="csrfmiddlewaretoken" and field!="name_job":
             if request.POST.get(field) not in [None, ""]:
                 json_run["parameters"][field]=request.POST.get(field)
+    if len(request.FILES)>0:
+        requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
     for field in request.FILES:
-        json_run["inputs"][field]=request.FILES[field].name
-        header={"Authorization": "Bearer "+token}
+        json_run["inputs"][field]=[]
         for fie in request.FILES.getlist(field):
+            json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+fie.name)
             ####check synthax for file= and fix the upload part for the field in the form
-            requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
+            rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
+            #print rr.text
+            #print rr.status_code
+            #print rr.request.headers
     json_run=json.dumps(json_run)
     header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
     r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
