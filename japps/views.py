@@ -98,6 +98,7 @@ def create_form(request):
 
 def create_json_run(request):
     global job_time
+    job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
     json_run={}
     json_run["name"]=request.POST["name_job"]
     json_run["appId"]=ex_json["name"]+"-"+ex_json["version"]
@@ -123,4 +124,14 @@ def create_json_run(request):
     json_run=json.dumps(json_run)
     header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
     r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
+    #requests.delete("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time, headers=header)
     return render(request, "japps/job_submitted.html", {"json_run": json_run, "risposta": r.text, "codice": r.status_code, "t": token, "headers": r.request.headers})
+
+def list_apps(request):
+    """
+    this function will retrieve the apps available on our system
+    cyverseUK-Batch2 and create a list with their names and version. each of
+    the item list will be a link calling the create_form() function for that
+    specific application.
+    """
+    return
