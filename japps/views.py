@@ -39,7 +39,7 @@ def additional_features(field):
     if field["value"].get("required")!=True:
         fields[field["id"]].required=False
 
-def create_form(request):
+def create_form(request, application):
     global fields
     global job_time
     job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
