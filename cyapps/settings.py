@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'cyapps',
     'japps.apps.JappsConfig',
     'parsley',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE = [

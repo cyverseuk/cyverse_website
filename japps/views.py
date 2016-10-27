@@ -24,6 +24,11 @@ urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
 def additional_features(field):
+    """
+    this function helps to create a form with the rigth attributes specified in
+    the app. Will be called by create_form() to add properties to the form
+    fields.
+    """
     global fields
     fields[field["id"]].label=field["details"].get("label", field["id"])
     fields[field["id"]].help_text=field["details"].get("description", "")
@@ -36,8 +41,13 @@ def additional_features(field):
         fields[field["id"]].required=False
 
 def create_form(request, application):
+    """
+    this function retrieve the json of the given app from the cyverseUK system
+    and make it into a user friendly form for submitting the job.
+    """
     global fields
     global job_time
+    global ex_json
     header={"Authorization": "Bearer "+token}
     r=requests.get("https://agave.iplantc.org/apps/v2/"+application+"?pretty=true", headers=header)
     ex_json=r.json()
@@ -79,7 +89,7 @@ def create_form(request, application):
             additional_features(field)
         for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:
-                return "error" #should nver be here as this check is done by agave
+                return "error" #should never be here as this check is done by agave, add a test
             else:
                 if field["value"]["type"]=="string":
                     fields[field["id"]]=forms.CharField(max_length=50)
@@ -90,18 +100,24 @@ def create_form(request, application):
                 elif field["value"]["type"]=="enumeration":
                     choices=[]
                     for pos in field["value"]["enum_values"]:
-                        choices.append((pos,pos))
+                        #####add a test here to check that this dictionary length is always 1
+                        choices.append((pos.keys()[0],pos.keys()[0]))
                     fields[field["id"]]=forms.ChoiceField(choices=choices)
             additional_features(field)
         nice_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
     return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form } )
 
 def create_json_run(request):
+    """
+    this function take the compiled form and create a json to upload the files
+    to the storage system and submit the job via agave.
+    """
     global job_time
+    global ex_json
     job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
     json_run={}
     json_run["name"]=request.POST["name_job"]
-    json_run["appId"]=ex_json["name"]+"-"+ex_json["version"]
+    json_run["appId"]=ex_json['result']["name"]+"-"+ex_json['result']["version"]
     json_run["inputs"]={}
     json_run["parameters"]={}
     json_run["archive"]=False
@@ -116,11 +132,7 @@ def create_json_run(request):
         json_run["inputs"][field]=[]
         for fie in request.FILES.getlist(field):
             json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+fie.name)
-            ####check synthax for file= and fix the upload part for the field in the form
             rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
-            #print rr.text
-            #print rr.status_code
-            #print rr.request.headers
     json_run=json.dumps(json_run)
     header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
     r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
@@ -140,4 +152,5 @@ def list_apps(request):
     risposta=r.json()
     for el in risposta["result"]:
         display_list.append(el["id"])
+    display_list.sort()
     return render(request, "japps/index.html", {"risposta": display_list})

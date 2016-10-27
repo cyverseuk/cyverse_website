@@ -1,6 +1,6 @@
 {% extends "japps/base.html" %}
 {% block body %}
-  <h1>"CyVerseUK Apps"</h1>
+  <h1>CyVerseUK Apps</h1>
   <ul>
     {% for el in risposta %}
       <li><a href="{% url 'japps:submission' application=el %}">{{ el|slice:":-2" }}</a></li>
