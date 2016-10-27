@@ -18,10 +18,6 @@ from django import forms
 
 from .forms import ParameterForm
 
-a=open(os.path.join(settings.PROJECT_ROOT, 'MikadoApp.json'))
-ex_json=json.load(a)
-nameapp=ex_json["name"]
-a.close()
 with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
     token=next(b).strip()
 urllib3.contrib.pyopenssl.inject_into_urllib3()
@@ -42,6 +38,10 @@ def additional_features(field):
 def create_form(request, application):
     global fields
     global job_time
+    header={"Authorization": "Bearer "+token}
+    r=requests.get("https://agave.iplantc.org/apps/v2/"+application+"?pretty=true", headers=header)
+    ex_json=r.json()
+    nameapp=ex_json["result"]["name"]
     job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
     if request.method=='POST':
         """
@@ -61,8 +61,8 @@ def create_form(request, application):
         dynamically create a form accordingly to the json file
         """
         fields=OrderedDict()
-        fields["name_job"]=forms.CharField(initial=ex_json["name"]+"-"+job_time)
-        for field in ex_json["inputs"]:
+        fields["name_job"]=forms.CharField(initial=ex_json["result"]["name"]+"-"+job_time)
+        for field in ex_json["result"]["inputs"]:
             #####
             #ideally here i want to have mutually exclusive options for the user to give URL for the file or to upload the file. additional problem with the url option is that apparently the widget doens't have an option to allows multiple entries.
             #####
@@ -77,7 +77,7 @@ def create_form(request, application):
                 fields[field["id"]]=forms.FileField()
                 #fields[field["id"]]=forms.URLField()
             additional_features(field)
-        for field in ex_json["parameters"]:
+        for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:
                 return "error" #should nver be here as this check is done by agave
             else:
@@ -89,12 +89,12 @@ def create_form(request, application):
                     fields[field["id"]]=forms.BooleanField()
                 elif field["value"]["type"]=="enumeration":
                     choices=[]
-                    for pos in field["value"]["enumValues"]:
+                    for pos in field["value"]["enum_values"]:
                         choices.append((pos,pos))
                     fields[field["id"]]=forms.ChoiceField(choices=choices)
             additional_features(field)
         nice_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
-    return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["longDescription"], "nice_form": nice_form } )
+    return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form } )
 
 def create_json_run(request):
     global job_time
