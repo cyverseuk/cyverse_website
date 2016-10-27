@@ -134,4 +134,10 @@ def list_apps(request):
     the item list will be a link calling the create_form() function for that
     specific application.
     """
-    return
+    header={"Authorization": "Bearer "+token}
+    r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
+    display_list=[]
+    risposta=r.json()
+    for el in risposta["result"]:
+        display_list.append(el["id"])
+    return render(request, "japps/index.html", {"risposta": display_list})

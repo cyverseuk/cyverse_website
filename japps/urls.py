@@ -6,10 +6,8 @@ from . import views
 app_name="japps"
 urlpatterns = [
     #url(r'^$', views.IndexView.as_view(), name="index"),
-    url(r'^$',
-    TemplateView.as_view(template_name='japps/index.html'),
-    name='index'),
+    url(r'^$',views.list_apps,name='index'),
     # ex: /japps/submission.html/
     url(r'^submission/$', views.create_form, name='submission'),
-    url(r'^job_submitted/$', views.create_json_run, name='job_submitted' )
+    url(r'^job_submitted/$', views.create_json_run, name='job_submitted' ),
 ]
