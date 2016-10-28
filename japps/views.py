@@ -18,8 +18,9 @@ from django import forms
 
 from .forms import ParameterForm
 
-with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
-    token=next(b).strip()
+#with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
+#    token=next(b).strip()
+token=""
 urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
@@ -48,6 +49,7 @@ def create_form(request, application):
     global fields
     global job_time
     global ex_json
+    global token
     header={"Authorization": "Bearer "+token}
     r=requests.get("https://agave.iplantc.org/apps/v2/"+application+"?pretty=true", headers=header)
     ex_json=r.json()
@@ -71,6 +73,7 @@ def create_form(request, application):
         dynamically create a form accordingly to the json file
         """
         fields=OrderedDict()
+        fields["user_token"]=forms.CharField(initial=token)
         fields["name_job"]=forms.CharField(initial=ex_json["result"]["name"]+"-"+job_time)
         for field in ex_json["result"]["inputs"]:
             #####
@@ -121,6 +124,7 @@ def create_json_run(request):
     json_run["inputs"]={}
     json_run["parameters"]={}
     json_run["archive"]=False
+    token=request.POST["user_token"]
     header={"Authorization": "Bearer "+token}
     for field in request.POST:
         if field!="csrfmiddlewaretoken" and field!="name_job":
@@ -146,11 +150,31 @@ def list_apps(request):
     the item list will be a link calling the create_form() function for that
     specific application.
     """
-    header={"Authorization": "Bearer "+token}
-    r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
-    display_list=[]
-    risposta=r.json()
-    for el in risposta["result"]:
-        display_list.append(el["id"])
-    display_list.sort()
-    return render(request, "japps/index.html", {"risposta": display_list})
+    global token
+    if token=="" and request.method=='POST':
+        token=request.POST["user_token"]
+    else:
+        if request.method=='POST':
+            token_form=forms.Form(request.POST)
+            if token_form.is_valid():
+                """
+                if the form is valid the user is addressed to the
+                following page.
+                """
+                #json_data=token_form.cleaned_data
+                return render(request, "japps/index.html")
+        else:
+            risposta="user needs to be authenticated"
+            fields={}
+            fields["user_token"]=forms.CharField()
+            token_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
+            return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
+    if token!="":
+        header={"Authorization": "Bearer "+token}
+        r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
+        display_list=[]
+        risposta=r.json()
+        for el in risposta["result"]:
+            display_list.append(el["id"])
+        display_list.sort()
+        return render(request, "japps/index.html", {"risposta": display_list, "logged": True})

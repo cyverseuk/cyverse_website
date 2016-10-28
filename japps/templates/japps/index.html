@@ -1,9 +1,20 @@
 {% extends "japps/base.html" %}
 {% block body %}
   <h1>CyVerseUK Apps</h1>
-  <ul>
-    {% for el in risposta %}
-      <li><a href="{% url 'japps:submission' application=el %}">{{ el|slice:":-2" }}</a></li>
-    {% endfor %}
-  </ul>
+  {% if logged %}
+    <ul>
+      {% for el in risposta %}
+        <li><a href="{% url 'japps:submission' application=el %}">{{ el|slice:":-2" }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{{ risposta }}</p>
+    <form action="/japps/" method="post" data-parsley-validate>
+      {% csrf_token %}
+      <table>
+        {{ token_form.as_table }}
+      </table>
+      <input type="submit" value="Submit" />
+    </form>
+  {% endif %}
 {% endblock %}
