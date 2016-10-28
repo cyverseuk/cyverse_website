@@ -41,6 +41,16 @@ def additional_features(field):
     if field["value"].get("required")!=True:
         fields[field["id"]].required=False
 
+def widget_features(field):
+    """
+    same as above to make the widget for multiple files work accordingly.
+    """
+    global fields
+    attributes={'multiple': True}
+    if field["value"].get("required")==True:
+        attributes['required']=True
+    return attributes
+
 def create_form(request, application):
     """
     this function retrieve the json of the given app from the cyverseUK system
@@ -81,7 +91,8 @@ def create_form(request, application):
             #####
             if field.get("semantics")!=None:
                 if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
-                    fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+                    attributes=widget_features(field)
+                    fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
                     #fields[field["id"]]=forms.URLField()
                 else:
                     fields[field["id"]]=forms.FileField()
@@ -155,6 +166,7 @@ def list_apps(request):
         token=request.POST["user_token"]
     else:
         if request.method=='POST':
+            token=request.POST["user_token"]
             token_form=forms.Form(request.POST)
             if token_form.is_valid():
                 """
@@ -177,4 +189,5 @@ def list_apps(request):
         for el in risposta["result"]:
             display_list.append(el["id"])
         display_list.sort()
+        #print display_list
         return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
