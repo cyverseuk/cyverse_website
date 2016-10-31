@@ -7,3 +7,5 @@ cyapps/PolymarkerApp.json
 cyapps/token.txt
 cyenv/
 db.sqlite3
+japps/migrations/0003_auto_20161017_1106.py
+japps/migrations/0003_auto_20161017_1106.pyc
