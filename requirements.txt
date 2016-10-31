@@ -8,7 +8,6 @@ django-braces==1.10.0
 django-oauth-toolkit==0.10.0
 django-parsley==0.6
 enum34==1.1.6
-gunicorn==19.6.0
 idna==2.1
 ipaddress==1.0.17
 Jinja2==2.7.3
