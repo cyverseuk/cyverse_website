@@ -25,7 +25,7 @@ SECRET_KEY = 'n6h8q_)g0b^s!9lob0tp#xb*@&jknb0zz9*_3_+le-q5r073db'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cyverseuk.herokuapp.com'] 
+ALLOWED_HOSTS = ['cyverseuk.herokuapp.com']
 
 
 # Application definition
@@ -125,4 +125,8 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),) ###
+
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ###
