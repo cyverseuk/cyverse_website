@@ -25,7 +25,7 @@ SECRET_KEY = 'n6h8q_)g0b^s!9lob0tp#xb*@&jknb0zz9*_3_+le-q5r073db'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['cyverseuk.herokuapp.com'] 
 
 
 # Application definition
