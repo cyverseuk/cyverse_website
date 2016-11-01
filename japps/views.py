@@ -51,6 +51,14 @@ def widget_features(field):
         attributes['required']=True
     return attributes
 
+def get_token():
+    fields={}
+    fields["user_token"]=forms.CharField()
+    token_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
+    return token_form
+
+################the following are the functions for the views###################
+
 def create_form(request, application):
     """
     this function retrieve the json of the given app from the cyverseUK system
@@ -134,7 +142,7 @@ def create_json_run(request):
     json_run["appId"]=ex_json['result']["name"]+"-"+ex_json['result']["version"]
     json_run["inputs"]={}
     json_run["parameters"]={}
-    json_run["archive"]=False
+    json_run["archive"]=True
     token=request.POST["user_token"]
     header={"Authorization": "Bearer "+token}
     for field in request.POST:
@@ -163,9 +171,12 @@ def list_apps(request):
     """
     global token
     if token=="" and request.method=='POST':
+        print "1"
         token=request.POST["user_token"]
     else:
+        print "2"
         if request.method=='POST':
+            print "3"
             token=request.POST["user_token"]
             token_form=forms.Form(request.POST)
             if token_form.is_valid():
@@ -173,21 +184,28 @@ def list_apps(request):
                 if the form is valid the user is addressed to the
                 following page.
                 """
-                #json_data=token_form.cleaned_data
+                print "4"
                 return render(request, "japps/index.html")
         else:
+            print "5"
             risposta="user needs to be authenticated"
-            fields={}
-            fields["user_token"]=forms.CharField()
-            token_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
+            token_form=get_token()
             return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
     if token!="":
+        print "6"
         header={"Authorization": "Bearer "+token}
         r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
         display_list=[]
         risposta=r.json()
-        for el in risposta["result"]:
-            display_list.append(el["id"])
-        display_list.sort()
-        #print display_list
-        return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+        if risposta.has_key("fault"):
+            print "7"
+            message=risposta["fault"]["message"]
+            token_form=get_token()
+            token=""
+            return render(request, "japps/index.html", {"risposta": message, "logged": False, "token_form":token_form})
+        else:
+            print "8"
+            for el in risposta["result"]:
+                display_list.append(el["id"])
+            display_list.sort()
+            return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
