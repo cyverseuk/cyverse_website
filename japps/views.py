@@ -159,7 +159,13 @@ def create_json_run(request):
     json_run=json.dumps(json_run)
     header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
     r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
-    #requests.delete("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time, headers=header)
+    risposta=r.json()
+    if risposta.has_key("fault"):
+        print "A"
+        risposta=risposta["fault"]["message"]
+        return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
+    else:
+        print "B"
     return render(request, "japps/job_submitted.html", {"json_run": json_run, "risposta": r.text, "codice": r.status_code, "t": token, "headers": r.request.headers})
 
 def list_apps(request):
