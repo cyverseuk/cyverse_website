@@ -171,7 +171,7 @@ def create_json_run(request):
         #print r.status_code
         #print token
         #print r.request.headers
-        job_id="job-"+str(risposta["result"]["id"])+"-"+str(risposta["result"]["name"])
+        job_id="job-"+str(risposta["result"]["id"])
     return render(request, "japps/job_submitted.html", {"job_id": job_id})
 
 def list_apps(request):
