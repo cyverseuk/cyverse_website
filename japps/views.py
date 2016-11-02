@@ -176,41 +176,33 @@ def list_apps(request):
     specific application.
     """
     global token
-    if token=="" and request.method=='POST':
+    if token=="" and request.method=='POST': ####first submission push
         print "1"
         token=request.POST["user_token"]
-    else:
+    else: #####any other submission will have token!="" cause required
         print "2"
-        if request.method=='POST':
+        if request.method=='POST': ##eg token invalid or blank
             print "3"
             token=request.POST["user_token"]
-            token_form=forms.Form(request.POST)
-            if token_form.is_valid():
-                """
-                if the form is valid the user is addressed to the
-                following page.
-                """
-                print "4"
-                return render(request, "japps/index.html")
-        else:
-            print "5"
+        else: ####very first opening token=="" and no POST || token non blank and no post?
+            print "4"
             risposta="user needs to be authenticated"
             token_form=get_token()
             return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
     if token!="":
-        print "6"
+        print "5"
         header={"Authorization": "Bearer "+token}
         r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
         display_list=[]
         risposta=r.json()
         if risposta.has_key("fault"):
-            print "7"
+            print "6"
             message=risposta["fault"]["message"]
             token_form=get_token()
             token=""
             return render(request, "japps/index.html", {"risposta": message, "logged": False, "token_form":token_form})
         else:
-            print "8"
+            print "7"
             for el in risposta["result"]:
                 display_list.append(el["id"])
             display_list.sort()
