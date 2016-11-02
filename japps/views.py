@@ -166,7 +166,13 @@ def create_json_run(request):
         return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
     else:
         print "B"
-    return render(request, "japps/job_submitted.html", {"json_run": json_run, "risposta": r.text, "codice": r.status_code, "t": token, "headers": r.request.headers})
+        #print json_run
+        #print r.text
+        #print r.status_code
+        #print token
+        #print r.request.headers
+        job_id="job-"+str(risposta["result"]["id"])+"-"+str(risposta["result"]["name"])
+    return render(request, "japps/job_submitted.html", {"job_id": job_id})
 
 def list_apps(request):
     """
