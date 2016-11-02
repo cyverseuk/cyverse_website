@@ -186,7 +186,7 @@ def list_apps(request):
             token=request.POST["user_token"]
         else: ####very first opening token=="" and no POST || token non blank and no post?
             print "4"
-            risposta="user needs to be authenticated"
+            risposta="user needs to authenticate"
             token_form=get_token()
             return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
     if token!="":
