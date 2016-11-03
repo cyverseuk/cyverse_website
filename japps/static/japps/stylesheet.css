@@ -1,3 +1,12 @@
 .warning {
   color:#C61F16;
 }
+a {
+  color:#315683;
+}
+body {
+    padding-left: 20px;
+}
+h1, h2, h3, h4, h5, h6, p, table, input {
+  font-family: "Roboto";
+}
