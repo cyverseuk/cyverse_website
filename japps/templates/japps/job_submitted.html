@@ -1,2 +1,5 @@
-<p><strong>Job Submitted</strong> with ID {{ job_id }}</p>
-<p>Please check your archive folder in the <a href="https://de.iplantcollaborative.org/de/">Discovery Environment</a></p>
+{% extends "japps/base.html" %}
+{% block body %}
+  <p><strong>Job Submitted</strong> with ID {{ job_id }}</p>
+  <p>Please check your archive folder in the <a href="https://de.iplantcollaborative.org/de/">Discovery Environment</a></p>
+{% endblock %}

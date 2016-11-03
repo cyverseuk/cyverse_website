@@ -1,11 +1,14 @@
-<h2>{{ title }}</h2>
+{% extends "japps/base.html" %}
+{% block body %}
+  <h2>{{ title }}</h2>
 
-<p>{{ description }}</p>
+  <p>{{ description }}</p>
 
-<form action="/japps/job_submitted/" method="post" enctype="multipart/form-data" data-parsley-validate>
-  {% csrf_token %}
-  <table>
-    {{ nice_form.as_table }}
-  </table>
-  <input type="submit" value="Submit" />
-</form>
+  <form action="/japps/job_submitted/" method="post" enctype="multipart/form-data" data-parsley-validate>
+    {% csrf_token %}
+    <table>
+      {{ nice_form.as_table }}
+    </table>
+    <input type="submit" value="Submit" />
+  </form>
+{% endblock %}

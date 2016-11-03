@@ -1,10 +1,25 @@
-<head>
-  <title>
-    {% block title %}
-    {% endblock %}
-  </title>
-</head>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>CyVerse UK</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"/> -->
+    <meta name="description" content="a web page to submit jobs to the cyverse infrasctructure in the UK"/>
+    <meta name"author" content="Alice Minotto"/>
+    <!--<meta property="og:title" content="Genome Size Evolution Models"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    <meta property="og:description" content="">-->
+    <link rel="stylesheet" type="text/css" href="{% static 'japps/stylesheet.css' %}" media="screen">
+  </head>
 <body>
-  {% block body %}
-  {% endblock %}
+  <div class="page-header">
+    <hr/>
+  </div>
+  <div class="content">
+    {% block body %}
+    {% endblock %}
+  </div>
 </body>
+</html>
