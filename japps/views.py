@@ -40,6 +40,8 @@ def additional_features(field):
         fields[field["id"]].validators=[my_validator]
     if field["value"].get("required")!=True:
         fields[field["id"]].required=False
+    else:
+        fields[field["id"]].label=field["details"].get("label", field["id"])+"*"
 
 def widget_features(field):
     """
