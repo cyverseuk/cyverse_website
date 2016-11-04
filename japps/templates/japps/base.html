@@ -7,21 +7,23 @@
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1"/> -->
     <meta name="description" content="a web page to submit jobs to the cyverse infrasctructure in the UK"/>
     <meta name"author" content="Alice Minotto"/>
-    <!--<meta property="og:title" content="Genome Size Evolution Models"/>
+    <meta property="og:title" content="CyVeerse UK"/>
     <meta property="og:type" content="website"/>
-    <meta property="og:image" content=""/>
-    <meta property="og:description" content="">-->
+    <meta property="og:image" content="{% static 'japps/images/cyverse_small.png' %}"/>
+    <meta property="og:description" content="job submission to Earlham Insitute cluster for bioinformatics pipelines">
     <link rel="stylesheet" type="text/css" href="{% static 'japps/stylesheet.css' %}" media="screen">
     <link rel="stylesheet" type="text/css" href="{% static 'japps/fonts.css' %}" media="screen">
   </head>
 <body>
   <header>
-    <p>insert logo</p>
-    <p>and link</p>
+    <a href="/japps"><img id="cyverse_logo" src="{% static 'japps/images/cyverse_rgb.png' %}" alt="CyVerse logo"/></a>
   </header>
   <div class="content">
     {% block body %}
     {% endblock %}
   </div>
+  <footer>
+    <a href="http://earlham.ac.uk/"><img id="earlham_logo" src="{% static 'japps/images/Earlham_Institute_single_line.png' %}" alt="Earlham Institute"/></a>
+  </footer>
 </body>
 </html>

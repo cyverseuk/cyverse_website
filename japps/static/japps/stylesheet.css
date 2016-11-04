@@ -1,5 +1,21 @@
+#cyverse_logo {
+    max-width: 10%;
+    max-height: 10%;
+    padding: 1.5em;
+    margin-top: 1em;
+}
+#earlham_logo{
+  max-width: 10%;
+  max-height: 10%;
+  padding: 2em;
+  float: right;
+}
 .warning {
   color:#C61F16;
+}
+.content {
+    padding-left: 20px;
+    display: block;
 }
 a {
   color:#315683;
@@ -8,15 +24,26 @@ a {
 a:hover {
   text-decoration: underline;
 }
-.content {
-    padding-left: 20px;
-}
 h1, h2, h3, h4, h5, h6, p, table, input, li {
   font-family: "Roboto";
 }
 li {
   padding: 0.3em;
   font-weight: 600;
+}
+table {
+  display: block;
+}
+th, td {
+  padding: 0.2em;
+  padding-bottom: 1em;
+}
+input {
+  display: block;
+}
+html {
+    position: relative;
+    min-height: 100%;
 }
 header {
     background: #CDD5EA ; /* For browsers that do not support gradients */
@@ -30,4 +57,9 @@ header {
 body{
     margin:0;
     padding:0;
+}
+footer {
+  clear:both;
+  width: 100%;
+  display: block;
 }
