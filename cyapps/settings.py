@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'n6h8q_)g0b^s!9lob0tp#xb*@&jknb0zz9*_3_+le-q5r073db'
+SECRET_KEY = os.environ.get('SECRET_KEY_CYAPPS')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['cyverseuk.herokuapp.com']
 
@@ -52,6 +52,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+X_FRAME_OPTIONS='DENY' #deployment
+CSRF_COOKIE_HTTPONLY=True #deployment
+CSRF_COOKIE_SECURE=True #deployment
+SESSION_COOKIE_SECURE=True #deployment
+SECURE_SSL_REDIRECT=True #deployment
+SECURE_BROWSER_XSS_FILTER=True #deployment
+SECURE_CONTENT_TYPE_NOSNIFF=True #deployment
 
 ROOT_URLCONF = 'cyapps.urls'
 
