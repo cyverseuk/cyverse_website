@@ -81,6 +81,12 @@ def create_form(request, application):
     header={"Authorization": "Bearer "+token}
     r=requests.get("https://agave.iplantc.org/apps/v2/"+application+"?pretty=true", headers=header)
     ex_json=r.json()
+    if ex_json.has_key("fault"):
+        """
+        expired token during browser session, return user to main page
+        """
+        risposta=ex_json["fault"]["message"]
+        return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
     nameapp=ex_json["result"]["name"]
     job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
     if request.method=='POST':
