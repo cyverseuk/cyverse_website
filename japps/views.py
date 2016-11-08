@@ -15,8 +15,11 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.validators import RegexValidator
 from django import forms
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
 
 from .forms import ParameterForm, ContactForm
+
 
 #with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
 #    token=next(b).strip()
@@ -249,6 +252,21 @@ def contact(request):
             print request.POST["name"]
             print request.POST["email"]
             print request.POST["subject"]
+            name=request.POST.get("name", "")
+            email=request.POST.get("email", "")
+            subject=request.POST.get("subject", "")
+            content=request.POST.get("support_request","")
+            template=get_template('japps/contact_template.txt')
+            context={ "name": name, "email": email, "subject": subject, "content": content}
+            mail_content=template.render(context)
+            email_this=EmailMessage(
+                "New contact form submission "+subject, #subject
+                mail_content, #body
+                "Your website" +'', #from_email
+                ['youremail@gmail.com'], #to
+                headers = {'Reply-To': email } #Reply-To adresses
+            )
+            email_this.send(fail_silently=False)
             return render(request, "japps/contact.html", {"form": contact_form, "success": True})
     else:
         return render(request, "japps/contact.html", {"form": contact_form})
