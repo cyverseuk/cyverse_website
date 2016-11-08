@@ -17,6 +17,7 @@ from django.core.validators import RegexValidator
 from django import forms
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
+from django.contrib import messages
 
 from .forms import ParameterForm, ContactForm
 
@@ -249,9 +250,6 @@ def contact(request):
             if the form is valid the user is addressed to the
             following page.
             """
-            print request.POST["name"]
-            print request.POST["email"]
-            print request.POST["subject"]
             name=request.POST.get("name", "")
             email=request.POST.get("email", "")
             subject=request.POST.get("subject", "")
@@ -267,6 +265,7 @@ def contact(request):
                 headers = {'Reply-To': email } #Reply-To adresses
             )
             email_this.send(fail_silently=False)
-            return render(request, "japps/contact.html", {"form": contact_form, "success": True})
+            messages.success(request, 'Your request has been submitted.')
+            return render(request, "japps/contact.html", {"form": contact_form})
     else:
         return render(request, "japps/contact.html", {"form": contact_form})

@@ -1,9 +1,14 @@
 {% extends "japps/base.html" %}
 {% block body %}
-  {% if success %}
-    <div>
-      <p class="alert">Your request has been submitted.</p>
-    </div>
+  {% comment %}
+    the for cycle for messages is always required to empty the list
+  {% endcomment %}
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
   {% endif %}
   <h2>Contact us</h2>
   <form action="/japps/contact/" method="post">
