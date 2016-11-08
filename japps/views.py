@@ -70,6 +70,14 @@ def create_form(request, application):
     global job_time
     global ex_json
     global token
+    if token=="":
+        """
+        deal with the posssibility that an user try to access an url in the form
+        /japps/submission/<app_name> directly from his browser history
+        """
+        risposta="user needs to authenticate"
+        token_form=get_token()
+        return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
     header={"Authorization": "Bearer "+token}
     r=requests.get("https://agave.iplantc.org/apps/v2/"+application+"?pretty=true", headers=header)
     ex_json=r.json()
