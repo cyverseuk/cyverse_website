@@ -167,11 +167,12 @@ def create_json_run(request):
             if request.POST.get(field) not in [None, ""]:
                 json_run["parameters"][field]=request.POST.get(field)
         elif field=="email":
-            json_run["notifications"]=[]
-            json_run["notifications"].append({})
-            json_run["notifications"][0]["event"]="*"
-            json_run["notifications"][0]["persistent"]="true"
-            json_run["notifications"][0]["url"]=request.POST.get(field)
+            if request.POST.get(field, "").strip()!="":
+                json_run["notifications"]=[]
+                json_run["notifications"].append({})
+                json_run["notifications"][0]["event"]="*"
+                json_run["notifications"][0]["persistent"]="true"
+                json_run["notifications"][0]["url"]=request.POST.get(field)
     if len(request.FILES)>0:
         requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
     for field in request.FILES:
