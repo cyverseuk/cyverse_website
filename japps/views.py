@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.core.validators import RegexValidator
 from django import forms
 
-from .forms import ParameterForm
+from .forms import ParameterForm, ContactForm
 
 #with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
 #    token=next(b).strip()
@@ -236,3 +236,19 @@ def list_apps(request):
                 display_list.append(el["id"])
             display_list.sort()
             return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+
+def contact(request):
+    contact_form=ContactForm
+    if request.method=='POST':
+        form=forms.Form(request.POST)
+        if form.is_valid():
+            """
+            if the form is valid the user is addressed to the
+            following page.
+            """
+            print request.POST["name"]
+            print request.POST["email"]
+            print request.POST["subject"]
+            return render(request, "japps/contact.html", {"form": contact_form, "success": True})
+    else:
+        return render(request, "japps/contact.html", {"form": contact_form})

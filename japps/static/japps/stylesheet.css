@@ -17,6 +17,13 @@
     padding-left: 20px;
     display: block;
 }
+.alert {
+    padding: 20px;
+    margin-right: 20px;
+    background-color: rgba(84, 206, 169, 0.8); /* #54CEA9 */
+    margin-bottom: 15px;
+    color: black;
+}
 a {
   color:#315683;
   text-decoration: none;

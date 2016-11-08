@@ -1,0 +1,15 @@
+{% extends "japps/base.html" %}
+{% block body %}
+  {% if success %}
+    <div>
+      <p class="alert">Your request has been submitted.</p>
+    </div>
+  {% endif %}
+  <form action="/japps/contact/" method="post">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <input type="submit" value="Send" style="margin: 0.2em; padding: 0.2em"/>
+  </form>
+{% endblock %}
