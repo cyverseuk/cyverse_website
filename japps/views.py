@@ -264,8 +264,11 @@ def contact(request):
                 ['youremail@gmail.com'], #to
                 headers = {'Reply-To': email } #Reply-To adresses
             )
-            email_this.send(fail_silently=False)
-            messages.success(request, 'Your request has been submitted.')
+            try:
+                email_this.send(fail_silently=False)
+                messages.success(request, 'Your request has been submitted.')
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
             return render(request, "japps/contact.html", {"form": contact_form})
     else:
         return render(request, "japps/contact.html", {"form": contact_form})
