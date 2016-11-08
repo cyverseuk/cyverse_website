@@ -12,4 +12,4 @@ class ContactForm(forms.Form):
     name=forms.CharField()
     email=forms.EmailField()
     subject=forms.CharField()
-    support_request=forms.CharField(widget=forms.Textarea)
+    message=forms.CharField(widget=forms.Textarea)

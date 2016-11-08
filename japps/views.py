@@ -253,7 +253,7 @@ def contact(request):
             name=request.POST.get("name", "")
             email=request.POST.get("email", "")
             subject=request.POST.get("subject", "")
-            content=request.POST.get("support_request","")
+            content=request.POST.get("message","")
             template=get_template('japps/contact_template.txt')
             context={ "name": name, "email": email, "subject": subject, "content": content}
             mail_content=template.render(context)
