@@ -3,13 +3,18 @@
     max-height: 10%;
     padding: 1.5em;
     margin-top: 1em;
+    min-width: 100px !important;
+    height: auto !important;
 }
 #earlham_logo{
   max-width: 10%;
   max-height: 10%;
   padding: 2em;
   float: right;
+  min-width: 100px !important;
+  height: auto !important;
 }
+
 .warning {
   color:#C61F16;
 }
