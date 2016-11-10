@@ -13,7 +13,7 @@
       <a href="https://github.com/iPlantCollaborativeOpenSource/cyverse-sdk">https://github.com/iPlantCollaborativeOpenSource/cyverse-sdk</a></p>
     <p></p>
     <p class="warning"><strong>{{ risposta }}</strong></p>
-    <form action="/japps/" method="post" data-parsley-validate>
+    <form action="/" method="post" data-parsley-validate>
       {% csrf_token %}
       <table>
         {{ token_form.as_table }}

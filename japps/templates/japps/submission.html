@@ -4,7 +4,7 @@
 
   <p>{{ description }}</p>
 
-  <form action="/japps/job_submitted/" method="post" enctype="multipart/form-data" data-parsley-validate>
+  <form action="/job_submitted/" method="post" enctype="multipart/form-data" data-parsley-validate>
     {% csrf_token %}
     <table>
       {{ nice_form.as_table }}
