@@ -1,9 +1,17 @@
+@-ms-viewport{
+    width: extend-to-zoom;
+    zoom: 1.0;
+}
+@viewport{
+    width: extend-to-zoom;
+    zoom: 1.0;
+}
 #cyverse_logo {
     max-width: 10%;
     max-height: 10%;
     padding: 1.5em;
     margin-top: 1em;
-    min-width: 100px !important;
+    min-width: 10em !important;
     height: auto !important;
 }
 #earlham_logo{
@@ -11,7 +19,7 @@
   max-height: 10%;
   padding: 2em;
   float: right;
-  min-width: 100px !important;
+  min-width: 10em !important;
   height: auto !important;
 }
 
