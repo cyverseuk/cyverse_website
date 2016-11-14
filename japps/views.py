@@ -73,7 +73,7 @@ def create_form(request, application):
     if token=="":
         """
         deal with the posssibility that an user try to access an url in the form
-        /japps/submission/<app_name> directly from his browser history
+        submission/<app_name> directly from his browser history
         """
         risposta="user needs to authenticate"
         token_form=get_token()
@@ -185,16 +185,19 @@ def create_json_run(request):
     r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
     risposta=r.json()
     if risposta.has_key("fault"):
-        print "A"
+        #the token is not valid or expired during the process
         risposta=risposta["fault"]["message"]
         return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
+    elif risposta["status"]!="success":
+        #the user submitted an invalid string, reload the previous page with a warning
+        risposta=risposta["message"] ####this will be the warning
+        if request.META.get("HTTP_REFERER","")!="":
+            return HttpResponseRedirect(request.META.get("HTTP_REFERER",""))
+        else:
+            #i think this is needed for users in incognito mode
+            return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
     else:
         print "B"
-        #print json_run
-        #print r.text
-        #print r.status_code
-        #print token
-        #print r.request.headers
         job_id="job-"+str(risposta["result"]["id"])
     return render(request, "japps/job_submitted.html", {"job_id": job_id})
 
