@@ -22,13 +22,27 @@
   min-width: 10em !important;
   height: auto !important;
 }
-
 .warning {
   color:#C61F16;
 }
 .content {
     padding-left: 20px;
     display: block;
+}
+.messages {
+    padding: 20px;
+    margin-left: -20px;
+    margin-right: 20px;
+    margin-bottom: 15px;
+    color: black;
+    font-weight: normal !important;
+    list-style-type: none;
+}
+.messages.success {
+  background-color: rgba(84, 206, 169, 0.8) !important; /* #54CEA9 */
+}
+.messages.error {
+  background-color: rgba(198, 31, 22, 0.8) !important; /* #C61F16 */
 }
 a {
   color:#315683;

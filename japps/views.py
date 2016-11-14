@@ -15,6 +15,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.validators import RegexValidator
 from django import forms
+from django.contrib import messages
 
 from .forms import ParameterForm
 
@@ -192,6 +193,7 @@ def create_json_run(request):
         #the user submitted an invalid string, reload the previous page with a warning
         risposta=risposta["message"] ####this will be the warning
         if request.META.get("HTTP_REFERER","")!="":
+            messages.error(request, risposta)
             return HttpResponseRedirect(request.META.get("HTTP_REFERER",""))
         else:
             #i think this is needed for users in incognito mode

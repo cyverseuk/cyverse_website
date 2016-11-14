@@ -4,6 +4,14 @@
 
   <p>{{ description }}</p>
 
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li{% if message.tags %} class="messages {{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
   <form action="/job_submitted/" method="post" enctype="multipart/form-data" data-parsley-validate>
     {% csrf_token %}
     <table>
