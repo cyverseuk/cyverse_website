@@ -37,12 +37,17 @@
     color: black;
     font-weight: normal !important;
     list-style-type: none;
+    border-style: solid;
+    border-radius: 0.5em;
 }
 .messages.success {
-  background-color: rgba(84, 206, 169, 0.8) !important; /* #54CEA9 */
+  background-color: rgba(84, 206, 169, 0.2) !important; /* #54CEA9 */
+  border-color: rgba(84, 206, 169, 0.7);
 }
 .messages.error {
-  background-color: rgba(198, 31, 22, 0.8) !important; /* #C61F16 */
+  background-color: rgba(198, 31, 22, 0.2) !important; /* #C61F16 */
+  border-color: rgba(198, 31, 22, 0.7);
+  color: rgba(198, 31, 22, 0.7);
 }
 a {
   color:#315683;
