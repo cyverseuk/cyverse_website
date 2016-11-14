@@ -60,6 +60,47 @@ def get_token():
     token_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
     return token_form
 
+def make_form(ex_json):
+    global fields
+    fields=OrderedDict()
+    fields["user_token"]=forms.CharField(initial=token)
+    fields["name_job"]=forms.CharField(initial=ex_json["result"]["name"]+"-"+job_time)
+    fields["email"]=forms.EmailField(required=False, help_text="insert if you wish yo receive notifications about the job")
+    for field in ex_json["result"]["inputs"]:
+        #####
+        #ideally here i want to have mutually exclusive options for the user to give URL for the file or to upload the file. additional problem with the url option is that apparently the widget doens't have an option to allows multiple entries.
+        #####
+        if field.get("semantics")!=None:
+            if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
+                attributes=widget_features(field)
+                fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
+                #fields[field["id"]]=forms.URLField()
+            else:
+                fields[field["id"]]=forms.FileField()
+                #fields[field["id"]]=forms.URLField()
+        else:
+            fields[field["id"]]=forms.FileField()
+            #fields[field["id"]]=forms.URLField()
+        additional_features(field)
+    for field in ex_json["result"]["parameters"]:
+        if field["value"].get("type")==None:
+            return "error" #should never be here as this check is done by agave, add a test
+        else:
+            if field["value"]["type"]=="string":
+                fields[field["id"]]=forms.CharField(max_length=50)
+            elif field["value"]["type"]=="number":
+                fields[field["id"]]=forms.FloatField()
+            elif field["value"]["type"]=="bool" or field["value"]["type"]=="flag":
+                fields[field["id"]]=forms.BooleanField()
+            elif field["value"]["type"]=="enumeration":
+                choices=[]
+                for pos in field["value"]["enum_values"]:
+                    #####add a test here to check that this dictionary length is always 1
+                    choices.append((pos.keys()[0],pos.keys()[0]))
+                fields[field["id"]]=forms.ChoiceField(choices=choices)
+        additional_features(field)
+    return type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
+
 ################the following are the functions for the views###################
 
 def create_form(request, application):
@@ -107,44 +148,7 @@ def create_form(request, application):
         """
         dynamically create a form accordingly to the json file
         """
-        fields=OrderedDict()
-        fields["user_token"]=forms.CharField(initial=token)
-        fields["name_job"]=forms.CharField(initial=ex_json["result"]["name"]+"-"+job_time)
-        fields["email"]=forms.EmailField(required=False, help_text="insert if you wish yo receive notifications about the job")
-        for field in ex_json["result"]["inputs"]:
-            #####
-            #ideally here i want to have mutually exclusive options for the user to give URL for the file or to upload the file. additional problem with the url option is that apparently the widget doens't have an option to allows multiple entries.
-            #####
-            if field.get("semantics")!=None:
-                if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
-                    attributes=widget_features(field)
-                    fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
-                    #fields[field["id"]]=forms.URLField()
-                else:
-                    fields[field["id"]]=forms.FileField()
-                    #fields[field["id"]]=forms.URLField()
-            else:
-                fields[field["id"]]=forms.FileField()
-                #fields[field["id"]]=forms.URLField()
-            additional_features(field)
-        for field in ex_json["result"]["parameters"]:
-            if field["value"].get("type")==None:
-                return "error" #should never be here as this check is done by agave, add a test
-            else:
-                if field["value"]["type"]=="string":
-                    fields[field["id"]]=forms.CharField(max_length=50)
-                elif field["value"]["type"]=="number":
-                    fields[field["id"]]=forms.FloatField()
-                elif field["value"]["type"]=="bool" or field["value"]["type"]=="flag":
-                    fields[field["id"]]=forms.BooleanField()
-                elif field["value"]["type"]=="enumeration":
-                    choices=[]
-                    for pos in field["value"]["enum_values"]:
-                        #####add a test here to check that this dictionary length is always 1
-                        choices.append((pos.keys()[0],pos.keys()[0]))
-                    fields[field["id"]]=forms.ChoiceField(choices=choices)
-            additional_features(field)
-        nice_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
+        nice_form=make_form(ex_json)
     return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form } )
 
 def create_json_run(request):
