@@ -201,10 +201,13 @@ def create_form(request, application):
     return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form } )
 
 def submitted(request):
-    global job_id
-    if job_id is None:
-        job_id=""
-    return render(request, "japps/job_submitted.html", {"job_id": job_id})
+    try:
+      global job_id
+      if not job_id:
+          job_id=""
+      return render(request, "japps/job_submitted.html", {"job_id": job_id})
+    except NameError:
+      return redirect('japps:index')
 
 def list_apps(request):
     """
