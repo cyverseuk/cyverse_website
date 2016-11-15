@@ -112,6 +112,7 @@ def create_form(request, application):
     global job_time
     global ex_json
     global token
+    global job_id
     if token=="":
         """
         deal with the posssibility that an user try to access an url in the form
@@ -140,9 +141,57 @@ def create_form(request, application):
             """
             if the form is valid the user is addressed to the
             following page.
+            take the compiled form and create a json to upload the files
+            to the storage system and submit the job via agave.
             """
-            json_data=nice_form.cleaned_data
-            return HttpResponseRedirect('/japps/job_submitted/', request.POST)
+            job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
+            json_run={}
+            json_run["name"]=request.POST["name_job"]
+            json_run["appId"]=ex_json['result']["name"]+"-"+ex_json['result']["version"]
+            json_run["inputs"]={}
+            json_run["parameters"]={}
+            json_run["archive"]=True
+            token=request.POST["user_token"]
+            header={"Authorization": "Bearer "+token}
+            for field in request.POST:
+                if field!="csrfmiddlewaretoken" and field!="name_job" and field!="token" and field!="email":
+                    if request.POST.get(field) not in [None, ""]:
+                        json_run["parameters"][field]=request.POST.get(field)
+                elif field=="email":
+                    if request.POST.get(field, "").strip()!="":
+                        json_run["notifications"]=[]
+                        json_run["notifications"].append({})
+                        json_run["notifications"][0]["event"]="*"
+                        json_run["notifications"][0]["persistent"]="true"
+                        json_run["notifications"][0]["url"]=request.POST.get(field)
+            if len(request.FILES)>0:
+                requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
+            for field in request.FILES:
+                json_run["inputs"][field]=[]
+                for fie in request.FILES.getlist(field):
+                    json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+fie.name)
+                    rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
+            json_run=json.dumps(json_run)
+            header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
+            r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
+            risposta=r.json()
+            if risposta.has_key("fault"):
+                #the token is not valid or expired during the process
+                risposta=risposta["fault"]["message"]
+                return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
+            elif risposta["status"]!="success":
+                #the user submitted an invalid string, reload the previous page with a warning
+                risposta=risposta["message"] ####this will be the warning
+                if request.META.get("HTTP_REFERER","")!="":
+                    messages.error(request, risposta)
+                    return HttpResponseRedirect(request.META.get("HTTP_REFERER",""))
+                else:
+                    #i think this is needed for users in incognito mode
+                    return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
+            else:
+                print "B"
+                job_id="job-"+str(risposta["result"]["id"])
+            return redirect('japps:job_submitted')
 
     else:
         """
@@ -151,61 +200,14 @@ def create_form(request, application):
         nice_form=make_form(ex_json)
     return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form } )
 
-def create_json_run(request):
-    """
-    this function take the compiled form and create a json to upload the files
-    to the storage system and submit the job via agave.
-    """
-    global job_time
-    global ex_json
-    job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
-    json_run={}
-    json_run["name"]=request.POST["name_job"]
-    json_run["appId"]=ex_json['result']["name"]+"-"+ex_json['result']["version"]
-    json_run["inputs"]={}
-    json_run["parameters"]={}
-    json_run["archive"]=True
-    token=request.POST["user_token"]
-    header={"Authorization": "Bearer "+token}
-    for field in request.POST:
-        if field!="csrfmiddlewaretoken" and field!="name_job" and field!="token" and field!="email":
-            if request.POST.get(field) not in [None, ""]:
-                json_run["parameters"][field]=request.POST.get(field)
-        elif field=="email":
-            if request.POST.get(field, "").strip()!="":
-                json_run["notifications"]=[]
-                json_run["notifications"].append({})
-                json_run["notifications"][0]["event"]="*"
-                json_run["notifications"][0]["persistent"]="true"
-                json_run["notifications"][0]["url"]=request.POST.get(field)
-    if len(request.FILES)>0:
-        requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
-    for field in request.FILES:
-        json_run["inputs"][field]=[]
-        for fie in request.FILES.getlist(field):
-            json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+fie.name)
-            rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
-    json_run=json.dumps(json_run)
-    header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
-    r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
-    risposta=r.json()
-    if risposta.has_key("fault"):
-        #the token is not valid or expired during the process
-        risposta=risposta["fault"]["message"]
-        return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
-    elif risposta["status"]!="success":
-        #the user submitted an invalid string, reload the previous page with a warning
-        risposta=risposta["message"] ####this will be the warning
-        if request.META.get("HTTP_REFERER","")!="":
-            messages.error(request, risposta)
-            return HttpResponseRedirect(request.META.get("HTTP_REFERER",""))
-        else:
-            #i think this is needed for users in incognito mode
-            return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
-    else:
-        print "B"
-        job_id="job-"+str(risposta["result"]["id"])
-    return render(request, "japps/job_submitted.html", {"job_id": job_id})
+def submitted(request):
+    try:
+      global job_id
+      if not job_id:
+          job_id=""
+      return render(request, "japps/job_submitted.html", {"job_id": job_id})
+    except NameError:
+      return redirect('japps:index')
 
 def list_apps(request):
     """

@@ -10,5 +10,5 @@ urlpatterns = [
     # ex: /japps/submission.html/
     url(r'^submission/$', views.list_apps),
     url(r'^submission/(?P<application>[\.\w-]+)$', views.create_form, name='submission'),
-    url(r'^job_submitted/$', views.create_json_run, name='job_submitted' ),
+    url(r'^job_submitted/$', views.submitted, name='job_submitted' ),
 ]

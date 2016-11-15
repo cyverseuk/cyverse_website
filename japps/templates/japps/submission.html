@@ -12,7 +12,7 @@
     </ul>
   {% endif %}
 
-  <form action="/job_submitted/" method="post" enctype="multipart/form-data" data-parsley-validate>
+  <form action="" method="POST" enctype="multipart/form-data" data-parsley-validate>
     {% csrf_token %}
     <table>
       {{ nice_form.as_table }}
