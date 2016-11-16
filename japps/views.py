@@ -247,4 +247,9 @@ def list_apps(request):
             for el in risposta["result"]:
                 display_list.append(el["id"])
             display_list.sort()
-            return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+            #print request.META.get('HTTP_REFERER','')
+            #print request.build_absolute_uri()
+            if request.META.get('HTTP_REFERER','')!=request.build_absolute_uri():
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            else:
+                return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
