@@ -11,7 +11,7 @@ missing_token=" "
 #create an espired token
 expired_token=subprocess.check_output(['auth-tokens-refresh', '-S']).split()[-1]
 #and a valid one
-token=subprocess.check_output(['auth-tokens-refresh', '-S']).split()[-1]
+valid_token=subprocess.check_output(['auth-tokens-refresh', '-S']).split()[-1]
 
 class IndexTest(TestCase):
 
@@ -27,6 +27,10 @@ class IndexTest(TestCase):
         test if the form is valid
         """
         token_form=get_token()(data={"user_token": missing_token})
-        self.assertTrue(token_form.is_valid())
+        print token_form.is_valid()
+        print token_form.is_bound
+        print token_form.errors
+        self.assertFalse(token_form.is_valid())
         token_form=get_token()(data={"user_token": expired_token})
         self.assertTrue(token_form.is_valid())
+        token_form=get_token()(data={"user_token": valid_token})
