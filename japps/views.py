@@ -84,7 +84,8 @@ def make_form(ex_json):
         additional_features(field)
     for field in ex_json["result"]["parameters"]:
         if field["value"].get("type")==None:
-            return "error" #should never be here as this check is done by agave, add a test
+            #should never be here as this check is done by agave, add a test
+            return "error, the app seems to be invalid. please contact us to report the error."
         else:
             if field["value"]["type"]=="string":
                 fields[field["id"]]=forms.CharField(max_length=50)
