@@ -178,6 +178,7 @@ def create_form(request, application):
             if risposta.has_key("fault"):
                 #the token is not valid or expired during the process
                 risposta=risposta["fault"]["message"]
+                print "****************here***************"
                 return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
             elif risposta["status"]!="success":
                 #the user submitted an invalid string, reload the previous page with a warning
@@ -217,39 +218,40 @@ def list_apps(request):
     specific application.
     """
     global token
-    if token=="" and request.method=='POST': ####first submission push
+    if request.method=='POST': ####first submission push
         print "1"
-        token=request.POST["user_token"]
-    else: #####any other submission will have token!="" cause required
-        print "2"
-        if request.method=='POST': ##eg token invalid or blank
-            print "3"
+        token_form=get_token()(request.POST)
+        if token_form.is_valid():
             token=request.POST["user_token"]
-        else: ####very first opening token=="" and no POST || token non blank and no post?
-            print "4"
+            header={"Authorization": "Bearer "+token}
+            r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
+            display_list=[]
+            risposta=r.json()
+            if risposta.has_key("fault"):
+                print "2"
+                message=risposta["fault"]["message"]
+                token_form=get_token()
+                token=""
+                return render(request, "japps/index.html", {"risposta": message, "logged": False, "token_form":token_form})
+            else:
+                print "3"
+                for el in risposta["result"]:
+                    display_list.append(el["id"])
+                display_list.sort()
+                print request.META.get('HTTP_REFERER','')
+                print request.build_absolute_uri()
+                print display_list
+                if request.META.get('HTTP_REFERER','')!=request.build_absolute_uri():
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER',''))
+                else:
+                    return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+        else:
+            print "not valid form"
             risposta="user needs to authenticate"
             token_form=get_token()
             return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
-    if token!="":
-        print "5"
-        header={"Authorization": "Bearer "+token}
-        r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
-        display_list=[]
-        risposta=r.json()
-        if risposta.has_key("fault"):
-            print "6"
-            message=risposta["fault"]["message"]
-            token_form=get_token()
-            token=""
-            return render(request, "japps/index.html", {"risposta": message, "logged": False, "token_form":token_form})
-        else:
-            print "7"
-            for el in risposta["result"]:
-                display_list.append(el["id"])
-            display_list.sort()
-            #print request.META.get('HTTP_REFERER','')
-            #print request.build_absolute_uri()
-            if request.META.get('HTTP_REFERER','')!=request.build_absolute_uri():
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER',''))
-            else:
-                return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+    else: ####very first opening token=="" and no POST || token non blank and no post?
+        print "4"
+        risposta="user needs to authenticate"
+        token_form=get_token()
+        return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
