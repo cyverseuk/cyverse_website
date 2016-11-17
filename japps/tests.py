@@ -1,5 +1,8 @@
 from django.test import TestCase
-import views
+from .views import get_token
+from django import forms
+
+
 import subprocess
 
 # Create your tests here. -the CLI has to be installed to run the tests-
@@ -23,13 +26,7 @@ class IndexTest(TestCase):
         """
         test if the form is valid
         """
-        data=missing_token
-        form=views.get_token()
-        print type(form)
-        self.assertTrue(form.is_valid(), True)
-        data=expired_token
-        form=get_token()
-        self.assertTrue(form.is_valid(), True)
-        data=token
-        form=get_token()
-        self.assertTrue(form.is_valid(), True)
+        token_form=get_token()(data={"user_token": missing_token})
+        self.assertTrue(token_form.is_valid())
+        token_form=get_token()(data={"user_token": expired_token})
+        self.assertTrue(token_form.is_valid())
