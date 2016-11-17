@@ -27,10 +27,12 @@ class IndexTest(TestCase):
         test if the form is valid
         """
         token_form=get_token()(data={"user_token": missing_token})
-        print token_form.is_valid()
-        print token_form.is_bound
-        print token_form.errors
+        #print token_form.errors
         self.assertFalse(token_form.is_valid())
+        self.assertTrue(token_form.is_bound)
         token_form=get_token()(data={"user_token": expired_token})
         self.assertTrue(token_form.is_valid())
+        self.assertTrue(token_form.is_bound)
         token_form=get_token()(data={"user_token": valid_token})
+        self.assertTrue(token_form.is_valid())
+        self.assertTrue(token_form.is_bound)
