@@ -2,7 +2,7 @@ from django.test import TestCase
 from .views import get_token
 from django import forms
 
-
+import selenium
 import subprocess
 
 # Create your tests here. -the CLI has to be installed to run the tests-
@@ -67,6 +67,14 @@ class AppTest(TestCase):
         risposta=self.client.get('/submission'+ex_app)
         self.assertEqual(risposta.status_code, 200)
         #apparently 500 is hidden for the test suite, may need to install selenium
+
+    def test_invalid_app_name(self):
+        """
+        test for a name that for sure is not an app
+        """
+        ex_app="/im/anoth?er_notVal!d'app"
+        risposta=self.client.get('/submission'+ex_app)
+        self.assertEqual(risposta.status_code, 404)
 
 class EndPageTest(TestCase):
 
