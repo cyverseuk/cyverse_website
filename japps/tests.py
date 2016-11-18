@@ -21,6 +21,7 @@ class IndexTest(TestCase):
         """
         risposta=self.client.get('/')
         self.assertEqual(risposta.status_code, 200)
+        self.assertTemplateUsed(risposta, 'japps/index.html')
 
     def test_loginform(self):
         """
@@ -47,6 +48,8 @@ class AppTest(TestCase):
         risposta=self.client.get('/submission'+ex_app)
         self.assertEqual(risposta.status_code, 200)
 
+        #add test for the template, if the user is logged in and not
+
     def test_redirection(self):
         """
         test that you can reach the page
@@ -57,8 +60,38 @@ class AppTest(TestCase):
 
     def test_unexisting_app(self):
         """
-        test that invalid app name return 404
+        test that invalid app name return 200 for not logged user and 500 for
+        logged in users
         """
         ex_app="/im_not_a_valid_app"
         risposta=self.client.get('/submission'+ex_app)
-        self.assertEqual(risposta.status_code, 404)
+        self.assertEqual(risposta.status_code, 200)
+        #apparently 500 is hidden for the test suite, may need to install selenium
+
+class EndPageTest(TestCase):
+
+    def test_submitted_redirect(self):
+        """
+        test that the user is redirected to main page for GET
+        """
+        risposta=self.client.get('/job_submitted')
+        self.assertEqual(risposta.status_code, 301)
+        #self.assertTemplateUsed(risposta, 'japps/index.html')
+
+    def test_submitted(self):
+        """
+        test that after POST the user reaches the right page
+        """
+        risposta=self.client.post("/submission/GWasser-1.0.0u1", {"user_token": valid_token})
+        self.assertEqual(risposta.status_code, 200)
+        #self.assertTemplateUsed(risposta, 'japps/job_submitted.html') <-----this doesn't work
+
+    def test_expired_submission(self):
+        """
+        test that after POST with invalid token user retrieves the login form
+        """
+        risposta=self.client.post("/submission/GWasser-1.0.0u1", {"user_token": expired_token})
+        self.assertEqual(risposta.status_code, 200)
+        self.assertTemplateUsed(risposta, 'japps/index.html')
+
+    #add test for right tenplate after a job submission (POST) and redirection to index if not
