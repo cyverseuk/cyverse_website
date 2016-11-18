@@ -63,10 +63,12 @@ SECURE_CONTENT_TYPE_NOSNIFF=True #deployment
 
 ROOT_URLCONF = 'cyapps.urls'
 
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [PROJECT_ROOT+"/japps/templates/japps/"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,6 +135,11 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ###
+
+EMAIL_BACKEND="django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL="testing@example.com"
+EMAIL_HOST_USER=""
+EMAIL_HOST_PASSWORD=""
+EMAIL_USE_TLS=False
+EMAIL_PORT=1025
