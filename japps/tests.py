@@ -93,5 +93,3 @@ class EndPageTest(TestCase):
         risposta=self.client.post("/submission/GWasser-1.0.0u1", {"user_token": expired_token})
         self.assertEqual(risposta.status_code, 200)
         self.assertTemplateUsed(risposta, 'japps/index.html')
-
-    #add test for right tenplate after a job submission (POST) and redirection to index if not
