@@ -74,9 +74,9 @@ class EndPageTest(TestCase):
         """
         test that the user is redirected to main page for GET
         """
-        risposta=self.client.get('/job_submitted')
-        self.assertEqual(risposta.status_code, 301)
-        #self.assertTemplateUsed(risposta, 'japps/index.html')
+        risposta=self.client.get('/job_submitted/')
+        self.assertEqual(risposta.status_code, 302)
+        self.assertRedirects(risposta, '/',status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_submitted(self):
         """
@@ -84,7 +84,7 @@ class EndPageTest(TestCase):
         """
         risposta=self.client.post("/submission/GWasser-1.0.0u1", {"user_token": valid_token})
         self.assertEqual(risposta.status_code, 200)
-        #self.assertTemplateUsed(risposta, 'japps/job_submitted.html') <-----this doesn't work
+        #self.assertTemplateUsed(risposta, 'japps/job_submitted.html') #<-----this doesn't work i should submit a valid form to the server
 
     def test_expired_submission(self):
         """
