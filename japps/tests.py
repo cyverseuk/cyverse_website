@@ -1,8 +1,11 @@
-from django.test import TestCase
+from django.test import TestCase, LiveServerTestCase
 from .views import get_token
 from django import forms
 
 import selenium
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
 import subprocess
 
 # Create your tests here. -the CLI has to be installed to run the tests-
@@ -101,3 +104,20 @@ class EndPageTest(TestCase):
         risposta=self.client.post("/submission/GWasser-1.0.0u1", {"user_token": expired_token})
         self.assertEqual(risposta.status_code, 200)
         self.assertTemplateUsed(risposta, 'japps/index.html')
+
+##################### selenium tests from here on ######################
+
+class SeleniumTestCase(LiveServerTestCase):
+
+    #this part is not working with the following error displayed: WebDriverException: Message: 'geckodriver' executable needs to be in PATH. 
+
+    def setUp(self):
+        self.selenium=webdriver.Firefox()
+        super(SeleniumTestCase, self).setUp()
+
+    def open(self, url):
+        self.wd.get("%s%s" % (self.live_server_url, url))
+
+    def test_tab_title(self):
+        self.wd.get('%s%s' % (self.live_server_url, '/'))
+        self.assertIn("CyverseUK", self.browser.title)
