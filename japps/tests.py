@@ -1,6 +1,7 @@
 from django.test import TestCase, LiveServerTestCase
 from .views import get_token
 from django import forms
+from django.urls import reverse
 
 import selenium
 from selenium import webdriver
@@ -115,16 +116,19 @@ class SeleniumTestCase(LiveServerTestCase):
 
     def tearDown(self):
         self.selenium.quit()
+        #N.B. this will trow the following exception 'NoneType' object has no attribute 'path'
+        #it has no consequences so don't worry about it.
+        #it has been solved in one of the last commit to selenium but not in the pip version yet
+        #will prob. be ok in the future
         super(SeleniumTestCase, self).tearDown()
 
     def test_tab_title(self):
         selenium = self.selenium
-        selenium.get("%s%s" % (self.live_server_url, '/'))
+        selenium.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         self.assertIn("CyVerse", self.selenium.title)
-
-    """def open(self, url):
-        self.wd.get("%s%s" % (self.live_server_url, url))
-
-    def test_tab_title(self):
-        self.wd.get('%s%s' % (self.live_server_url, '/'))
-        self.assertIn("CyverseUK", self.browser.title)"""
+        selenium.get("%s%s" % (self.live_server_url, reverse('japps:go-to-index')))
+        self.assertIn("CyVerse", self.selenium.title)
+        selenium.get("%s%s" % (self.live_server_url, reverse('japps:submission', args=["fakeapp"])))
+        self.assertIn("CyVerse", self.selenium.title)
+        selenium.get("%s%s" % (self.live_server_url, reverse('japps:job_submitted')))
+        self.assertIn("CyVerse", self.selenium.title)
