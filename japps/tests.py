@@ -109,15 +109,22 @@ class EndPageTest(TestCase):
 
 class SeleniumTestCase(LiveServerTestCase):
 
-    #this part is not working with the following error displayed: WebDriverException: Message: 'geckodriver' executable needs to be in PATH. 
-
     def setUp(self):
         self.selenium=webdriver.Firefox()
         super(SeleniumTestCase, self).setUp()
 
-    def open(self, url):
+    def tearDown(self):
+        self.selenium.quit()
+        super(SeleniumTestCase, self).tearDown()
+
+    def test_tab_title(self):
+        selenium = self.selenium
+        selenium.get("%s%s" % (self.live_server_url, '/'))
+        self.assertIn("CyVerse", self.selenium.title)
+
+    """def open(self, url):
         self.wd.get("%s%s" % (self.live_server_url, url))
 
     def test_tab_title(self):
         self.wd.get('%s%s' % (self.live_server_url, '/'))
-        self.assertIn("CyverseUK", self.browser.title)
+        self.assertIn("CyverseUK", self.browser.title)"""
