@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 import subprocess
+import requests
 
 # Create your tests here. -the CLI has to be installed to run the tests-
 #create a blank token
@@ -306,3 +307,25 @@ class SeleniumTestCase(LiveServerTestCase):
         button=driver.find_element_by_css_selector("form").submit()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_css_selector("li.messages"))
         driver.find_element_by_css_selector("li.messages")
+
+    def test_app_login_500(self):
+        """
+        test that if a logged user try to access a non existing app a 404 error
+        is risen.
+        """
+        print "test_app_login_500"
+        timeout=120
+        driver=self.selenium
+        driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
+        driver.find_element_by_name("user_token").send_keys(valid_token)
+        driver.find_element_by_tag_name("form").submit()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("ul"))
+        driver.find_element_by_tag_name("ul")
+        driver.get("%s%s" % (self.live_server_url, reverse('japps:submission', args=["fakeapp"])))
+        #this is an ugly walkaround to check error 500 -not having a db with a
+        #list of available application (to automate the process in the future)
+        #if the url is a valid regex the server is asked for the non existing
+        #app. Selenium doesn't return a status code though, so the messy thing
+        #below.
+        risposta=requests.get("%s%s" % (self.live_server_url, reverse('japps:submission', args=["fakeapp"])))
+        self.assertEqual(risposta.status_code, 500)
