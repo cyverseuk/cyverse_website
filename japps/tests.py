@@ -7,6 +7,8 @@ import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 import subprocess
 
@@ -157,11 +159,21 @@ class SeleniumTestCase(LiveServerTestCase):
         timeout=50000 #if an error arise looking for #earlham_logo selector try to increase this before assess the failure
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:job_submitted')))
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_id('cyverse_logo'))
-        result=driver.find_element_by_css_selector("a>#cyverse_logo")
+        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector('a > img#cyverse_logo'))
+        result=driver.find_element_by_css_selector("a > img#cyverse_logo")
         result.click()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_id('earlham_logo'))
-        result2=driver.find_element_by_css_selector("a>#earlham_logo")
+
+    def test_link2(self):
+        """
+        separating from previous test as i think sometimes it gives error cause
+        it is present in both previous and next page.
+        """
+        print "test_link2"
+        timeout=50000
+        driver=self.selenium
+        driver.get("%s%s" % (self.live_server_url, reverse("japps:job_submitted")))
+        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector('a >img#earlham_logo'))
+        result2=driver.find_element_by_css_selector("a > img#earlham_logo")
         result2.click()
 
     def test_app_selection(self):
@@ -169,6 +181,7 @@ class SeleniumTestCase(LiveServerTestCase):
         test the following set of action:
         main_page -> token submission -> first app selection -> submit
         """
+        print "test_app_selection"
         timeout=50000
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
@@ -176,18 +189,43 @@ class SeleniumTestCase(LiveServerTestCase):
         driver.find_element_by_tag_name("form").submit()
         WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
         app_list=driver.find_element_by_tag_name("ul")
-        apps=app_list.find_elements_by_tag_name("li")
-        for app in apps:
-            text=app.text
-            print text
+        #apps=app_list.find_elements_by_tag_name("li")
+        #for app in apps:
+            #text=app.text
+            #print text
         WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
-        first=app_list.find_element_by_css_selector("li>a")
-        print first.text
+        first=app_list.find_element_by_css_selector("li a")
+        #print first.text
         first.click()
         WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        button=driver.find_element_by_css_selector("form input").submit()
 
-    #def test_app_selection_invalid(self):
+    def test_app_selection_invalid(self):
         """
         test the following set of action:
         main_page -> invalid token submission -> main_page
         """
+        print "test_app_selection_invalid"
+        timeout=50000
+        driver=self.selenium
+        driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
+        driver.find_element_by_name("user_token").send_keys(expired_token)
+        driver.find_element_by_tag_name("form").submit()
+        #WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector("p.warning"))
+        WebDriverWait(driver, timeout).until(EC.text_to_be_present_in_element((By.CLASS_NAME, "warning"), "Invalid Credentials"))
+        warning=driver.find_element_by_css_selector("p.warning").text
+        self.assertEqual(warning, "Invalid Credentials")
+
+    def test_app_selection_no_token(self):
+        """
+        try to submit missing_token -> same page
+        """
+        print "test_app_selection_no_token"
+        timeout=50000
+        driver=self.selenium
+        driver.implicitly_wait(10)
+        driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
+        driver.find_element_by_name("user_token").send_keys(missing_token)
+        driver.find_element_by_tag_name("form").submit()
+        warning=driver.find_element_by_css_selector("p.warning").text
+        self.assertIn("user needs", warning)
