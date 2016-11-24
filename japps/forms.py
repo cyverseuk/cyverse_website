@@ -27,6 +27,15 @@ class AppForm(forms.Form):
             if field["value"].get("default",None) is not None:
                 self.fields[field["id"]].initial=field["value"]["default"]
 
+    def choice_field(self,field):
+        """
+        give a default value if is set despite the field being required or not.
+        I'll call this method after additional_feature() to override the defaut
+        behaviour for a generic field.
+        """
+        if field["value"].get("default",None) is not None:
+            self.fields[field["id"]].initial=field["value"]["default"]
+
     def number_field(self,field):
         """
         this is a super ugly workaround to get the AGAVE API json file and the
@@ -40,14 +49,15 @@ class AppForm(forms.Form):
             else:
                 self.fields[field["id"]]=forms.IntegerField()
 
-    def val_feature(self,field):
+    def choice_feature(self,choices,field):
         """
-        this function add the RegexValidator if needed, is only called if the
-        type is not a number
+        function that define initial even if the value is not required, or add
+        a default empty option if default is not set in the agave api and the
+        field is not required.
         """
-        if field["value"].get("validator", None) is not None:
-            my_validator=RegexValidator(regex=field["value"]["validator"], message="Enter a valid value.")
-            self.fields[field["id"]].validators=[my_validator]
+        if field["value"].get("required")!=True and field["value"].get("default", None) is None:
+            choices.insert(0, ('', ''))
+        return choices
 
     def widget_features(self,field):
         """
@@ -89,22 +99,27 @@ class AppForm(forms.Form):
                 print "error, the app seems to be invalid. please contact us to report the error."
                 print "#"*50
             else:
-                if field["value"]["type"]=="number":
-                    self.number_field(field)
+                if field["value"]["type"]=="enumeration":
+                    choices=[]
+                    for pos in field["value"]["enum_values"]:
+                        #####add a test here to check that this dictionary length is always 1
+                        if len(pos.keys())!=1:
+                            print "#"*50
+                            print "the app seems to be in an unexpected format!"
+                            print "#"*50
+                        choices.append((pos.keys()[0],pos.keys()[0]))
+                    choices=self.choice_feature(choices,field)
+                    self.fields[field["id"]]=forms.ChoiceField(choices=choices)
+                    self.additional_features(field)
+                    self.choice_field(field)
                 else:
-                    if field["value"]["type"]=="string":
-                        self.fields[field["id"]]=forms.CharField(max_length=50)
+                    if field["value"]["type"]=="number":
+                        self.number_field(field)
+                    elif field["value"]["type"]=="string":
+                            self.fields[field["id"]]=forms.CharField(max_length=50)
+                            if field["value"].get("validator", None) is not None:
+                                my_validator=RegexValidator(regex=field["value"]["validator"], message="Enter a valid value.")
+                                self.fields[field["id"]].validators=[my_validator]
                     elif field["value"]["type"]=="bool" or field["value"]["type"]=="flag":
                         self.fields[field["id"]]=forms.BooleanField()
-                    elif field["value"]["type"]=="enumeration":
-                        choices=[]
-                        for pos in field["value"]["enum_values"]:
-                            #####add a test here to check that this dictionary length is always 1
-                            if len(pos.keys())!=1:
-                                print "#"*50
-                                print "the app seems to be in an unexpected format!"
-                                print "#"*50
-                            choices.append((pos.keys()[0],pos.keys()[0]))
-                        self.fields[field["id"]]=forms.ChoiceField(choices=choices)
-                    self.val_feature(field)
-            self.additional_features(field)
+                    self.additional_features(field)
