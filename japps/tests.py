@@ -162,7 +162,7 @@ class SeleniumTestCase(LiveServerTestCase):
         timeout=60 #if an error arise looking for #earlham_logo selector try to increase this before assess the failure
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:job_submitted')))
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector('a > img#cyverse_logo'))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_css_selector('a > img#cyverse_logo'))
         result=driver.find_element_by_css_selector("a > img#cyverse_logo")
         result.click()
 
@@ -175,7 +175,7 @@ class SeleniumTestCase(LiveServerTestCase):
         timeout=60
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:job_submitted")))
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector('a >img#earlham_logo'))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_css_selector('a >img#earlham_logo'))
         result2=driver.find_element_by_css_selector("a > img#earlham_logo")
         result2.click()
 
@@ -191,13 +191,12 @@ class SeleniumTestCase(LiveServerTestCase):
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(valid_token)
         driver.find_element_by_tag_name("form").submit()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
         app_list=driver.find_element_by_tag_name("ul")
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
-        first=app_list.find_element_by_css_selector("li a")
-        #print first.text
-        first.click()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("GWasser"))
+        app_list.find_element_by_partial_link_text("GWasser").click()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
         fields=driver.find_elements_by_css_selector("input")
         mandatory_files=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="file"]
         mandatory_parameters=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="text"]
@@ -253,12 +252,12 @@ class SeleniumTestCase(LiveServerTestCase):
         driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
         driver.find_element_by_name("user_token").send_keys(valid_token)
         driver.find_element_by_tag_name("form").submit()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
         app_list=driver.find_element_by_tag_name("ul")
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
-        first=app_list.find_element_by_css_selector("li a")
-        first.click()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("GWasser"))
+        app_list.find_element_by_partial_link_text("GWasser").click()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
         driver.find_element_by_name("user_token").send_keys(expired_token)
         fields=driver.find_elements_by_css_selector("input")
         mandatory_files=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="file"]
@@ -290,12 +289,12 @@ class SeleniumTestCase(LiveServerTestCase):
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(valid_token)
         driver.find_element_by_tag_name("form").submit()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
         app_list=driver.find_element_by_tag_name("ul")
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
-        first=app_list.find_element_by_css_selector("li a")
-        first.click()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("GWasser"))
+        app_list.find_element_by_partial_link_text("GWasser").click()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
         fields=driver.find_elements_by_css_selector("input")
         mandatory_files=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="file"]
         mandatory_parameters=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="text"]
@@ -345,7 +344,7 @@ class SeleniumTestCase(LiveServerTestCase):
         driver.find_element_by_tag_name("form").submit()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("Kallisto"))
         driver.find_element_by_partial_link_text("Kallisto").click()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
         fields=driver.find_elements_by_css_selector("input")
         mandatory_files=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="file"]
         mandatory_parameters=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="text"]
@@ -371,7 +370,7 @@ class SeleniumTestCase(LiveServerTestCase):
         driver.find_element_by_tag_name("form").submit()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("Kallisto"))
         driver.find_element_by_partial_link_text("Kallisto").click()
-        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
         fields=driver.find_elements_by_css_selector("input")
         mandatory_files=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="file"]
         mandatory_parameters=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="text"]
