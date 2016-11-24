@@ -17,7 +17,7 @@ from django.core.validators import RegexValidator
 from django import forms
 from django.contrib import messages
 
-from .forms import ParameterForm
+from .forms import ParameterForm, AppForm
 
 #with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
 #    token=next(b).strip()
@@ -25,82 +25,11 @@ token=""
 urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
-def additional_features(field):
-    """
-    this function helps to create a form with the rigth attributes specified in
-    the app. Will be called by create_form() to add properties to the form
-    fields.
-    """
-    global fields
-    fields[field["id"]].label=field["details"].get("label", field["id"])
-    fields[field["id"]].help_text=field["details"].get("description", "")
-    if field["value"].get("default",None) is not None:
-        fields[field["id"]].initial=field["value"]["default"]
-    if field["value"].get("validator", None) is not None:
-        my_validator=RegexValidator(regex=field["value"]["validator"], message="Enter a valid value.")
-        fields[field["id"]].validators=[my_validator]
-    if field["value"].get("required")!=True:
-        fields[field["id"]].required=False
-    else:
-        fields[field["id"]].label=field["details"].get("label", field["id"])+"*"
-
-def widget_features(field):
-    """
-    same as above to make the widget for multiple files work accordingly.
-    """
-    global fields
-    attributes={'multiple': True}
-    if field["value"].get("required")==True:
-        attributes['required']=True
-    return attributes
-
 def get_token():
     fields={}
     fields["user_token"]=forms.CharField()
     token_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
     return token_form
-
-def make_form(ex_json):
-    global fields
-    fields=OrderedDict()
-    fields["user_token"]=forms.CharField(initial=token)
-    fields["name_job"]=forms.CharField(initial=ex_json["result"]["name"]+"-"+job_time)
-    fields["email"]=forms.EmailField(required=False, help_text="insert if you wish yo receive notifications about the job")
-    for field in ex_json["result"]["inputs"]:
-        #####
-        #ideally here i want to have mutually exclusive options for the user to give URL for the file or to upload the file. additional problem with the url option is that apparently the widget doens't have an option to allows multiple entries.
-        #####
-        if field.get("semantics")!=None:
-            if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
-                attributes=widget_features(field)
-                fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
-                #fields[field["id"]]=forms.URLField()
-            else:
-                fields[field["id"]]=forms.FileField()
-                #fields[field["id"]]=forms.URLField()
-        else:
-            fields[field["id"]]=forms.FileField()
-            #fields[field["id"]]=forms.URLField()
-        additional_features(field)
-    for field in ex_json["result"]["parameters"]:
-        if field["value"].get("type")==None:
-            #should never be here as this check is done by agave, add a test
-            return "error, the app seems to be invalid. please contact us to report the error."
-        else:
-            if field["value"]["type"]=="string":
-                fields[field["id"]]=forms.CharField(max_length=50)
-            elif field["value"]["type"]=="number":
-                fields[field["id"]]=forms.FloatField()
-            elif field["value"]["type"]=="bool" or field["value"]["type"]=="flag":
-                fields[field["id"]]=forms.BooleanField()
-            elif field["value"]["type"]=="enumeration":
-                choices=[]
-                for pos in field["value"]["enum_values"]:
-                    #####add a test here to check that this dictionary length is always 1
-                    choices.append((pos.keys()[0],pos.keys()[0]))
-                fields[field["id"]]=forms.ChoiceField(choices=choices)
-        additional_features(field)
-    return type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
 
 ################the following are the functions for the views###################
 
@@ -137,7 +66,7 @@ def create_form(request, application):
         """
         form is filled in
         """
-        nice_form=forms.Form(request.POST, request.FILES)
+        nice_form=AppForm(request.POST, request.FILES,ex_json=ex_json, token=token, job_time=job_time)
         if nice_form.is_valid():
             """
             if the form is valid the user is addressed to the
@@ -147,25 +76,30 @@ def create_form(request, application):
             """
             job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
             json_run={}
-            json_run["name"]=request.POST["name_job"]
+            json_run["name"]=nice_form.cleaned_data["name_job"]
+            #print "*************************************************************"
+            #print nice_form.cleaned_data["name_job"]
+            #print bool(nice_form.cleaned_data["name_job"])
             json_run["appId"]=ex_json['result']["name"]+"-"+ex_json['result']["version"]
             json_run["inputs"]={}
             json_run["parameters"]={}
             json_run["archive"]=True
-            token=request.POST["user_token"]
+            token=nice_form.cleaned_data["user_token"]
             header={"Authorization": "Bearer "+token}
             for field in request.POST:
                 if field!="csrfmiddlewaretoken" and field!="name_job" and field!="token" and field!="email":
-                    if request.POST.get(field) not in [None, ""]:
-                        json_run["parameters"][field]=request.POST.get(field)
+                    if nice_form.cleaned_data.get(field) not in [None, ""]:
+                        json_run["parameters"][field]=nice_form.cleaned_data.get(field)
+                        #print field, nice_form.cleaned_data.get(field)
                 elif field=="email":
-                    if request.POST.get(field, "").strip()!="":
+                    if nice_form.cleaned_data.get(field, "").strip()!="":
                         json_run["notifications"]=[]
                         json_run["notifications"].append({})
                         json_run["notifications"][0]["event"]="*"
                         json_run["notifications"][0]["persistent"]="true"
-                        json_run["notifications"][0]["url"]=request.POST.get(field)
+                        json_run["notifications"][0]["url"]=nice_form.cleaned_data.get(field)
             if len(request.FILES)>0:
+                #create a temporary directory to uploads the files to
                 requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
             for field in request.FILES:
                 json_run["inputs"][field]=[]
@@ -179,7 +113,7 @@ def create_form(request, application):
             if risposta.has_key("fault"):
                 #the token is not valid or expired during the process
                 risposta=risposta["fault"]["message"]
-                print "****************here***************"
+                #print "****************here***************"
                 return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
             elif risposta["status"]!="success":
                 #the user submitted an invalid string, reload the previous page with a warning
@@ -194,12 +128,16 @@ def create_form(request, application):
                 print "B"
                 job_id="job-"+str(risposta["result"]["id"])
             return redirect('japps:job_submitted')
+        else:
+            #print nice_form.errors.as_data()
+            print "the form is not valid"
+            #get captured in the last render
 
     else:
         """
         dynamically create a form accordingly to the json file
         """
-        nice_form=make_form(ex_json)
+        nice_form=AppForm(ex_json=ex_json, token=token, job_time=job_time)
     return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form } )
 
 def submitted(request):
