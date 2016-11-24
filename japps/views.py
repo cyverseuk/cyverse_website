@@ -66,9 +66,7 @@ def create_form(request, application):
         """
         form is filled in
         """
-        nice_form=forms.Form(request.POST, request.FILES)
-        for field in nice_form:
-            print field
+        nice_form=AppForm(request.POST, request.FILES,ex_json=ex_json, token=token, job_time=job_time)
         if nice_form.is_valid():
             """
             if the form is valid the user is addressed to the
@@ -78,26 +76,30 @@ def create_form(request, application):
             """
             job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
             json_run={}
-            json_run["name"]=request.POST["name_job"]
-            print "**********************************************************"
+            json_run["name"]=nice_form.cleaned_data["name_job"]
+            print "*************************************************************"
+            print nice_form.cleaned_data["name_job"]
+            print bool(nice_form.cleaned_data["name_job"])
             json_run["appId"]=ex_json['result']["name"]+"-"+ex_json['result']["version"]
             json_run["inputs"]={}
             json_run["parameters"]={}
             json_run["archive"]=True
-            token=request.POST["user_token"]
+            token=nice_form.cleaned_data["user_token"]
             header={"Authorization": "Bearer "+token}
             for field in request.POST:
                 if field!="csrfmiddlewaretoken" and field!="name_job" and field!="token" and field!="email":
-                    if request.POST.get(field) not in [None, ""]:
-                        json_run["parameters"][field]=request.POST.get(field)
+                    if nice_form.cleaned_data.get(field) not in [None, ""]:
+                        json_run["parameters"][field]=nice_form.cleaned_data.get(field)
+                        print field, nice_form.cleaned_data.get(field)
                 elif field=="email":
-                    if request.POST.get(field, "").strip()!="":
+                    if nice_form.cleaned_data.get(field, "").strip()!="":
                         json_run["notifications"]=[]
                         json_run["notifications"].append({})
                         json_run["notifications"][0]["event"]="*"
                         json_run["notifications"][0]["persistent"]="true"
-                        json_run["notifications"][0]["url"]=request.POST.get(field)
+                        json_run["notifications"][0]["url"]=nice_form.cleaned_data.get(field)
             if len(request.FILES)>0:
+                #create a temporary directory to uploads the files to
                 requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
             for field in request.FILES:
                 json_run["inputs"][field]=[]
@@ -127,7 +129,9 @@ def create_form(request, application):
                 job_id="job-"+str(risposta["result"]["id"])
             return redirect('japps:job_submitted')
         else:
+            print nice_form.errors.as_data()
             print "the form is not valid"
+            #get captured in the last render
 
     else:
         """

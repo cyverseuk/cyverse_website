@@ -20,21 +20,39 @@ class AppForm(forms.Form):
         """
         self.fields[field["id"]].label=field["details"].get("label", field["id"])
         self.fields[field["id"]].help_text=field["details"].get("description", "")
-        if field["value"].get("default",None) is not None:
-            self.fields[field["id"]].initial=field["value"]["default"]
-        if field["value"].get("validator", None) is not None:
-            my_validator=RegexValidator(regex=field["value"]["validator"], message="Enter a valid value.")
-            self.fields[field["id"]].validators=[my_validator]
         if field["value"].get("required")!=True:
             self.fields[field["id"]].required=False
         else:
             self.fields[field["id"]].label=field["details"].get("label", field["id"])+"*"
+            if field["value"].get("default",None) is not None:
+                self.fields[field["id"]].initial=field["value"]["default"]
+
+    def number_field(self,field):
+        """
+        this is a super ugly workaround to get the AGAVE API json file and the
+        django validation to work toghether, as the regex is screwing up the
+        number validation treating it as string. But i Agave doesn't have a
+        difference between float and integers, that i need for python validation
+        """
+        if field["value"].get("default",None) is not None:
+            if "." in field["value"]["validator"] or "," in field["value"]["validator"]:
+                self.fields[field["id"]]=forms.FloatField()
+            else:
+                self.fields[field["id"]]=forms.IntegerField()
+
+    def val_feature(self,field):
+        """
+        this function add the RegexValidator if needed, is only called if the
+        type is not a number
+        """
+        if field["value"].get("validator", None) is not None:
+            my_validator=RegexValidator(regex=field["value"]["validator"], message="Enter a valid value.")
+            self.fields[field["id"]].validators=[my_validator]
 
     def widget_features(self,field):
         """
         same as above to make the widget for multiple files work accordingly.
         """
-        #global fields
         attributes={'multiple': True}
         if field["value"].get("required")==True:
             attributes['required']=True
@@ -67,18 +85,26 @@ class AppForm(forms.Form):
         for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:
                 #should never be here as this check is done by agave, add a test
-                return "error, the app seems to be invalid. please contact us to report the error."
+                print "#"*50
+                print "error, the app seems to be invalid. please contact us to report the error."
+                print "#"*50
             else:
-                if field["value"]["type"]=="string":
-                    self.fields[field["id"]]=forms.CharField(max_length=50)
-                elif field["value"]["type"]=="number":
-                    self.fields[field["id"]]=forms.FloatField()
-                elif field["value"]["type"]=="bool" or field["value"]["type"]=="flag":
-                    self.fields[field["id"]]=forms.BooleanField()
-                elif field["value"]["type"]=="enumeration":
-                    choices=[]
-                    for pos in field["value"]["enum_values"]:
-                        #####add a test here to check that this dictionary length is always 1
-                        choices.append((pos.keys()[0],pos.keys()[0]))
-                    self.fields[field["id"]]=forms.ChoiceField(choices=choices)
+                if field["value"]["type"]=="number":
+                    self.number_field(field)
+                else:
+                    if field["value"]["type"]=="string":
+                        self.fields[field["id"]]=forms.CharField(max_length=50)
+                    elif field["value"]["type"]=="bool" or field["value"]["type"]=="flag":
+                        self.fields[field["id"]]=forms.BooleanField()
+                    elif field["value"]["type"]=="enumeration":
+                        choices=[]
+                        for pos in field["value"]["enum_values"]:
+                            #####add a test here to check that this dictionary length is always 1
+                            if len(pos.keys())!=1:
+                                print "#"*50
+                                print "the app seems to be in an unexpected format!"
+                                print "#"*50
+                            choices.append((pos.keys()[0],pos.keys()[0]))
+                        self.fields[field["id"]]=forms.ChoiceField(choices=choices)
+                    self.val_feature(field)
             self.additional_features(field)
