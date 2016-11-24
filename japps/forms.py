@@ -43,7 +43,7 @@ class AppForm(forms.Form):
         number validation treating it as string. But i Agave doesn't have a
         difference between float and integers, that i need for python validation
         """
-        if field["value"].get("default",None) is not None:
+        if field["value"].get("validator",None) is not None:
             if "." in field["value"]["validator"] or "," in field["value"]["validator"]:
                 self.fields[field["id"]]=forms.FloatField()
             else:
