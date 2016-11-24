@@ -48,6 +48,8 @@ class AppForm(forms.Form):
                 self.fields[field["id"]]=forms.FloatField()
             else:
                 self.fields[field["id"]]=forms.IntegerField()
+        else:
+            self.fields[field["id"]]=forms.FloatField()
 
     def choice_feature(self,choices,field):
         """
