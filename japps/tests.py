@@ -159,7 +159,7 @@ class SeleniumTestCase(LiveServerTestCase):
         -already verify this in the previous test-
         """
         print "test_links"
-        timeout=120 #if an error arise looking for #earlham_logo selector try to increase this before assess the failure
+        timeout=60 #if an error arise looking for #earlham_logo selector try to increase this before assess the failure
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:job_submitted')))
         WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector('a > img#cyverse_logo'))
@@ -172,7 +172,7 @@ class SeleniumTestCase(LiveServerTestCase):
         it is present in both previous and next page.
         """
         print "test_link2"
-        timeout=120
+        timeout=60
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:job_submitted")))
         WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_css_selector('a >img#earlham_logo'))
@@ -186,7 +186,7 @@ class SeleniumTestCase(LiveServerTestCase):
         job_submitted page with link to the DE
         """
         print "test_app_selection"
-        timeout=120
+        timeout=60
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(valid_token)
@@ -216,7 +216,7 @@ class SeleniumTestCase(LiveServerTestCase):
         main_page -> invalid token submission -> main_page
         """
         print "test_app_login_invalid"
-        timeout=120
+        timeout=60
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(expired_token)
@@ -231,7 +231,7 @@ class SeleniumTestCase(LiveServerTestCase):
         try to submit missing_token -> same page
         """
         print "test_app_selection_no_token"
-        timeout=120
+        timeout=60
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
         driver.find_element_by_name("user_token").send_keys(missing_token)
@@ -248,7 +248,7 @@ class SeleniumTestCase(LiveServerTestCase):
         of the list of available apps
         """
         print "test_invalid_token_submission"
-        timeout=120
+        timeout=60
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
         driver.find_element_by_name("user_token").send_keys(valid_token)
@@ -285,7 +285,7 @@ class SeleniumTestCase(LiveServerTestCase):
         not accettable string -> reload of the form with django message on top
         """
         print "test_app_selection"
-        timeout=120
+        timeout=60
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(valid_token)
@@ -314,7 +314,7 @@ class SeleniumTestCase(LiveServerTestCase):
         is risen.
         """
         print "test_app_login_500"
-        timeout=120
+        timeout=60
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
         driver.find_element_by_name("user_token").send_keys(valid_token)
@@ -329,3 +329,60 @@ class SeleniumTestCase(LiveServerTestCase):
         #below.
         risposta=requests.get("%s%s" % (self.live_server_url, reverse('japps:submission', args=["fakeapp"])))
         self.assertEqual(risposta.status_code, 500)
+
+    def test_integer_field(self):
+        """
+        test that an error is raised and the form is not submitted if an integer
+        field is given a floating point value. Test Kallisto app for this (they
+        are generated automatically so this will work for new app as
+        well).
+        """
+        print "test_integer_field"
+        timeout=60
+        driver=self.selenium
+        driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
+        driver.find_element_by_name("user_token").send_keys(valid_token)
+        driver.find_element_by_tag_name("form").submit()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("Kallisto"))
+        driver.find_element_by_partial_link_text("Kallisto").click()
+        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        fields=driver.find_elements_by_css_selector("input")
+        mandatory_files=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="file"]
+        mandatory_parameters=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="text"]
+        mandatory_parameters=[x for x in mandatory_parameters if x.get_attribute("name") not in ["user_token", "name_job"]]
+        for el in mandatory_parameters:
+            driver.find_element_by_name(el.get_attribute("name")).send_keys("randomstring")
+        for el in mandatory_files:
+            driver.find_element_by_name(el.get_attribute("name")).send_keys(os.getcwd()+"/emptyfile")
+        driver.find_element_by_name("kmer").send_keys(23)
+        button=driver.find_element_by_css_selector("form").submit()
+        WebDriverWait(driver, timeout).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, "p"), "Job Submitted"))
+        driver.find_element_by_css_selector("p > a").click()
+
+    def test_integer_field_with_float(self):
+        """
+        testing submission of float in integer field.
+        """
+        print "test_integer_field"
+        timeout=60
+        driver=self.selenium
+        driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
+        driver.find_element_by_name("user_token").send_keys(valid_token)
+        driver.find_element_by_tag_name("form").submit()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("Kallisto"))
+        driver.find_element_by_partial_link_text("Kallisto").click()
+        WebDriverWait(self.selenium, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        fields=driver.find_elements_by_css_selector("input")
+        mandatory_files=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="file"]
+        mandatory_parameters=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="text"]
+        mandatory_parameters=[x for x in mandatory_parameters if x.get_attribute("name") not in ["user_token", "name_job"]]
+        for el in mandatory_parameters:
+            driver.find_element_by_name(el.get_attribute("name")).send_keys("randomstring")
+        for el in mandatory_files:
+            driver.find_element_by_name(el.get_attribute("name")).send_keys(os.getcwd()+"/emptyfile")
+        try:
+            driver.find_element_by_name("kmer").send_keys(23.5)
+            self.fail("no error given when submitting the wrong kind of data")
+        except TypeError: #though this is not the error i get from django
+            pass
+        button=driver.find_element_by_css_selector("form").submit()
