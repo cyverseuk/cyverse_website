@@ -77,9 +77,9 @@ def create_form(request, application):
             job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
             json_run={}
             json_run["name"]=nice_form.cleaned_data["name_job"]
-            print "*************************************************************"
-            print nice_form.cleaned_data["name_job"]
-            print bool(nice_form.cleaned_data["name_job"])
+            #print "*************************************************************"
+            #print nice_form.cleaned_data["name_job"]
+            #print bool(nice_form.cleaned_data["name_job"])
             json_run["appId"]=ex_json['result']["name"]+"-"+ex_json['result']["version"]
             json_run["inputs"]={}
             json_run["parameters"]={}
@@ -90,7 +90,7 @@ def create_form(request, application):
                 if field!="csrfmiddlewaretoken" and field!="name_job" and field!="token" and field!="email":
                     if nice_form.cleaned_data.get(field) not in [None, ""]:
                         json_run["parameters"][field]=nice_form.cleaned_data.get(field)
-                        print field, nice_form.cleaned_data.get(field)
+                        #print field, nice_form.cleaned_data.get(field)
                 elif field=="email":
                     if nice_form.cleaned_data.get(field, "").strip()!="":
                         json_run["notifications"]=[]
@@ -113,7 +113,7 @@ def create_form(request, application):
             if risposta.has_key("fault"):
                 #the token is not valid or expired during the process
                 risposta=risposta["fault"]["message"]
-                print "****************here***************"
+                #print "****************here***************"
                 return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
             elif risposta["status"]!="success":
                 #the user submitted an invalid string, reload the previous page with a warning
@@ -129,7 +129,7 @@ def create_form(request, application):
                 job_id="job-"+str(risposta["result"]["id"])
             return redirect('japps:job_submitted')
         else:
-            print nice_form.errors.as_data()
+            #print nice_form.errors.as_data()
             print "the form is not valid"
             #get captured in the last render
 
