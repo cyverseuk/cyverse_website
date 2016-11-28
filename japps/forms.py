@@ -3,6 +3,7 @@ from collections import OrderedDict
 from django import forms
 from parsley.decorators import parsleyfy
 from django.core.validators import RegexValidator
+from django.utils.translation import gettext as _
 
 @parsleyfy
 class ParameterForm(forms.Form):
@@ -48,6 +49,7 @@ class AppForm(forms.Form):
                 self.fields[field["id"]]=forms.FloatField()
             else:
                 self.fields[field["id"]]=forms.IntegerField()
+            self.fields[field["id"]].validators=[RegexValidator(regex=field["value"]["validator"], message=_("Number must match the regular expression %(regex)s") % {"regex": field["value"]["validator"]}, code="invalid_number")]
         else:
             self.fields[field["id"]]=forms.FloatField()
 
