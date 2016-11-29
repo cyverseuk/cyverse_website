@@ -123,7 +123,9 @@ class AppForm(forms.Form):
                             self.fields[field["id"]]=forms.CharField(max_length=50)
                             if field["value"].get("validator", None) is not None:
                                 my_validator=RegexValidator(regex=field["value"]["validator"], message="Enter a valid value.")
-                                self.fields[field["id"]].validators=[my_validator]
+                            else:
+                                my_validator=RegexValidator(regex="^[\w\s\_\-\.\;\,\/]+$", message="Enter a valid value.")
+                            self.fields[field["id"]].validators=[my_validator]
                     elif field["value"]["type"]=="bool" or field["value"]["type"]=="flag":
                         self.fields[field["id"]]=forms.BooleanField()
                     self.additional_features(field)
