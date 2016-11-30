@@ -194,3 +194,6 @@ def list_apps(request):
         risposta="user needs to authenticate"
         token_form=get_token()
         return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
+
+def applications(request):
+    return render(request,'japps/static_description.html')

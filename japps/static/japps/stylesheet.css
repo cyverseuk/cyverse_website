@@ -1,3 +1,6 @@
+* {
+  box-sizing: content-box;
+}
 @-ms-viewport{
     width: extend-to-zoom;
     zoom: 1.0;
@@ -13,6 +16,7 @@
     margin-top: 1em;
     min-width: 10em !important;
     height: auto !important;
+    box-sizing: content-box;
 }
 #earlham_logo{
   max-width: 10%;
@@ -21,6 +25,7 @@
   float: right;
   min-width: 10em !important;
   height: auto !important;
+  box-sizing: content-box;
 }
 .warning {
   color:#C61F16;
@@ -48,6 +53,9 @@
   background-color: rgba(198, 31, 22, 0.2) !important; /* #C61F16 */
   border-color: rgba(198, 31, 22, 0.7);
   color: rgba(198, 31, 22, 0.7);
+}
+.des_logo {
+  width: 90%;
 }
 ul.errorlist li {
   color:#C61F16;
@@ -93,6 +101,7 @@ header {
     background: linear-gradient(#CDD5EA, #ffffff); /* Standard syntax */
     padding: 0;
     margin-top:-1em;
+    box-sizing: content-box;
 }
 body{
     margin:0;
@@ -102,4 +111,5 @@ footer {
   clear:both;
   width: 100%;
   display: block;
+  box-sizing: content-box;
 }
