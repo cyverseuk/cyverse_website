@@ -197,3 +197,6 @@ def list_apps(request):
 
 def applications(request):
     return render(request,'japps/static_description.html')
+
+def app_description(request, app_name):
+    return render(request, 'japps/%(app_name)s.html' % {"app_name": app_name})

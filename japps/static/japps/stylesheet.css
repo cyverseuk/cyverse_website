@@ -57,6 +57,13 @@
 .des_logo {
   width: 90%;
 }
+.description p {
+  font-size: large;
+  font-family: "Roboto", "Noto Serif";
+}
+.description li {
+  font-weight: normal;
+}
 ul.errorlist li {
   color:#C61F16;
   list-style-type: none;

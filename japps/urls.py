@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^submission/(?P<application>[\.\w-]+)$', views.create_form, name='submission'),
     url(r'^job_submitted/$', views.submitted, name='job_submitted' ),
     url(r'^applications/$', views.applications, name='applications'),
+    url(r'^applications/(?P<app_name>[\.\w-]+)$', views.app_description, name='app_description'),
 ]

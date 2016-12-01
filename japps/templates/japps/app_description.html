@@ -1,0 +1,35 @@
+{% extends "japps/base.html" %}
+{% load static %}
+{% block more_styles %}
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+{% endblock %}
+{% block body %}
+  <div class="container-fluid description">
+
+    <div class="row">
+      <div class="col-xs-12 col-md-10 col-md-offset-1">
+        {% block image %}
+        {% endblock %}
+        <br/>
+        <br/>
+        <br/>
+        {% block description %}
+        {% endblock %}
+        <br/>
+        {% block doclink %}
+        {% endblock %}
+        <br/>
+        <h3><strong>References</string></h3>
+        <br/>
+        <ul>
+          {% block ref_list %}
+          {% endblock %}
+        </ul>
+        </br>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}

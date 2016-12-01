@@ -1,0 +1,14 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/GWASSER_LOGO.png' %}" alt="[IMAGE: GWasser logo]" />
+{% endblock %}
+{% block description %}
+  <p><strong>GWASSER</strong> is an R based script for performing simple genome wide association using statistical modelling. It is adapted from technique used at NIAB for testing the ability to perform genome wide association study of the awning phenotype in wheat (<em>Triticum aestivum</em>) on lines of their MAGIC population.</p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="https://github.com/cyverseuk/GWASSER">documentation</a> for details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Mackay, I. J., Bansept-Basler, P., Barber, T., Bentley, A. R., Cockram, J., Gosman, N., … Howell, P. J. (2014). An Eight-Parent Multiparent Advanced Generation Inter-Cross Population for Winter-Sown Wheat: Creation, Properties, and Validation. <a href="http://doi.org/10.1534/g3.114.012963">http://doi.org/10.1534/g3.114.012963</a></li>
+{% endblock %}
