@@ -1,6 +1,7 @@
 * {
   box-sizing: content-box;
   font-family: "Roboto", "Noto Serif";
+  font-size: 16px;
 }
 @-ms-viewport{
     width: extend-to-zoom;
