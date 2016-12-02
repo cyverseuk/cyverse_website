@@ -159,7 +159,7 @@ class SeleniumTestCase(LiveServerTestCase):
         -already verify this in the previous test-
         """
         print "test_links"
-        timeout=60 #if an error arise looking for #earlham_logo selector try to increase this before assess the failure
+        timeout=180 #if an error arise looking for #earlham_logo selector try to increase this before assess the failure
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:job_submitted')))
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_css_selector('a > img#cyverse_logo'))
@@ -172,7 +172,7 @@ class SeleniumTestCase(LiveServerTestCase):
         it is present in both previous and next page.
         """
         print "test_link2"
-        timeout=60
+        timeout=180
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:job_submitted")))
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_css_selector('a >img#earlham_logo'))
@@ -186,7 +186,7 @@ class SeleniumTestCase(LiveServerTestCase):
         job_submitted page with link to the DE
         """
         print "test_app_selection"
-        timeout=60
+        timeout=180
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(valid_token)
@@ -215,7 +215,7 @@ class SeleniumTestCase(LiveServerTestCase):
         main_page -> invalid token submission -> main_page
         """
         print "test_app_login_invalid"
-        timeout=60
+        timeout=180
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(expired_token)
@@ -230,7 +230,7 @@ class SeleniumTestCase(LiveServerTestCase):
         try to submit missing_token -> same page
         """
         print "test_app_selection_no_token"
-        timeout=60
+        timeout=180
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
         driver.find_element_by_name("user_token").send_keys(missing_token)
@@ -247,15 +247,16 @@ class SeleniumTestCase(LiveServerTestCase):
         of the list of available apps
         """
         print "test_invalid_token_submission"
-        timeout=60
+        timeout=180
         driver=self.selenium
-        driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
+        driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(valid_token)
         driver.find_element_by_tag_name("form").submit()
-        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
-        app_list=driver.find_element_by_tag_name("ul")
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_class_name('main_list'))
+        app_list=driver.find_element_by_class_name("main_list")
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("GWasser"))
+        WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "GWasser")))
         app_list.find_element_by_partial_link_text("GWasser").click()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
         driver.find_element_by_name("user_token").send_keys(expired_token)
@@ -284,13 +285,13 @@ class SeleniumTestCase(LiveServerTestCase):
         not accettable string -> reload of the form with django message on top
         """
         print "test_app_selection"
-        timeout=60
+        timeout=180
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse('japps:index')))
         driver.find_element_by_name("user_token").send_keys(valid_token)
         driver.find_element_by_tag_name("form").submit()
-        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
-        app_list=driver.find_element_by_tag_name("ul")
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_class_name('main_list'))
+        app_list=driver.find_element_by_class_name("main_list")
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("GWasser"))
         app_list.find_element_by_partial_link_text("GWasser").click()
@@ -313,7 +314,7 @@ class SeleniumTestCase(LiveServerTestCase):
         is risen.
         """
         print "test_app_login_500"
-        timeout=60
+        timeout=180
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
         driver.find_element_by_name("user_token").send_keys(valid_token)
@@ -337,12 +338,13 @@ class SeleniumTestCase(LiveServerTestCase):
         well).
         """
         print "test_integer_field"
-        timeout=60
+        timeout=180
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
         driver.find_element_by_name("user_token").send_keys(valid_token)
         driver.find_element_by_tag_name("form").submit()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("Kallisto"))
+        WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "Kallisto")))
         driver.find_element_by_partial_link_text("Kallisto").click()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
         fields=driver.find_elements_by_css_selector("input")
@@ -363,12 +365,13 @@ class SeleniumTestCase(LiveServerTestCase):
         testing submission of float in integer field.
         """
         print "test_integer_field"
-        timeout=60
+        timeout=180
         driver=self.selenium
         driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
         driver.find_element_by_name("user_token").send_keys(valid_token)
         driver.find_element_by_tag_name("form").submit()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("Kallisto"))
+        WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "Kallisto")))
         driver.find_element_by_partial_link_text("Kallisto").click()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
         fields=driver.find_elements_by_css_selector("input")

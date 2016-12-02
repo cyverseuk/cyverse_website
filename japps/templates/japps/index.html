@@ -2,7 +2,7 @@
 {% block body %}
   <h1>CyVerseUK Apps</h1>
   {% if logged %}
-    <ul>
+    <ul class="main_list">
       {% for el in risposta %}
         <li><a href="{% url 'japps:submission' application=el %}">{{ el|slice:":-2" }}</a></li>
       {% endfor %}
