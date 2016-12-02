@@ -388,3 +388,28 @@ class SeleniumTestCase(LiveServerTestCase):
         except TypeError: #though this is not the error i get from django
             pass
         button=driver.find_element_by_css_selector("form").submit()
+
+    def test_invalid_number(self):
+        """
+        testing invalid regex number.
+        """
+        timeout=180
+        driver=self.selenium
+        driver.get("%s%s" % (self.live_server_url, reverse("japps:index")))
+        driver.find_element_by_name("user_token").send_keys(valid_token)
+        driver.find_element_by_tag_name("form").submit()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("Kallisto"))
+        WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, "Kallisto")))
+        driver.find_element_by_partial_link_text("Kallisto").click()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
+        fields=driver.find_elements_by_css_selector("input")
+        mandatory_files=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="file"]
+        mandatory_parameters=[x for x in fields if x.get_attribute("required") and x.get_attribute("type")=="text"]
+        mandatory_parameters=[x for x in mandatory_parameters if x.get_attribute("name") not in ["user_token", "name_job"]]
+        for el in mandatory_parameters:
+            driver.find_element_by_name(el.get_attribute("name")).send_keys("randomstring")
+        for el in mandatory_files:
+            driver.find_element_by_name(el.get_attribute("name")).send_keys(os.getcwd()+"/emptyfile")
+        driver.find_element_by_name("kmer").send_keys(24) #app only accept odd values
+        button=driver.find_element_by_css_selector("form").submit()
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_class_name("errorlist"))
