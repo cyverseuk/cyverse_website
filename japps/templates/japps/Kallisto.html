@@ -1,7 +1,7 @@
 {% extends "japps/app_description.html" %}
 {% load static %}
 {% block image %}
-  <img img src="{% static 'japps/images/kallisto-300x245.jpg' %}" alt="[IMAGE: Kallisto logo]" />
+  <img img src="{% static 'japps/images/kallisto-300x245.jpg' %}" alt="[IMAGE: Kallisto logo]" style="max-width: 100%"/>
 {% endblock %}
 {% block description %}
   <p><strong>Kallisto</strong> is a program for quantifying abundances of transcripts from RNASeq data, or more generally of target sequences using high-throughput sequencing reads. It is based on the idea of pseudoalignment for rapidly determining the compatibility of reads with targets, without the need for alignment.</p>

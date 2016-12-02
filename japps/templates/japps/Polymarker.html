@@ -1,7 +1,7 @@
 {% extends "japps/app_description.html" %}
 {% load static %}
 {% block image %}
-  <img img src="{% static 'japps/images/polymarker-300x74.png' %}" alt="[IMAGE: Polymarker logo]" />
+  <img img src="{% static 'japps/images/polymarker-300x74.png' %}" alt="[IMAGE: Polymarker logo]" style="max-width: 100%"/>
 {% endblock %}
 {% block description %}
   <p><strong>PolyMarker</strong> is an automated bioinformatics pipeline for SNP assay development which increases the probability of generating homoeologue-specific assays for polyploid wheat. PolyMarker generates a multiple alignment between the target SNP sequence and the IWGSC chromosome survey sequences (IWGSC, 2014 ) for each of the three wheat genomes. It then generates a mask with informative positions which are highlighted with respect to the target genome.<br/><br/>We have designed primers for the iSelect 90K chip and the Axiom 820k chip.</p>
