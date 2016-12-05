@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django import forms
+from django.forms import widgets
 from parsley.decorators import parsleyfy
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext as _
@@ -10,6 +11,20 @@ class ParameterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ParameterForm, self).__init__(*args, **kwargs)
+
+class FileUrlWidget(widgets.MultiWidget):
+
+    def __init__(self, attrs=None):
+        _widgets=(forms.ClearableFileInput(attrs), forms.URLInput(attrs))
+        super(FileUrlWidget, self).__init__(_widgets, attrs)
+
+    def decompress(self, value):
+        if value:
+            return [value.file, value.url]
+        return [None, None]
+
+    def format_output(self, rendered_widgets):
+        return ''.join(rendered_widgets)
 
 class AppForm(forms.Form):
 
@@ -87,14 +102,11 @@ class AppForm(forms.Form):
             if field.get("semantics")!=None:
                 if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
                     attributes=self.widget_features(field)
-                    self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
-                    #self.fields[field["id"]]=forms.URLField()
+                    self.fields[field["id"]]=forms.FileField(widget=FileUrlWidget(attrs=attributes))
                 else:
-                    self.fields[field["id"]]=forms.FileField()
-                    #self.fields[field["id"]]=forms.URLField()
+                    self.fields[field["id"]]=forms.FileField(widget=FileUrlWidget())
             else:
-                self.fields[field["id"]]=forms.FileField()
-                #self.fields[field["id"]]=forms.URLField()
+                self.fields[field["id"]]=forms.FileField(widget=FileUrlWidget())
             self.additional_features(field)
         for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:
