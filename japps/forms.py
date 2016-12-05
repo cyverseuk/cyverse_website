@@ -26,6 +26,17 @@ class FileUrlWidget(widgets.MultiWidget):
     def format_output(self, rendered_widgets):
         return ''.join(rendered_widgets)
 
+    """def clean(self, value):
+        if value[0] is None:
+            if value[1] is None:
+                errmes="Please upload a file or provide a valid URL."
+                raise forms.ValidationError(errmes) ####check error
+        else:
+            if value[1] is not None:
+                errmes="Please upload a file OR provide a valid URL."
+                raise forms.ValidationError(errmes) ###check error
+        return value"""
+
 class AppForm(forms.Form):
 
     def additional_features(self,field):
@@ -102,11 +113,18 @@ class AppForm(forms.Form):
             if field.get("semantics")!=None:
                 if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
                     attributes=self.widget_features(field)
-                    self.fields[field["id"]]=forms.FileField(widget=FileUrlWidget(attrs=attributes))
+                    self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
+                    attributes["name"]=field["id"]
+                    self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs=attributes))
+                    self.fields[field["id"]+"_url"].label=""
                 else:
-                    self.fields[field["id"]]=forms.FileField(widget=FileUrlWidget())
+                    self.fields[field["id"]]=forms.FileField()
+                    self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"]}))
+                    self.fields[field["id"]+"_url"].label=""
             else:
-                self.fields[field["id"]]=forms.FileField(widget=FileUrlWidget())
+                self.fields[field["id"]]=forms.FileField()
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"]}))
+                self.fields[field["id"]+"_url"].label=""
             self.additional_features(field)
         for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:
