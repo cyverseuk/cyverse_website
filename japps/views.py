@@ -90,7 +90,7 @@ def create_form(request, application):
                 if field!="csrfmiddlewaretoken" and field!="name_job" and field!="token" and field!="email":
                     if nice_form.cleaned_data.get(field) not in [None, ""]:
                         json_run["parameters"][field]=nice_form.cleaned_data.get(field)
-                        #print field, nice_form.cleaned_data.get(field)
+                        print field, nice_form.cleaned_data.get(field)
                 elif field=="email":
                     if nice_form.cleaned_data.get(field, "").strip()!="":
                         json_run["notifications"]=[]
