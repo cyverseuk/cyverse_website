@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+        <script type="text/javascript" src="script.js"></script>
+    </head>
+    <body>
+        <br/>
+        <table>
+            <tbody>
+                <tr>
+                    <th></th>
+                    <td>
+                        <ul id="id_method0">
+                            <li>
+                                <label for="id_method0_0">
+                                    <input checked="checked" id="id_method0_0" name="method0" type="radio" value="local" required>
+                                    "upload from computer"
+                                </label>
+                            </li>
+                            <li>
+                                <label for="id_method0_1">
+                                    <input id="id_method0_1" name="method0" type="radio" value="url" required>
+                                    "upload from url"
+                                </label>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_fasta">FASTA file(s) to be indexed:</label>
+                    </th>
+                    <td>
+                        <input id="id_fasta" name="fasta" type="file">
+                    </td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td>
+                        <input id="id_fasta_url" name="fasta_url" type="url" disabled>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th></th>
+                    <td>
+                        <ul id="id_method1">
+                            <li>
+                                <label for="id_method1_0">
+                                    <input checked="checked" id="id_method1_0" name="method1" type="radio" value="local" required>
+                                    "upload from computer"
+                                </label>
+                            </li>
+                            <li>
+                                <label for="id_method1_1">
+                                    <input id="id_method1_1" name="method1" type="radio" value="url" required>
+                                    "upload from url"
+                                </label>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="id_index">index file:</label>
+                    </th>
+                    <td>
+                        <input id="id_index" name="index" type="file">
+                    </td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td>
+                        <input id="id_index_url" name="index_url" type="url" disabled>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
