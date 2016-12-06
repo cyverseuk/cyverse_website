@@ -109,9 +109,6 @@ class AppForm(forms.Form):
         input_choices=(("local", "upload from computer"), ("url", "upload from url"))
         x=0 #counter
         for field in ex_json["result"]["inputs"]:
-            #####
-            #ideally here i want to have mutually exclusive options for the user to give URL for the file or to upload the file. additional problem with the url option is that apparently the widget doens't have an option to allows multiple entries.
-            #####
             radio="method"+str(x)
             self.fields[radio]=forms.ChoiceField(choices=input_choices, widget=forms.RadioSelect)
             self.fields[radio].label=""
@@ -128,6 +125,7 @@ class AppForm(forms.Form):
             self.fields[field["id"]].required=False
             self.fields[field["id"]+"_url"].label=""
             self.fields[field["id"]+"_url"].required=False
+            self.fields[field["id"]+"_url"].disabled=True
             x+=1
         for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:
