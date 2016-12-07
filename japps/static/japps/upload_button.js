@@ -24,5 +24,8 @@ $(document).ready(function() {
             url_but.attr("id", id1);
             url_but.attr("name", name1);
         };
-});
+    });
+    $('input[type="submit"]').click(function() {
+        alert("Your job will be submitted. This may take a while, please wait.")
+    });
 });
