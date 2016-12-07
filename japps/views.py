@@ -13,11 +13,12 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, URLValidator
 from django import forms
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 
-from .forms import ParameterForm, AppForm
+from .forms import AppForm
 
 #with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
 #    token=next(b).strip()
@@ -87,10 +88,21 @@ def create_form(request, application):
             token=nice_form.cleaned_data["user_token"]
             header={"Authorization": "Bearer "+token}
             for field in request.POST:
-                if field!="csrfmiddlewaretoken" and field!="name_job" and field!="token" and field!="email":
-                    if nice_form.cleaned_data.get(field) not in [None, ""]:
-                        json_run["parameters"][field]=nice_form.cleaned_data.get(field)
-                        print field, nice_form.cleaned_data.get(field)
+                if field!="csrfmiddlewaretoken" and field!="name_job" and field!="user_token" and field!="email" and not field.startswith("django_upload_method"):
+                        if nice_form.cleaned_data.get(field) not in [None, ""]:
+                            json_run["parameters"][field]=nice_form.cleaned_data.get(field)
+                            print field, nice_form.cleaned_data.get(field)
+                        else:
+                            if request.POST[field] not in [None, ""]:
+                                print "************", field, request.POST[field]
+                                try:
+                                    URLValidator()(request.POST[field])
+                                    print 'success'
+                                    #create a temporary directory to uploads the file to (if it doesn't exist already) ####move it from here
+                                    requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
+                                    requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", data={"urlToIngest":"https://raw.githubusercontent.com/aliceminotto/cyverse_website/master/emptyfile"}, headers=header)
+                                except ValidationError, e: ###that's not a valid url
+                                    print e
                 elif field=="email":
                     if nice_form.cleaned_data.get(field, "").strip()!="":
                         json_run["notifications"]=[]
@@ -107,7 +119,6 @@ def create_form(request, application):
                     json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+fie.name)
                     rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
             json_run=json.dumps(json_run)
-            assert False
             header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
             r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
             risposta=r.json()

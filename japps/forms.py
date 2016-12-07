@@ -109,7 +109,7 @@ class AppForm(forms.Form):
         input_choices=(("local", "upload from computer"), ("url", "upload from url"))
         x=0 #counter
         for field in ex_json["result"]["inputs"]:
-            radio="method"+str(x)
+            radio="django_upload_method"+str(x)
             self.fields[radio]=forms.ChoiceField(choices=input_choices, widget=forms.RadioSelect)
             self.fields[radio].label=""
             self.fields[radio].initial="local"
@@ -117,10 +117,10 @@ class AppForm(forms.Form):
                 attributes=self.widget_features(field)
                 self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs={"multiple":True}))
                 attributes["name"]=field["id"]
-                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"multiple": True, 'placeholder': 'https://'}))
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"multiple": True}))
             else:
                 self.fields[field["id"]]=forms.FileField()
-                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"],'placeholder': 'https://'}))
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"]}))
             self.additional_features(field)
             self.fields[field["id"]].required=False
             self.fields[field["id"]+"_url"].label=""
