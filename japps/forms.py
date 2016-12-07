@@ -117,10 +117,10 @@ class AppForm(forms.Form):
                 attributes=self.widget_features(field)
                 self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs={"multiple":True}))
                 attributes["name"]=field["id"]
-                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"multiple": True}))
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"multiple": True, 'placeholder': 'https://'}))
             else:
                 self.fields[field["id"]]=forms.FileField()
-                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"]}))
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"],'placeholder': 'https://'}))
             self.additional_features(field)
             self.fields[field["id"]].required=False
             self.fields[field["id"]+"_url"].label=""
