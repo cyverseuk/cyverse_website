@@ -115,16 +115,13 @@ class AppForm(forms.Form):
             self.fields[radio].initial="local"
             if field.get("semantics")!=None and (field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1):
                 attributes=self.widget_features(field)
-                self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs={"multiple":True}))
-                attributes["name"]=field["id"]
-                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"multiple": True}))
+                self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs=attributes))
             else:
                 self.fields[field["id"]]=forms.FileField()
                 self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"]}))
             self.additional_features(field)
-            self.fields[field["id"]].required=False
             self.fields[field["id"]+"_url"].label=""
-            self.fields[field["id"]+"_url"].required=False
             self.fields[field["id"]+"_url"].disabled=True
             x+=1
         for field in ex_json["result"]["parameters"]:
