@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django import forms
+from django.forms import widgets
 from parsley.decorators import parsleyfy
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext as _
@@ -12,6 +13,30 @@ class ParameterForm(forms.Form):
         super(ParameterForm, self).__init__(*args, **kwargs)
 
 class AppForm(forms.Form):
+
+    def add_fea_url(self,field):
+        """
+        this funtion helps to create a form with the right attributes specified
+        in the app. Will be called by create_form() to add properties to url
+        fields.
+        """
+        self.fields[field["id"]+"_url"].label=""
+        self.fields[field["id"]+"_url"].help_text=field["details"].get("description", "")
+        self.fields[field["id"]+"_url"].required=False
+        self.fields[field["id"]+"_url"].disabled=True
+
+    def add_fea_upl(self, field):
+        """
+        this funtion helps to create a form with the right attributes specified
+        in the app. Will be called by create_form() to add properties to file
+        fields.
+        """
+        self.fields[field["id"]].label=field["details"].get("label", field["id"])
+        if field["value"].get("required")!=True:
+            self.fields[field["id"]].required=False
+        else:
+            self.fields[field["id"]].required=False #set the widget attribute to required
+            self.fields[field["id"]].label=field["details"].get("label", field["id"])+"*"
 
     def additional_features(self,field):
         """
@@ -80,22 +105,26 @@ class AppForm(forms.Form):
         self.fields["user_token"]=forms.CharField(initial=token)
         self.fields["name_job"]=forms.CharField(initial=ex_json["result"]["name"]+"-"+job_time)
         self.fields["email"]=forms.EmailField(required=False, help_text="insert if you wish yo receive notifications about the job")
+        input_choices=(("local", "upload from computer"), ("url", "upload from url"))
+        x=0 #counter
         for field in ex_json["result"]["inputs"]:
-            #####
-            #ideally here i want to have mutually exclusive options for the user to give URL for the file or to upload the file. additional problem with the url option is that apparently the widget doens't have an option to allows multiple entries.
-            #####
-            if field.get("semantics")!=None:
-                if field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1:
-                    attributes=self.widget_features(field)
-                    self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
-                    #self.fields[field["id"]]=forms.URLField()
-                else:
-                    self.fields[field["id"]]=forms.FileField()
-                    #self.fields[field["id"]]=forms.URLField()
+            radio="django_upload_method"+str(x)
+            self.fields[radio]=forms.ChoiceField(choices=input_choices, widget=forms.RadioSelect)
+            self.fields[radio].label=""
+            self.fields[radio].initial="local"
+            if field.get("semantics")!=None and (field["semantics"].get("maxCardinality")>1 or field["semantics"].get("maxCardinality")==-1):
+                attributes=self.widget_features(field)
+                self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs=attributes))
             else:
-                self.fields[field["id"]]=forms.FileField()
-                #self.fields[field["id"]]=forms.URLField()
-            self.additional_features(field)
+                attributes={}
+                if field["value"].get("required")==True:
+                    attributes["required"]=True
+                self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs=attributes))
+            self.add_fea_upl(field)
+            self.add_fea_url(field)
+            x+=1
         for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:
                 #should never be here as this check is done by agave, add a test

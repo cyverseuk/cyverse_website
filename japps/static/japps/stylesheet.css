@@ -150,3 +150,10 @@ footer {
   display: block;
   box-sizing: content-box;
 }
+form table td ul li {
+  list-style-type: none;
+  display: inline !important;
+}
+form table td ul li input {
+  display: inline !important;
+}
