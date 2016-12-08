@@ -14,6 +14,10 @@ $(document).ready(function() {
             upl_but.attr("name", name2);
             url_but.attr("id", id1);
             url_but.attr("name", name1);
+            if (upl_but.prop("required")) {
+              url_but.prop("required", true);
+              upl_but.prop("required", false);
+            }
         }
         else {
             upl_but.prop("disabled", false);
@@ -23,9 +27,10 @@ $(document).ready(function() {
             upl_but.attr("name", name2);
             url_but.attr("id", id1);
             url_but.attr("name", name1);
+            if (url_but.prop("required")) {
+              upl_but.prop("required", true);
+              url_but.prop("required", false);
+            }
         };
-    });
-    $('input[type="submit"]').click(function() {
-        alert("Your job will be submitted. This may take a while, please wait.")
     });
 });

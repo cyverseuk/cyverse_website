@@ -122,6 +122,7 @@ class AppForm(forms.Form):
                 self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"]}))
             self.additional_features(field)
             self.fields[field["id"]+"_url"].label=""
+            self.fields[field["id"]+"_url"].required=False
             self.fields[field["id"]+"_url"].disabled=True
             x+=1
         for field in ex_json["result"]["parameters"]:
