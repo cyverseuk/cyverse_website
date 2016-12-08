@@ -35,6 +35,7 @@ class AppForm(forms.Form):
         if field["value"].get("required")!=True:
             self.fields[field["id"]].required=False
         else:
+            self.fields[field["id"]].required=False #set the widget attribute to required
             self.fields[field["id"]].label=field["details"].get("label", field["id"])+"*"
 
     def additional_features(self,field):
@@ -116,8 +117,11 @@ class AppForm(forms.Form):
                 self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
                 self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs=attributes))
             else:
-                self.fields[field["id"]]=forms.FileField()
-                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"]}))
+                attributes={}
+                if field["value"].get("required")==True:
+                    attributes["required"]=True
+                self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
+                self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs=attributes))
             self.add_fea_upl(field)
             self.add_fea_url(field)
             x+=1

@@ -91,20 +91,21 @@ def create_form(request, application):
                 if field!="csrfmiddlewaretoken" and field!="name_job" and field!="user_token" and field!="email" and not field.startswith("django_upload_method"):
                         if nice_form.cleaned_data.get(field) not in [None, ""]:
                             json_run["parameters"][field]=nice_form.cleaned_data.get(field)
-                            print field, nice_form.cleaned_data.get(field)
+                            #print field, nice_form.cleaned_data.get(field)
                         else:
                             if request.POST[field] not in [None, ""]:
-                                print "************", field, request.POST[field]
-                                for url in request.POST.getlist(field):
+                                #print "************", field, request.POST[field]
+                                for url in str(request.POST[field]).replace(';',' ').replace(',',' ').split():
+                                    #print url
                                     try:
-                                        URLValidator()(request.POST[field])
-                                        print 'success'
+                                        URLValidator()(url)
+                                        #print 'success'
                                         #create a temporary directory to uploads the file to (if it doesn't exist already) ####move it from here
                                         json_run["inputs"].setdefault(field,[])
                                         niceurl=str(url).split('/')[-1]
                                         json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+niceurl)
                                         requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
-                                        requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", data={"urlToIngest":"https://raw.githubusercontent.com/aliceminotto/cyverse_website/master/emptyfile"}, headers=header)
+                                        requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", data={"urlToIngest": url}, headers=header)
                                     except ValidationError, e: ###that's not a valid url
                                         print e
                 elif field=="email":
