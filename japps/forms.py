@@ -12,32 +12,30 @@ class ParameterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ParameterForm, self).__init__(*args, **kwargs)
 
-class FileUrlWidget(widgets.MultiWidget):
-
-    def __init__(self, attrs=None):
-        _widgets=(forms.ClearableFileInput(attrs), forms.URLInput(attrs))
-        super(FileUrlWidget, self).__init__(_widgets, attrs)
-
-    def decompress(self, value):
-        if value:
-            return [value.file, value.url]
-        return [None, None]
-
-    def format_output(self, rendered_widgets):
-        return ''.join(rendered_widgets)
-
-    """def clean(self, value):
-        if value[0] is None:
-            if value[1] is None:
-                errmes="Please upload a file or provide a valid URL."
-                raise forms.ValidationError(errmes) ####check error
-        else:
-            if value[1] is not None:
-                errmes="Please upload a file OR provide a valid URL."
-                raise forms.ValidationError(errmes) ###check error
-        return value"""
-
 class AppForm(forms.Form):
+
+    def add_fea_url(self,field):
+        """
+        this funtion helps to create a form with the right attributes specified
+        in the app. Will be called by create_form() to add properties to url
+        fields.
+        """
+        self.fields[field["id"]+"_url"].label=""
+        self.fields[field["id"]+"_url"].help_text=field["details"].get("description", "")
+        self.fields[field["id"]+"_url"].required=False
+        self.fields[field["id"]+"_url"].disabled=True
+
+    def add_fea_upl(self, field):
+        """
+        this funtion helps to create a form with the right attributes specified
+        in the app. Will be called by create_form() to add properties to file
+        fields.
+        """
+        self.fields[field["id"]].label=field["details"].get("label", field["id"])
+        if field["value"].get("required")!=True:
+            self.fields[field["id"]].required=False
+        else:
+            self.fields[field["id"]].label=field["details"].get("label", field["id"])+"*"
 
     def additional_features(self,field):
         """
@@ -120,10 +118,8 @@ class AppForm(forms.Form):
             else:
                 self.fields[field["id"]]=forms.FileField()
                 self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs={"name": field["id"]}))
-            self.additional_features(field)
-            self.fields[field["id"]+"_url"].label=""
-            self.fields[field["id"]+"_url"].required=False
-            self.fields[field["id"]+"_url"].disabled=True
+            self.add_fea_upl(field)
+            self.add_fea_url(field)
             x+=1
         for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:

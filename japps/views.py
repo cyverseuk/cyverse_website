@@ -95,14 +95,18 @@ def create_form(request, application):
                         else:
                             if request.POST[field] not in [None, ""]:
                                 print "************", field, request.POST[field]
-                                try:
-                                    URLValidator()(request.POST[field])
-                                    print 'success'
-                                    #create a temporary directory to uploads the file to (if it doesn't exist already) ####move it from here
-                                    requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
-                                    requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", data={"urlToIngest":"https://raw.githubusercontent.com/aliceminotto/cyverse_website/master/emptyfile"}, headers=header)
-                                except ValidationError, e: ###that's not a valid url
-                                    print e
+                                for url in request.POST.getlist(field):
+                                    try:
+                                        URLValidator()(request.POST[field])
+                                        print 'success'
+                                        #create a temporary directory to uploads the file to (if it doesn't exist already) ####move it from here
+                                        json_run["inputs"].setdefault(field,[])
+                                        niceurl=str(url).split('/')[-1]
+                                        json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+niceurl)
+                                        requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
+                                        requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", data={"urlToIngest":"https://raw.githubusercontent.com/aliceminotto/cyverse_website/master/emptyfile"}, headers=header)
+                                    except ValidationError, e: ###that's not a valid url
+                                        print e
                 elif field=="email":
                     if nice_form.cleaned_data.get(field, "").strip()!="":
                         json_run["notifications"]=[]
