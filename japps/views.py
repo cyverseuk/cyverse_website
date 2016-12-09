@@ -180,9 +180,32 @@ def list_apps(request):
         code=request.GET.get('code', '')
         print code
         if code!="":
-            r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data={"grant_type": "authorization_code", "code": code, "redirect_uri": "http://127.0.0.1:8000", "client_id": "FtYbpdfIqOhQ6TfK6zoUfdO3ZvUa", "client_secret": CLIENT_SECRET})
-            print r.json()
-            return render(request, "japps/index.html", {"risposta": "ciao ciao", "logged": False}) ########no
+            r=requests.post("https://agave.iplantc.org/token", data={"grant_type": "authorization_code", "code": code, "redirect_uri": "http://127.0.0.1:8000", "client_id": "FtYbpdfIqOhQ6TfK6zoUfdO3ZvUa", "client_secret": CLIENT_SECRET})
+            token=r.json()["access_token"]
+            print token
+            header={"Authorization": "Bearer "+token}
+            r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
+            display_list=[]
+            risposta=r.json()
+            if risposta.has_key("fault"):
+                message=risposta["fault"]["message"]
+                token_form=get_token()
+                token=""
+                return render(request, "japps/index.html", {"risposta": message, "logged": False})
+            else:
+                for el in risposta["result"]:
+                    display_list.append(el["id"])
+                display_list.sort()
+                print request.META.get('HTTP_REFERER','')
+                print request.build_absolute_uri()
+                print display_list
+                if request.META.get('HTTP_REFERER','')!=request.build_absolute_uri():
+                    print "*********************************"
+                    return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+                    #return HttpResponseRedirect(request.META.get('HTTP_REFERER',''))
+                else:
+                    return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+            #return render(request, "japps/index.html", {"risposta": "ciao ciao", "logged": False}) ########no
         else:
             return render(request, "japps/index.html", {"risposta": risposta, "logged": False})
     else:
