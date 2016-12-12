@@ -22,7 +22,7 @@
   </head>
 <body>
   <header style="display: block">
-    <a href="/"><img id="cyverse_logo" src="{% static 'japps/images/cyverse_rgb.png' %}" alt="[IMAGE: CyVerse logo]"/></a>
+    <a href="{% url 'japps:index' %}"><img id="cyverse_logo" src="{% static 'japps/images/cyverse_rgb.png' %}" alt="[IMAGE: CyVerse logo]"/></a>
     <ul class="menu">
       <li><a href="{% url 'japps:applications' %}">Available Apps</a></li>
       <li><a href="">Contact us</a></li>
