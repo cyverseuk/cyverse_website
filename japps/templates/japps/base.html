@@ -26,6 +26,9 @@
     <ul class="menu">
       <li><a href="{% url 'japps:applications' %}">Available Apps</a></li>
       <li><a href="">Contact us</a></li>
+      {% if username %}
+        <li>Hello, <a href="">{{ username }}</a></li>
+      {% endif %}
     </ul>
   </header>
   <div class="content">

@@ -21,6 +21,7 @@ from django.core.exceptions import ValidationError
 from .forms import AppForm
 
 token=""
+username=""
 urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 CLIENT_SECRET=os.environ.get('CLIENT_SECRET_LOCAL')
@@ -37,6 +38,7 @@ def create_form(request, application):
     global ex_json
     global token
     global job_id
+    global username
     if token=="":
         """
         deal with the posssibility that an user try to access an url in the form
@@ -151,14 +153,15 @@ def create_form(request, application):
         dynamically create a form accordingly to the json file
         """
         nice_form=AppForm(ex_json=ex_json, token=token, job_time=job_time)
-    return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form } )
+    return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form, "username": username } )
 
 def submitted(request):
+    global username
     try:
       global job_id
       if not job_id:
           job_id=""
-      return render(request, "japps/job_submitted.html", {"job_id": job_id})
+      return render(request, "japps/job_submitted.html", {"job_id": job_id, "username": username})
     except NameError:
       return redirect('japps:index')
 
@@ -170,16 +173,21 @@ def list_apps(request):
     specific application.
     """
     global token
+    global username
     if token=="":
         risposta="user needs to authenticate"
         code=request.GET.get('code', '')
-        print code
+        #print code
         if code!="":
             r=requests.post("https://agave.iplantc.org/token", data={"grant_type": "authorization_code", "code": code, "redirect_uri": "http://127.0.0.1:8000", "client_id": "FtYbpdfIqOhQ6TfK6zoUfdO3ZvUa", "client_secret": CLIENT_SECRET})
             token=r.json()["access_token"]
-            print token
+            #print r.json()
+            #print token
             header={"Authorization": "Bearer "+token}
             r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
+            userreq=requests.get("https://agave.iplantc.org/profiles/v2/me?pretty=true&naked=true", headers=header)
+            username=userreq.json()["username"]
+            print username
             display_list=[]
             risposta=r.json()
             if risposta.has_key("fault"):
@@ -195,10 +203,10 @@ def list_apps(request):
                 print display_list
                 if request.META.get('HTTP_REFERER','')!=request.build_absolute_uri():
                     print "*********************************"
-                    return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+                    return render(request, "japps/index.html", {"risposta": display_list, "logged": True, "username": username})
                     #return HttpResponseRedirect(request.META.get('HTTP_REFERER',''))
                 else:
-                    return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+                    return render(request, "japps/index.html", {"risposta": display_list, "logged": True, "username": username})
             #return render(request, "japps/index.html", {"risposta": "ciao ciao", "logged": False}) ########no
         else:
             return render(request, "japps/index.html", {"risposta": risposta, "logged": False})
@@ -221,10 +229,12 @@ def list_apps(request):
             #print request.META.get('HTTP_REFERER','')
             #print request.build_absolute_uri()
             print display_list
-            return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+            return render(request, "japps/index.html", {"risposta": display_list, "logged": True, "username": username})
 
 def applications(request):
-    return render(request,'japps/static_description.html')
+    global username
+    return render(request,'japps/static_description.html', {"username": username})
 
 def app_description(request, app_name):
-    return render(request, 'japps/%(app_name)s.html' % {"app_name": app_name})
+    global username
+    return render(request, 'japps/%(app_name)s.html' % {"app_name": app_name}, {"username": username})
