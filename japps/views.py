@@ -20,8 +20,6 @@ from django.core.exceptions import ValidationError
 
 from .forms import AppForm
 
-#with open(os.path.join(settings.PROJECT_ROOT, 'token.txt')) as b:
-#    token=next(b).strip()
 token=""
 urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
