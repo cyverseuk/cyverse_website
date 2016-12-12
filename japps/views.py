@@ -205,6 +205,7 @@ def list_apps(request):
         else:
             return render(request, "japps/index.html", {"risposta": risposta, "logged": False})
     else:
+        print "user is authenticated, getting list of apps"
         header={"Authorization": "Bearer "+token}
         r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
         display_list=[]
@@ -219,13 +220,10 @@ def list_apps(request):
             for el in risposta["result"]:
                 display_list.append(el["id"])
             display_list.sort()
-            print request.META.get('HTTP_REFERER','')
-            print request.build_absolute_uri()
+            #print request.META.get('HTTP_REFERER','')
+            #print request.build_absolute_uri()
             print display_list
-            if request.META.get('HTTP_REFERER','')!=request.build_absolute_uri():
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER',''))
-            else:
-                return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
+            return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
 
 def applications(request):
     return render(request,'japps/static_description.html')
