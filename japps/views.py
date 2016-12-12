@@ -26,7 +26,7 @@ urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 CLIENT_SECRET=os.environ.get('CLIENT_SECRET')
 CLIENT_ID=os.environ.get('CLIENT_ID')
-RED_URI="https://cyverseuk.herokuapp.com" #"http://127.0.0.1:8000"
+RED_URI=os.environ.get('RED_URI')
 auth_link="https://agave.iplantc.org/authorize/?client_id="+CLIENT_ID+"&response_type=code&redirect_uri="+RED_URI+"&scope=PRODUCTION"
 
 ################the following are the functions for the views###################
