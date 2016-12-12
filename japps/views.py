@@ -86,7 +86,7 @@ def create_form(request, application):
             json_run["inputs"]={}
             json_run["parameters"]={}
             json_run["archive"]=True
-            token=nice_form.cleaned_data["user_token"]
+            #token=nice_form.cleaned_data["user_token"]
             header={"Authorization": "Bearer "+token}
             for field in request.POST:
                 if field!="csrfmiddlewaretoken" and field!="name_job" and field!="user_token" and field!="email" and not field.startswith("django_upload_method"):
