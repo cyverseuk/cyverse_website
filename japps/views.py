@@ -184,7 +184,7 @@ def list_apps(request):
         code=request.GET.get('code', '')
         #print code
         if code!="":
-            r=requests.post("https://agave.iplantc.org/token", data={"grant_type": "authorization_code", "code": code, "redirect_uri": "http://127.0.0.1:8000", "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})
+            r=requests.post("https://agave.iplantc.org/token", data={"grant_type": "authorization_code", "code": code, "redirect_uri": RED_URI, "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})
             token=r.json()["access_token"]
             #print r.json()
             #print token
