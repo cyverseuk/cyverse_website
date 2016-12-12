@@ -27,12 +27,6 @@ urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 CLIENT_SECRET=os.environ.get('CLIENT_SECRET_LOCAL')
 
-def get_token():
-    fields={}
-    fields["user_token"]=forms.CharField()
-    token_form=type('forms.Form', (forms.BaseForm,), {'base_fields': fields})
-    return token_form
-
 ################the following are the functions for the views###################
 
 def create_form(request, application):
@@ -51,8 +45,8 @@ def create_form(request, application):
         submission/<app_name> directly from his browser history
         """
         risposta="user needs to authenticate"
-        token_form=get_token()
-        return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
+        return render(request, "japps/index.html", {"risposta": risposta, "logged": False})
+        ######fix here
     header={"Authorization": "Bearer "+token}
     r=requests.get("https://agave.iplantc.org/apps/v2/"+application+"?pretty=true", headers=header)
     ex_json=r.json()
@@ -61,7 +55,8 @@ def create_form(request, application):
         expired token during browser session, return user to main page
         """
         risposta=ex_json["fault"]["message"]
-        return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
+        return render(request, "japps/index.html", {"risposta": risposta, "logged": False})
+        #######fix here
     nameapp=ex_json["result"]["name"]
     job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
     if request.method=='POST':
@@ -132,7 +127,8 @@ def create_form(request, application):
                 #the token is not valid or expired during the process
                 risposta=risposta["fault"]["message"]
                 #print "****************here***************"
-                return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
+                return render(request, "japps/index.html", {"risposta": risposta, "logged": False})
+                ##########fix here
             elif risposta["status"]!="success":
                 #the user submitted an invalid string, reload the previous page with a warning
                 risposta=risposta["message"] ####this will be the warning
@@ -141,7 +137,8 @@ def create_form(request, application):
                     return HttpResponseRedirect(request.META.get("HTTP_REFERER",""))
                 else:
                     #i think this is needed for users in incognito mode
-                    return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": get_token()})
+                    return render(request, "japps/index.html", {"risposta": risposta, "logged": False})
+                    #########fix here
             else:
                 print "B"
                 job_id="job-"+str(risposta["result"]["id"])
@@ -189,7 +186,6 @@ def list_apps(request):
             risposta=r.json()
             if risposta.has_key("fault"):
                 message=risposta["fault"]["message"]
-                token_form=get_token()
                 token=""
                 return render(request, "japps/index.html", {"risposta": message, "logged": False})
             else:
@@ -216,9 +212,8 @@ def list_apps(request):
         if risposta.has_key("fault"):
             print "2"
             message=risposta["fault"]["message"]
-            token_form=get_token()
             token=""
-            return render(request, "japps/index.html", {"risposta": message, "logged": False, "token_form":token_form})
+            return render(request, "japps/index.html", {"risposta": message, "logged": False})
         else:
             print "3"
             for el in risposta["result"]:
@@ -231,43 +226,6 @@ def list_apps(request):
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER',''))
             else:
                 return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
-    """if request.method=='POST': ####first submission push
-        print "1"
-        token_form=get_token()(request.POST)
-        if token_form.is_valid():
-            token=request.POST["user_token"]
-            header={"Authorization": "Bearer "+token}
-            r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=header)
-            display_list=[]
-            risposta=r.json()
-            if risposta.has_key("fault"):
-                print "2"
-                message=risposta["fault"]["message"]
-                token_form=get_token()
-                token=""
-                return render(request, "japps/index.html", {"risposta": message, "logged": False, "token_form":token_form})
-            else:
-                print "3"
-                for el in risposta["result"]:
-                    display_list.append(el["id"])
-                display_list.sort()
-                print request.META.get('HTTP_REFERER','')
-                print request.build_absolute_uri()
-                print display_list
-                if request.META.get('HTTP_REFERER','')!=request.build_absolute_uri():
-                    return HttpResponseRedirect(request.META.get('HTTP_REFERER',''))
-                else:
-                    return render(request, "japps/index.html", {"risposta": display_list, "logged": True})
-        else:
-            print "not valid form"
-            risposta="user needs to authenticate"
-            token_form=get_token()
-            return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})
-    else: ####very first opening token=="" and no POST || token non blank and no post?
-        print "4"
-        risposta="user needs to authenticate"
-        token_form=get_token()
-        return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "token_form": token_form})"""
 
 def applications(request):
     return render(request,'japps/static_description.html')
