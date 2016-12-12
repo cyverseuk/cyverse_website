@@ -102,9 +102,9 @@ class AppForm(forms.Form):
         token=kwargs.pop("token")
         job_time=kwargs.pop("job_time")
         super(AppForm, self).__init__(*args, **kwargs)
-        self.fields["user_token"]=forms.CharField(initial=token)
+        #self.fields["user_token"]=forms.CharField(initial=token)
         self.fields["name_job"]=forms.CharField(initial=ex_json["result"]["name"]+"-"+job_time)
-        self.fields["email"]=forms.EmailField(required=False, help_text="insert if you wish yo receive notifications about the job")
+        self.fields["email"]=forms.EmailField(required=False, help_text="insert if you wish to receive notifications about the job")
         input_choices=(("local", "upload from computer"), ("url", "upload from url"))
         x=0 #counter
         for field in ex_json["result"]["inputs"]:
