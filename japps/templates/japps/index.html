@@ -11,6 +11,6 @@
     <p>To see a list of available applications as a non registered user go <a href="/applications">here</a>.</p> <p>To submit a job you must first log in with a <a href="https://user.cyverse.org/">Cyverse</a> account.</p>
     <p></p>
     <p class="warning"><strong>{{ risposta }}</strong></p>
-      <a href="https://agave.iplantc.org/authorize/?client_id=FtYbpdfIqOhQ6TfK6zoUfdO3ZvUa&response_type=code&redirect_uri=http://127.0.0.1:8000&scope=PRODUCTION"><input type="submit" value="Login with Cyverse" /></a>
+      <a href="{{ auth_link }}"><input type="submit" value="Login with Cyverse" /></a>
   {% endif %}
 {% endblock %}
