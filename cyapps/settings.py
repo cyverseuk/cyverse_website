@@ -137,9 +137,11 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ###
 
-EMAIL_BACKEND="django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL="testing@example.com"
-EMAIL_HOST_USER=""
-EMAIL_HOST_PASSWORD=""
+EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST=os.environ.get('CYVERSE_SMPT')
+EMAIL_HOST_USER=os.environ.get('CYVERSE_MAIL')
+EMAIL_HOST_PASSWORD=os.environ.get('CYVERSE_PWD')
+DEFAULT_FROM_EMAIL=EMAIL_HOST_USER
 EMAIL_USE_TLS=False
-EMAIL_PORT=1025
+EMAIL_USE_SSL=True
+EMAIL_PORT=465#1025
