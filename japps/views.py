@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.core.validators import RegexValidator
 from django import forms
 from django.template.loader import get_template
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, BadHeaderError
 from django.contrib import messages
 
 from .forms import ParameterForm, ContactForm
@@ -258,10 +258,10 @@ def contact(request):
             context={ "name": name, "email": email, "subject": subject, "content": content}
             mail_content=template.render(context)
             email_this=EmailMessage(
-                "New contact form submission "+subject, #subject
+                "New contact form submission: "+subject, #subject
                 mail_content, #body
-                "Your website" +'', #from_email
-                ['youremail@gmail.com'], #to
+                #"CyverseUK website" +'', #from_email
+                to=[os.environ.get('CYVERSE_MAIL')], #to
                 headers = {'Reply-To': email } #Reply-To adresses
             )
             try:
