@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY_CYAPPS')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False #deployment
+DEBUG = True #deployment
 
 ALLOWED_HOSTS = ['cyverseuk.herokuapp.com']
 
@@ -53,13 +53,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-X_FRAME_OPTIONS='DENY' #deployment
-CSRF_COOKIE_HTTPONLY=True #deployment
-CSRF_COOKIE_SECURE=True #deployment
-SESSION_COOKIE_SECURE=True #deployment
-SECURE_SSL_REDIRECT=True #deployment
-SECURE_BROWSER_XSS_FILTER=True #deployment
-SECURE_CONTENT_TYPE_NOSNIFF=True #deployment
+#X_FRAME_OPTIONS='DENY' #deployment
+#CSRF_COOKIE_HTTPONLY=True #deployment
+#CSRF_COOKIE_SECURE=True #deployment
+#SESSION_COOKIE_SECURE=True #deployment
+#SECURE_SSL_REDIRECT=True #deployment
+#SECURE_BROWSER_XSS_FILTER=True #deployment
+#SECURE_CONTENT_TYPE_NOSNIFF=True #deployment
 
 ROOT_URLCONF = 'cyapps.urls'
 
@@ -136,3 +136,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ###
+
+EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST=os.environ.get('CYVERSE_SMPT')
+EMAIL_HOST_USER=os.environ.get('CYVERSE_MAIL')
+EMAIL_HOST_PASSWORD=os.environ.get('CYVERSE_PWD')
+DEFAULT_FROM_EMAIL=EMAIL_HOST_USER
+EMAIL_USE_TLS=False
+EMAIL_USE_SSL=True
+EMAIL_PORT=465#1025

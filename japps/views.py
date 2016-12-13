@@ -15,10 +15,13 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.validators import RegexValidator, URLValidator
 from django import forms
-from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.template.loader import get_template
+from django.core.mail import EmailMessage, BadHeaderError
+from django.contrib import messages
 
-from .forms import AppForm
+from .forms import AppForm, ContactForm
+
 
 token=""
 username=""
@@ -235,6 +238,38 @@ def list_apps(request):
             #print request.build_absolute_uri()
             print display_list
             return render(request, "japps/index.html", {"risposta": display_list, "logged": True, "username": username})
+
+def contact(request):
+    contact_form=ContactForm
+    if request.method=='POST':
+        form=forms.Form(request.POST)
+        if form.is_valid():
+            """
+            if the form is valid the user is addressed to the
+            following page.
+            """
+            name=request.POST.get("name", "")
+            email=request.POST.get("email", "")
+            subject=request.POST.get("subject", "")
+            content=request.POST.get("message","")
+            template=get_template('japps/contact_template.txt')
+            context={ "name": name, "email": email, "subject": subject, "content": content}
+            mail_content=template.render(context)
+            email_this=EmailMessage(
+                "New contact form submission: "+subject, #subject
+                mail_content, #body
+                #"CyverseUK website" +'', #from_email
+                to=[os.environ.get('CYVERSE_MAIL')], #to
+                headers = {'Reply-To': email } #Reply-To adresses
+            )
+            try:
+                email_this.send(fail_silently=False)
+                messages.success(request, 'Your request has been submitted.')
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return render(request, "japps/contact.html", {"form": contact_form})
+    else:
+        return render(request, "japps/contact.html", {"form": contact_form})            
 
 def applications(request):
     global username
