@@ -2,23 +2,15 @@
 {% block body %}
   <h1>CyVerseUK Apps</h1>
   {% if logged %}
-    <ul>
+    <ul class="main_list">
       {% for el in risposta %}
         <li><a href="{% url 'japps:submission' application=el %}">{{ el|slice:":-2" }}</a></li>
       {% endfor %}
     </ul>
   {% else %}
-    <p>To authenticate you will need be a registered <a href="https://user.cyverse.org/">Cyverse</a> user and to get a token.<br>
-      Install the following CLI and follow the instruction in the documentation to retrieve a valid token for your user:<br>
-      <a href="https://github.com/iPlantCollaborativeOpenSource/cyverse-sdk">https://github.com/iPlantCollaborativeOpenSource/cyverse-sdk</a></p>
+    <p>To see a list of available applications as a non registered user go <a href="/applications">here</a>.</p> <p>To submit a job you must first log in with a <a href="https://user.cyverse.org/">Cyverse</a> account.</p>
     <p></p>
     <p class="warning"><strong>{{ risposta }}</strong></p>
-    <form action="/japps/" method="post" data-parsley-validate>
-      {% csrf_token %}
-      <table>
-        {{ token_form.as_table }}
-      </table>
-      <input type="submit" value="Submit" />
-    </form>
+      <a href="{{ auth_link }}"><input type="submit" value="Login with Cyverse" /></a>
   {% endif %}
 {% endblock %}

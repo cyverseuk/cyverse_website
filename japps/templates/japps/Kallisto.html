@@ -1,0 +1,14 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/kallisto-300x245.jpg' %}" alt="[IMAGE: Kallisto logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>Kallisto</strong> is a program for quantifying abundances of transcripts from RNASeq data, or more generally of target sequences using high-throughput sequencing reads. It is based on the idea of pseudoalignment for rapidly determining the compatibility of reads with targets, without the need for alignment.</p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="https://pachterlab.github.io/kallisto/">Kallisto website</a> for details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Nicolas L Bray, Harold Pimentel, Páll Melsted and Lior Pachter, Near-optimal probabilistic RNA-seq quantification, Nature Biotechnology 34, 525–527 (2016), <a href="http://www.nature.com/nbt/journal/v34/n5/full/nbt.3519.html">doi:10.1038/nbt.3519</a></li>
+{% endblock %}

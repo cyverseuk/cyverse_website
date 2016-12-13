@@ -1,0 +1,15 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/polymarker-300x74.png' %}" alt="[IMAGE: Polymarker logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>PolyMarker</strong> is an automated bioinformatics pipeline for SNP assay development which increases the probability of generating homoeologue-specific assays for polyploid wheat. PolyMarker generates a multiple alignment between the target SNP sequence and the IWGSC chromosome survey sequences (IWGSC, 2014 ) for each of the three wheat genomes. It then generates a mask with informative positions which are highlighted with respect to the target genome.<br/><br/>We have designed primers for the iSelect 90K chip and the Axiom 820k chip.</p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://polymarker.tgac.ac.uk/">http://polymarker.tgac.ac.uk/</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Ramirez-Gonzalez R.H., Segovia V., Bird N., Fenwick P., Holdgate S., Berry S., Jack P., Caccamo M. and Uauy C. (2014) RNA-Seq bulked segregant analysis enables the identification of high-resolution genetic markers for breeding in hexaploid wheat. Plant Biotechnol. J., <a href="http://onlinelibrary.wiley.com/doi/10.1111/pbi.12281/full">doi: 10.1111/pbi.12281</a></li>
+  <li>Ramirez-Gonzalez, R.H., Uauy, C. and Caccamo, M. (2015) PolyMarker: A fast polyploid primer design pipeline. Bioinformatics. In press. <a href="http://bioinformatics.oxfordjournals.org/content/early/2015/03/10/bioinformatics.btv069">doi:10.1093/bioinformatics/btv069</a></li>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "japps/base.html" %}
+{% load static %}
+{% block more_styles %}
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+{% endblock %}
+{% block body %}
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-xs-12 col-md-10 col-md-offset-1">
+        <div class="col-xs-12 col-sm-4">
+          <a href="{% url 'japps:app_description' app_name='GWasser' %}"><img class="des_logo" src="{% static 'japps/images/GWASSER_LOGO.png' %}" alt="[IMAGE: GWasser logo]"/></a>
+          <p></p>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+          <a href="{% url 'japps:app_description' app_name='Kallisto' %}"><img class="des_logo" src="{% static 'japps/images/kallisto-300x245.jpg' %}" alt="[IMAGE: Kallisto main image]"/></a>
+          <p></p>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+          <a href="{% url 'japps:app_description' app_name='Mikado' %}"><img class="des_logo" src="{% static 'japps/images/mikado-logo.png' %}" alt="[IMAGE: Mikado logo]"/></a>
+          <p></p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Coming soon</h3>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-12">
+        <div class="col-xs-12 col-sm-2">
+          <a href="{% url 'japps:app_description' app_name='Polymarker' %}"><img class="des_logo" src="{% static 'japps/images/polymarker-300x74.png' %}" alt="[IMAGE: Polymarker logo]" /></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}

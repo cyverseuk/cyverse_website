@@ -1,14 +1,28 @@
 {% extends "japps/base.html" %}
+{% load static %}
+{% block more_styles %}
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'japps/upload_button.js' %}"></script>
+{% endblock %}
 {% block body %}
   <h2>{{ title }}</h2>
 
   <p>{{ description }}</p>
 
-  <form action="/japps/job_submitted/" method="post" enctype="multipart/form-data" data-parsley-validate>
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li{% if message.tags %} class="messages {{ message.tags }}"{% endif %}><strong>{{ message.tags|capfirst }}</strong> {{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form action="" method="POST" enctype="multipart/form-data" data-parsley-validate>
     {% csrf_token %}
     <table>
       {{ nice_form.as_table }}
     </table>
     <input type="submit" value="Submit" style="margin: 0.2em; padding: 0.2em"/>
   </form>
+  <p>Job submission may take a while, please do not re-submit.</p>
 {% endblock %}
