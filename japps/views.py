@@ -286,3 +286,8 @@ def logout(request):
     username=""
     token=""
     return redirect('japps:index')
+
+def archive(request):
+    global username
+    global token
+    return render(request, 'japps/archive.html', {"username": username})

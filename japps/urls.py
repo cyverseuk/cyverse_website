@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^applications/$', views.applications, name='applications'),
     url(r'^applications/(?P<app_name>[\.\w-]+)$', views.app_description, name='app_description'),
     url(r'^logout/$', views.logout, name='logout'),
+    url(r'^archive/$', views.archive, name='archive'),
 ]
