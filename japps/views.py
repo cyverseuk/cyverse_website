@@ -88,6 +88,7 @@ def create_form(request, application):
             json_run["inputs"]={}
             json_run["parameters"]={}
             json_run["archive"]=True
+            json_run["archiveSystem"]="cyverseUK-Storage2"
             #token=nice_form.cleaned_data["user_token"]
             header={"Authorization": "Bearer "+token}
             for field in request.POST:
@@ -290,4 +291,14 @@ def logout(request):
 def archive(request):
     global username
     global token
-    return render(request, 'japps/archive.html', {"username": username})
+    header={"Authorization": "Bearer "+token}
+    r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/?pretty=true", headers=header)
+    r=r.json()
+    dir_list=[]
+    if r.get("result")!=None:
+        for el in r["result"]:
+            if el["name"][0]!=".":
+                dir_list.append(el["name"])
+        return render(request, 'japps/archive.html', {"username": username, "dir_list": dir_list })
+    else:
+        return redirect('japps:index') ####change this to get the error as a message
