@@ -243,3 +243,10 @@ def applications(request):
 def app_description(request, app_name):
     global username
     return render(request, 'japps/%(app_name)s.html' % {"app_name": app_name}, {"username": username})
+
+def logout(request):
+    global username
+    global token
+    username=""
+    token=""
+    return redirect('japps:index')
