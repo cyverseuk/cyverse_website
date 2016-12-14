@@ -13,9 +13,9 @@ class ParameterForm(forms.Form):
         super(ParameterForm,self).__init__(*args,**kwargs)
 
 class ContactForm(forms.Form):
-    name=forms.CharField()
+    name=forms.CharField(max_length=100)
     email=forms.EmailField()
-    subject=forms.CharField()
+    subject=forms.CharField(max_length=100)
     message=forms.CharField(widget=forms.Textarea)
 
 class AppForm(forms.Form):
