@@ -47,6 +47,14 @@
   background-color: #f1f1f1 !important;
   text-shadow: none;
 }
+.subfolder {
+  color: #315683 !important;
+  text-decoration: none;
+  font-size: 16px;
+}
+.subfolder:hover {
+  text-decoration: underline;
+}
 .dropdown {
   display: inline;
   float: right;

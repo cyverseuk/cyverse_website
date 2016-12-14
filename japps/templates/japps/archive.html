@@ -1,9 +1,12 @@
 {% extends "japps/base.html" %}
 {% block body %}
   <h1>{{ username|capfirst }}'s Archive</h1>
-  <ul>
-    {% for file in dir_list %}
-      <li>{{ file }}</li>
+  <ul class="archive">
+    {% for folder in subdir_list %}
+      <li class="subfolder">{{ folder }}</li>
+    {% endfor %}
+    {% for file in file_list %}
+      <li class="file">{{ file }}</li>
     {% endfor %}
   </ul>
 {% endblock %}

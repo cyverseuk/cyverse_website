@@ -294,11 +294,15 @@ def archive(request):
     header={"Authorization": "Bearer "+token}
     r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/?pretty=true", headers=header)
     r=r.json()
-    dir_list=[]
+    subdir_list=[]
+    file_list=[]
     if r.get("result")!=None:
         for el in r["result"]:
             if el["name"][0]!=".":
-                dir_list.append(el["name"])
-        return render(request, 'japps/archive.html', {"username": username, "dir_list": dir_list })
+                if el["type"]=="dir":
+                    subdir_list.append(el["name"])
+                elif el["type"]=="file":
+                    file_list.append(el["name"])
+        return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list })
     else:
         return redirect('japps:index') ####change this to get the error as a message
