@@ -240,6 +240,7 @@ def list_apps(request):
             return render(request, "japps/index.html", {"risposta": display_list, "logged": True, "username": username})
 
 def contact(request):
+    global username
     contact_form=ContactForm
     if request.method=='POST':
         form=forms.Form(request.POST)
@@ -267,9 +268,9 @@ def contact(request):
                 messages.success(request, 'Your request has been submitted.')
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
-            return render(request, "japps/contact.html", {"form": contact_form})
+            return render(request, "japps/contact.html", {"form": contact_form, "username": username})
     else:
-        return render(request, "japps/contact.html", {"form": contact_form})            
+        return render(request, "japps/contact.html", {"form": contact_form, "username": username})
 
 def applications(request):
     global username
