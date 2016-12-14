@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'japps/fonts.css' %}" media="screen">
     <link rel="stylesheet" type="text/css" href="{% static 'japps/sass_extension.css' %}" media="screen">
     <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'japps/dropprofile.js' %}"></script>
     {% block more_styles %}
     {% endblock %}
     <link rel="icon" href="{% static 'japps/images/cyverse_small.png' %}">
@@ -28,13 +29,12 @@
       <li><a href="{% url 'japps:applications' %}">Available Apps</a></li>
       <li><a href="">Contact us</a></li>
       {% if username %}
-      <div class="dropdown">
-        <li>Hello, <button class="dropbtn">{{ username }}</button></li>
-          <div id="prof_dropdown" class="dropdown-content">
-            <a href="">Archive</a>
-            <a href="">Log out</a>
-          </div>
-      </div>
+        <li><div class="dropdown">Hello, <span class="dropbtn">{{ username }}</span>
+          <ul id="prof_dropdown" class="dropdown-content" hidden>
+              <li><a href="">Archive</a></li>
+              <li><a href="">Log out</a></li>
+          </ul>
+        </div></li>
       {% endif %}
     </ul>
   </header>
