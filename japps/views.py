@@ -25,7 +25,6 @@ from .forms import AppForm, ContactForm
 
 token=""
 username=""
-path=""
 urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 CLIENT_SECRET=os.environ.get('CLIENT_SECRET')
@@ -292,7 +291,6 @@ def logout(request):
 def archive(request):
     global username
     global token
-    global path
     header={"Authorization": "Bearer "+token}
     path=request.GET.get('path', '')+"/"
     print path
