@@ -291,9 +291,14 @@ def logout(request):
 def archive(request):
     global username
     global token
+    if username=="":
+        return redirect('japps:index')
     header={"Authorization": "Bearer "+token}
     path=request.GET.get('path', '')+"/"
     print path
+    diclinks={}
+    for n,key in enumerate(path.strip('/').split('/')):
+        diclinks[key]=('/').join(path.strip('/').split('/')[:n+1])
     r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+path+"?pretty=true", headers=header)
     r=r.json()
     subdir_list=[]
@@ -305,8 +310,7 @@ def archive(request):
                     subdir_list.append(el["name"])
                 elif el["type"]=="file":
                     file_list.append(el["name"])
-        return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list, "path": path })
+        return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list, "path": path, "diclinks": diclinks })
     else:
-        print "something didn't work out"
-        path=""
-        return redirect('japps:index') ####change this to get the error as a message
+        messages.error(request, "Oops, something didn't work out!")
+        return render(request, 'japps/archive.html', {"username": username})

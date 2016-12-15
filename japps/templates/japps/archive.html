@@ -1,12 +1,24 @@
 {% extends "japps/base.html" %}
 {% block body %}
-  <h1>{{ username|capfirst }}'s Archive</h1>
-  <ul class="archive">
-    {% for folder in subdir_list %}
-      <li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ path }}{{ folder }}">{{ folder }}</a></li>
-    {% endfor %}
-    {% for file in file_list %}
-      <li class="file">{{ file }}</li>
-    {% endfor %}
-  </ul>
+  {% if messagse %}
+    <ul>
+      {% for message in messages %}
+        <li{% if message.tags %} class="messages {{ message.tags }}"{% endif %}><strong>{{ message.tags|capfirst }}</strong> {{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <h1><a href="{% url 'japps:archive' %}">{{ username|capfirst }}'s Archive</a>
+      {% for key,value in diclinks.items %}
+        /<a href="{% url 'japps:archive' %}?path={{ value }}">{{ key }}</a>
+      {% endfor %}
+    </h1>
+    <ul class="archive">
+      {% for folder in subdir_list %}
+        <li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ path }}{{ folder }}">{{ folder }}</a></li>
+      {% endfor %}
+      {% for file in file_list %}
+        <li class="file">{{ file }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock %}
