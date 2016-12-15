@@ -51,7 +51,7 @@
   font-size: 14px !important;
   font-weight: normal;
 }
-@media (min-width: 768px) .archive td {
+@media (min-width: 500px) .archive td {
   white-space: nowrap;
 }
 .subfolder button {
