@@ -25,6 +25,7 @@ from .forms import AppForm, ContactForm
 
 token=""
 username=""
+path=""
 urllib3.contrib.pyopenssl.inject_into_urllib3()
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 CLIENT_SECRET=os.environ.get('CLIENT_SECRET')
@@ -291,8 +292,14 @@ def logout(request):
 def archive(request):
     global username
     global token
+    global path
     header={"Authorization": "Bearer "+token}
-    r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/?pretty=true", headers=header)
+    if request.GET.get('path', '')!='':
+        path+=request.GET.get('path', '')+"/"
+    else:
+        path=""
+    print path
+    r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+path+"?pretty=true", headers=header)
     r=r.json()
     subdir_list=[]
     file_list=[]
@@ -305,4 +312,6 @@ def archive(request):
                     file_list.append(el["name"])
         return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list })
     else:
+        print "something didn't work out"
+        path=""
         return redirect('japps:index') ####change this to get the error as a message
