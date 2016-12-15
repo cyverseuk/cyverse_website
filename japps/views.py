@@ -294,10 +294,7 @@ def archive(request):
     global token
     global path
     header={"Authorization": "Bearer "+token}
-    if request.GET.get('path', '')!='':
-        path+=request.GET.get('path', '')+"/"
-    else:
-        path=""
+    path=request.GET.get('path', '')+"/"
     print path
     r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+path+"?pretty=true", headers=header)
     r=r.json()
@@ -310,7 +307,7 @@ def archive(request):
                     subdir_list.append(el["name"])
                 elif el["type"]=="file":
                     file_list.append(el["name"])
-        return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list })
+        return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list, "path": path })
     else:
         print "something didn't work out"
         path=""

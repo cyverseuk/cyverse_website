@@ -3,7 +3,7 @@
   <h1>{{ username|capfirst }}'s Archive</h1>
   <ul class="archive">
     {% for folder in subdir_list %}
-      <li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ folder }}">{{ folder }}</a></li>
+      <li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ path }}{{ folder }}">{{ folder }}</a></li>
     {% endfor %}
     {% for file in file_list %}
       <li class="file">{{ file }}</li>
