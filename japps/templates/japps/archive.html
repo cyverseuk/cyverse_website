@@ -9,16 +9,24 @@
   {% else %}
     <h1><a href="{% url 'japps:archive' %}">{{ username|capfirst }}'s Archive</a>
       {% for key,value in diclinks.items %}
-        /<a href="{% url 'japps:archive' %}?path={{ value }}">{{ key }}</a>
+        {% if forloop.last %}
+          /{{ key }}
+        {% else %}
+          /<a href="{% url 'japps:archive' %}?path={{ value }}">{{ key }}</a>
+        {% endif %}
       {% endfor %}
     </h1>
-    <ul class="archive">
+    <table class="archive">
       {% for folder in subdir_list %}
-        <li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ path }}{{ folder }}">{{ folder }}</a></li>
+        <tr>
+          <td><li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ path }}{{ folder }}">{{ folder }}</a></li></td><td><button class="downbtn">Download</button></td>
+        </tr>
       {% endfor %}
       {% for file in file_list %}
-        <li class="file">{{ file }}</li>
+        <tr>
+          <td><li class="file">{{ file }}</li></td><td><button class="downbtn">Download</button></td>
+        </tr>
       {% endfor %}
-    </ul>
+    </table>
   {% endif %}
 {% endblock %}

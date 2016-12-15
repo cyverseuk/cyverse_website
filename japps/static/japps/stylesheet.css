@@ -51,6 +51,9 @@
   font-size: 14px !important;
   font-weight: normal;
 }
+@media (min-width: 768px) .archive td {
+  white-space: nowrap;
+}
 .subfolder button {
   color: #315683 !important;
   text-decoration: none;
@@ -63,6 +66,9 @@
 }
 .subfolder button:hover {
   text-decoration: underline;
+}
+.downbtn {
+  font-size: 14px;
 }
 .dropdown {
   display: inline;
