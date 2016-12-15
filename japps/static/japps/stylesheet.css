@@ -47,6 +47,10 @@
   background-color: #f1f1f1 !important;
   text-shadow: none;
 }
+.archive li {
+  font-size: 14px !important;
+  font-weight: normal;
+}
 .subfolder button {
   color: #315683 !important;
   text-decoration: none;
