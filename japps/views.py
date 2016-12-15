@@ -294,24 +294,30 @@ def archive(request):
     if username=="":
         return redirect('japps:index')
     header={"Authorization": "Bearer "+token}
-    path=request.GET.get('path', '')+"/"
-    print path
-    diclinks=OrderedDict()
-    splitpath=path.strip('/').split('/')
-    for n,key in enumerate(splitpath):
-        diclinks[key]=('/').join(splitpath[:n+1])
-    r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+path+"?pretty=true", headers=header)
-    r=r.json()
-    subdir_list=[]
-    file_list=[]
-    if r.get("result")!=None:
-        for el in r["result"]:
-            if el["name"][0]!=".":
-                if el["type"]=="dir":
-                    subdir_list.append(el["name"])
-                elif el["type"]=="file":
-                    file_list.append(el["name"])
-        return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list, "path": path, "diclinks": diclinks })
+    download=request.GET.get('download','')
+    if download!='':
+        response=HttpResponse(requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+download, headers=header).content, content_type='application/text')
+        response['Content-Disposition']='attachment; filename='+download.split('/')[-1]
+        return response
     else:
-        messages.error(request, "Oops, something didn't work out!")
-        return render(request, 'japps/archive.html', {"username": username})
+        path=request.GET.get('path', '')+"/"
+        print path
+        diclinks=OrderedDict()
+        splitpath=path.strip('/').split('/')
+        for n,key in enumerate(splitpath):
+            diclinks[key]=('/').join(splitpath[:n+1])
+        r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+path+"?pretty=true", headers=header)
+        r=r.json()
+        subdir_list=[]
+        file_list=[]
+        if r.get("result")!=None:
+            for el in r["result"]:
+                if el["name"][0]!=".":
+                    if el["type"]=="dir":
+                        subdir_list.append(el["name"])
+                    elif el["type"]=="file":
+                        file_list.append(el["name"])
+            return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list, "path": path, "diclinks": diclinks })
+        else:
+            messages.error(request, "Oops, something didn't work out!")
+            return render(request, 'japps/archive.html', {"username": username})

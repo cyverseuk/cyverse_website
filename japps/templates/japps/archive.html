@@ -24,7 +24,7 @@
       {% endfor %}
       {% for file in file_list %}
         <tr>
-          <td><li class="file">{{ file }}</li></td><td><button class="downbtn">Download</button></td>
+          <td><li class="file">{{ file }}</li></td><td><a href="{% url 'japps:archive' %}?download={{ path }}{{ file }}"><button class="downbtn">Download</button></a></td>
         </tr>
       {% endfor %}
     </table>
