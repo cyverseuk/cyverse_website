@@ -19,6 +19,7 @@ from django.core.exceptions import ValidationError
 from django.template.loader import get_template
 from django.core.mail import EmailMessage, BadHeaderError
 from django.contrib import messages
+from django.utils.html import escape
 
 from .forms import AppForm, ContactForm
 
@@ -75,7 +76,7 @@ def create_form(request, application):
             """
             if the form is valid the user is addressed to the
             following page.
-            take the compiled form and create a json to upload the files
+            take the compiled form and create a json to uplfrom django.utils.html import escapeoad the files
             to the storage system and submit the job via agave.
             """
             job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
@@ -295,9 +296,13 @@ def archive(request):
         return redirect('japps:index')
     header={"Authorization": "Bearer "+token}
     download=request.GET.get('download','')
+    preview=request.GET.get("preview",'')
     if download!='':
         response=HttpResponse(requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+download, headers=header).content, content_type='application/text')
         response['Content-Disposition']='attachment; filename='+download.split('/')[-1]
+        return response
+    elif preview!='':
+        response=HttpResponse("<pre>"+escape(requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+preview, headers=header).content)+"</pre>")
         return response
     else:
         path=request.GET.get('path', '')+"/"
