@@ -1,4 +1,8 @@
 {% extends "japps/base.html" %}
+{% load static %}
+{% block more_styles %}
+<script type="text/javascript" src="{% static 'japps/filepreview.js' %}"></script>
+{% endblock %}
 {% block body %}
   {% if messagse %}
     <ul>
@@ -24,7 +28,7 @@
       {% endfor %}
       {% for file in file_list %}
         <tr>
-          <td><li class="file">{{ file }}</li></td><td><a href="{% url 'japps:archive' %}?download={{ path }}{{ file }}"><button class="downbtn">Download</button></a></td>
+          <td><li class="file">{{ file }}</li></td><td><a href=""><button class="downbtn preview">Preview</button></a></td><td><a href="{% url 'japps:archive' %}?download={{ path }}{{ file }}"><button class="downbtn">Download</button></a></td>
         </tr>
       {% endfor %}
     </table>
