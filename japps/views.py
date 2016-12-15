@@ -303,9 +303,14 @@ def archive(request):
         path=request.GET.get('path', '')+"/"
         print path
         diclinks=OrderedDict()
-        splitpath=path.strip('/').split('/')
+        if path.strip('/')!='':
+            splitpath=path.strip('/').split('/')
+        else:
+            splitpath=[]
+        print splitpath
         for n,key in enumerate(splitpath):
             diclinks[key]=('/').join(splitpath[:n+1])
+        print diclinks
         r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+path+"?pretty=true", headers=header)
         r=r.json()
         subdir_list=[]
