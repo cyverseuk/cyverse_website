@@ -7,7 +7,11 @@
       {% endfor %}
     </ul>
   {% else %}
-    <h1><a href="{% url 'japps:archive' %}">{{ username|capfirst }}'s Archive</a>
+    {% if diclinks|length > 0 %}
+      <h1><a href="{% url 'japps:archive' %}">{{ username|capfirst }}'s Archive</a>
+    {% else %}
+      <h1>{{ username|capfirst }}'s Archive
+    {% endif %}
       {% for key,value in diclinks.items %}
         {% if forloop.last %}
           /{{ key }}
