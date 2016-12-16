@@ -320,6 +320,7 @@ def archive(request):
         r=r.json()
         subdir_list=[]
         file_list=[]
+        print r
         if r.get("result")!=None:
             for el in r["result"]:
                 if el["name"][0]!=".":
@@ -330,4 +331,5 @@ def archive(request):
             return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list, "path": path, "diclinks": diclinks })
         else:
             messages.error(request, "Oops, something didn't work out!")
+            messages.error(request, r.get("message"))
             return render(request, 'japps/archive.html', {"username": username})
