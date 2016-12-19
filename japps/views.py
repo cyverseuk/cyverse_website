@@ -5,6 +5,8 @@ import requests
 import urllib3.contrib.pyopenssl
 import certifi
 import urllib3
+import magic
+import base64
 
 from django import forms
 from django.views import generic
@@ -302,8 +304,20 @@ def archive(request):
         response['Content-Disposition']='attachment; filename='+download.split('/')[-1]
         return response
     elif preview!='':
-        response=HttpResponse("<pre>"+escape(requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+preview, headers=header).content)+"</pre>")
-        return response
+        data=requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+preview, headers=header)
+        content_type=magic.from_buffer(data.content, mime=True)
+        print content_type
+        if content_type=="text/plain":
+            response=HttpResponse("<pre>"+escape(data.content)+"</pre>")
+            return response
+        elif content_type in ["image/png", "image/jpeg", "image/x-portable-bitmap", "image/x-xbitmap"]:
+            image=data.content
+            b64_img=base64.b64encode(image)
+            response=HttpResponse('<img src="data:'+content_type+';base64,'+b64_img+'">')
+            return response
+        else:
+            response="File preview for "+content_type+" files is not yet supported."
+            return response
     else:
         path=request.GET.get('path', '')+"/"
         print path
