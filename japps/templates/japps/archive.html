@@ -23,7 +23,7 @@
     <table class="archive">
       {% for folder in subdir_list %}
         <tr>
-          <td><li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ path }}{{ folder }}">{{ folder }}</a></li></td><td><button class="downbtn">Download</button></td>
+          <td><li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ path }}{{ folder }}">{{ folder }}</a></li></td>
         </tr>
       {% endfor %}
       {% for file in file_list %}
