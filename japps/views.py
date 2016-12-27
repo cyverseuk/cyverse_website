@@ -5,6 +5,8 @@ import requests
 import urllib3.contrib.pyopenssl
 import certifi
 import urllib3
+import magic
+import base64
 
 from django import forms
 from django.views import generic
@@ -19,6 +21,7 @@ from django.core.exceptions import ValidationError
 from django.template.loader import get_template
 from django.core.mail import EmailMessage, BadHeaderError
 from django.contrib import messages
+from django.utils.html import escape
 
 from .forms import AppForm, ContactForm
 
@@ -75,7 +78,7 @@ def create_form(request, application):
             """
             if the form is valid the user is addressed to the
             following page.
-            take the compiled form and create a json to upload the files
+            take the compiled form and create a json to uplfrom django.utils.html import escapeoad the files
             to the storage system and submit the job via agave.
             """
             job_time=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
@@ -88,6 +91,7 @@ def create_form(request, application):
             json_run["inputs"]={}
             json_run["parameters"]={}
             json_run["archive"]=True
+            json_run["archiveSystem"]="cyverseUK-Storage2"
             #token=nice_form.cleaned_data["user_token"]
             header={"Authorization": "Bearer "+token}
             for field in request.POST:
@@ -286,3 +290,60 @@ def logout(request):
     username=""
     token=""
     return redirect('japps:index')
+
+def archive(request):
+    global username
+    global token
+    if username=="":
+        return redirect('japps:index')
+    header={"Authorization": "Bearer "+token}
+    download=request.GET.get('download','')
+    preview=request.GET.get("preview",'')
+    if download!='':
+        response=HttpResponse(requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+download, headers=header).content, content_type='application/text')
+        response['Content-Disposition']='attachment; filename='+download.split('/')[-1]
+        return response
+    elif preview!='':
+        data=requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+preview, headers=header)
+        content_type=magic.from_buffer(data.content, mime=True)
+        print content_type
+        if content_type=="text/plain":
+            response=HttpResponse("<pre>"+escape(data.content)+"</pre>")
+            return response
+        elif content_type in ["image/png", "image/jpeg", "image/x-portable-bitmap", "image/x-xbitmap"]:
+            image=data.content
+            b64_img=base64.b64encode(image)
+            response=HttpResponse('<img src="data:'+content_type+';base64,'+b64_img+'">')
+            return response
+        else:
+            response="File preview for "+content_type+" files is not yet supported."
+            return response
+    else:
+        path=request.GET.get('path', '')+"/"
+        print path
+        diclinks=OrderedDict()
+        if path.strip('/')!='':
+            splitpath=path.strip('/').split('/')
+        else:
+            splitpath=[]
+        print splitpath
+        for n,key in enumerate(splitpath):
+            diclinks[key]=('/').join(splitpath[:n+1])
+        print diclinks
+        r=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+path+"?pretty=true", headers=header)
+        r=r.json()
+        subdir_list=[]
+        file_list=[]
+        print r
+        if r.get("result")!=None:
+            for el in r["result"]:
+                if el["name"][0]!=".":
+                    if el["type"]=="dir":
+                        subdir_list.append(el["name"])
+                    elif el["type"]=="file":
+                        file_list.append(el["name"])
+            return render(request, 'japps/archive.html', {"username": username, "subdir_list": subdir_list, "file_list": file_list, "path": path, "diclinks": diclinks })
+        else:
+            messages.error(request, "Oops, something didn't work out!")
+            messages.error(request, r.get("message"))
+            return render(request, 'japps/archive.html', {"username": username})

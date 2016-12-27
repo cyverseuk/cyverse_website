@@ -1,0 +1,36 @@
+{% extends "japps/base.html" %}
+{% block body %}
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li{% if message.tags %} class="messages {{ message.tags }}"{% endif %}><strong>{{ message.tags|capfirst }}</strong> {{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    {% if diclinks|length > 0 %}
+      <h1><a href="{% url 'japps:archive' %}">{{ username|capfirst }}'s Archive</a>
+    {% else %}
+      <h1>{{ username|capfirst }}'s Archive
+    {% endif %}
+      {% for key,value in diclinks.items %}
+        {% if forloop.last %}
+          /{{ key }}
+        {% else %}
+          /<a href="{% url 'japps:archive' %}?path={{ value }}">{{ key }}</a>
+        {% endif %}
+      {% endfor %}
+    </h1>
+    <table class="archive">
+      {% for folder in subdir_list %}
+        <tr>
+          <td><li class="subfolder"><a href="{% url 'japps:archive' %}?path={{ path }}{{ folder }}">{{ folder }}</a></li></td>
+        </tr>
+      {% endfor %}
+      {% for file in file_list %}
+        <tr>
+          <td><li class="file">{{ file }}</li></td><td><a href="{% url 'japps:archive' %}?preview={{ path }}{{ file }}" target="_blank"><button class="downbtn preview">Preview</button></a></td><td><a href="{% url 'japps:archive' %}?download={{ path }}{{ file }}"><button class="downbtn">Download</button></a></td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+{% endblock %}

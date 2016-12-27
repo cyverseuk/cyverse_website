@@ -31,7 +31,7 @@
       {% if username %}
         <li><div class="dropdown">Hello, <span class="dropbtn">{{ username }}</span>
           <ul id="prof_dropdown" class="dropdown-content" hidden>
-              <li><a href="">Archive</a></li>
+              <li><a href="{% url 'japps:archive' %}">Archive</a></li>
               <li><a href="{% url 'japps:logout' %}">Log out</a></li>
           </ul>
         </div></li>

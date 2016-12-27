@@ -47,6 +47,29 @@
   background-color: #f1f1f1 !important;
   text-shadow: none;
 }
+.archive li {
+  font-size: 14px !important;
+  font-weight: normal;
+}
+@media (min-width: 500px) .archive td {
+  white-space: nowrap;
+}
+.subfolder button {
+  color: #315683 !important;
+  text-decoration: none;
+  font-size: 16px;
+  background:none!important;
+  border:none !important;
+  padding:0!important;
+  font: inherit;
+  cursor: pointer;
+}
+.subfolder button:hover {
+  text-decoration: underline;
+}
+.downbtn {
+  font-size: 14px;
+}
 .dropdown {
   display: inline;
   float: right;
@@ -84,6 +107,9 @@
 }
 .des_logo {
   width: 90%;
+}
+.menu li .dropbtn {
+  cursor:pointer;
 }
 .menu li .dropbtn:hover {
   text-shadow: 1px 1px 6px #315683;
