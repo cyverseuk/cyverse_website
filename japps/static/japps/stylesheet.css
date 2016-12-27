@@ -108,6 +108,9 @@
 .des_logo {
   width: 90%;
 }
+.menu li .dropbtn {
+  cursor:pointer;
+}
 .menu li .dropbtn:hover {
   text-shadow: 1px 1px 6px #315683;
 }
