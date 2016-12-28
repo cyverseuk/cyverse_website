@@ -156,6 +156,9 @@
     text-align: center;
     border-bottom: 1px solid #DEE0DF;
   }
+  .menu li:hover {
+    background-color: rgba(222,224,223,0.5);
+  }
   .menu li .dropdown {
     display: block;
     height: auto;
