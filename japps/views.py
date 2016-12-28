@@ -289,7 +289,12 @@ def logout(request):
     global token
     username=""
     token=""
-    return redirect('japps:index')
+    print request.META.get("HTTP_REFERER", "")
+    print request.META.get("HTTP_REFERER", "").split("?")[0]
+    if request.META.get("HTTP_REFERER","")!="":
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER","").split("?")[0])
+    else:
+        return redirect('japps:index')
 
 def archive(request):
     global username
