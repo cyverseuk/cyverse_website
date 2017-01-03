@@ -312,7 +312,7 @@ def archive(request):
         data=requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/archive/jobs/"+preview, headers=header)
         content_type=magic.from_buffer(data.content, mime=True)
         print content_type
-        if content_type=="text/plain":
+        if content_type=="text/plain" or content_type=="text/x-shellscript":
             response=HttpResponse("<pre>"+escape(data.content)+"</pre>")
             return response
         elif content_type in ["image/png", "image/jpeg", "image/x-portable-bitmap", "image/x-xbitmap"]:
@@ -321,8 +321,8 @@ def archive(request):
             response=HttpResponse('<img src="data:'+content_type+';base64,'+b64_img+'">')
             return response
         else:
-            response="File preview for "+content_type+" files is not yet supported."
-            return response
+            response="File preview for "+str(content_type)+" files is not yet supported."
+            return HttpResponse(response)
     else:
         path=request.GET.get('path', '')+"/"
         print path
