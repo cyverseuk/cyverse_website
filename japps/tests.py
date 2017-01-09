@@ -180,7 +180,7 @@ class SeleniumTestCase(LiveServerTestCase):
         driver.find_element_by_name("approve").click()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name('ul'))
         driver.find_element_by_tag_name("ul")
-        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("li"))
+        WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("ul.main_list"))
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_partial_link_text("GWasser"))
         driver.find_element_by_partial_link_text("GWasser").click()
         WebDriverWait(driver, timeout).until(lambda driver: driver.find_element_by_tag_name("form"))
