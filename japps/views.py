@@ -87,7 +87,8 @@ def create_form(request, application):
             #print "*************************************************************"
             #print nice_form.cleaned_data["name_job"]
             #print bool(nice_form.cleaned_data["name_job"])
-            json_run["appId"]=ex_json['result']["name"]+"-"+ex_json['result']["version"]
+            json_run["appId"]=ex_json['result']["id"]
+            #print json_run
             json_run["inputs"]={}
             json_run["parameters"]={}
             json_run["archive"]=True
