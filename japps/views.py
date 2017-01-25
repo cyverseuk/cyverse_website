@@ -131,6 +131,7 @@ def create_form(request, application):
                 for fie in request.FILES.getlist(field):
                     json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+fie.name)
                     rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
+                    print rr.json()
             json_run=json.dumps(json_run)
             header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
             r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=json_run, headers=header)
