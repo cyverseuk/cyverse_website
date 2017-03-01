@@ -1,0 +1,14 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/Thomas_Bayes.gif' %}" alt="[IMAGE: MrBayes picture]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>MrBayes</strong>  is a program for Bayesian inference and model choice across a wide range of phylogenetic and evolutionary models. MrBayes uses Markov chain Monte Carlo (MCMC) methods to estimate the posterior distribution of model parameters.</p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://mrbayes.sourceforge.net/">official website</a> for details and manual.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Fredrik Ronquist, Maxim Teslenko, Paul van der Mark, Daniel L. Ayres, Aaron Darling, Sebastian Höhna, Bret Larget, Liang Liu, Marc A. Suchard, John P. Huelsenbeck; MrBayes 3.2: Efficient Bayesian Phylogenetic Inference and Model Choice Across a Large Model Space. Syst Biol 2012; 61 (3): 539-542. <a href="https://doi.org/10.1093/sysbio/sys029">doi: 10.1093/sysbio/sys029</a></li>
+{% endblock %}
