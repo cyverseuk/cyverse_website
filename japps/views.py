@@ -7,6 +7,7 @@ import certifi
 import urllib3
 import magic
 import base64
+import string
 
 from django import forms
 from django.views import generic
@@ -211,7 +212,7 @@ def list_apps(request):
             else:
                 for el in risposta["result"]:
                     display_list.append(el["id"])
-                display_list.sort()
+                display_list.sort(key=string.lower)
                 print request.META.get('HTTP_REFERER','')
                 print request.build_absolute_uri()
                 print display_list
@@ -239,7 +240,7 @@ def list_apps(request):
             print "3"
             for el in risposta["result"]:
                 display_list.append(el["id"])
-            display_list.sort()
+            display_list.sort(key=string.lower)
             #print request.META.get('HTTP_REFERER','')
             #print request.build_absolute_uri()
             print display_list
