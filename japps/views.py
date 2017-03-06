@@ -23,6 +23,7 @@ from django.template.loader import get_template
 from django.core.mail import EmailMessage, BadHeaderError
 from django.contrib import messages
 from django.utils.html import escape
+from smtplib import SMTPAuthenticationError
 
 from .forms import AppForm, ContactForm
 
@@ -277,7 +278,7 @@ def contact(request):
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             except SMTPAuthenticationError:
-                return HttpResponse('Ops! We are having problems, please get in touch throught the Earlahm Institute!')
+                return HttpResponse('Ops! We are having problems, please get in touch throught the Earlham Institute!')
             return render(request, "japps/contact.html", {"form": contact_form, "username": username})
     else:
         return render(request, "japps/contact.html", {"form": contact_form, "username": username})
