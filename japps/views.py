@@ -275,6 +275,8 @@ def contact(request):
                 messages.success(request, 'Your request has been submitted.')
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
+            except SMTPAuthenticationError:
+                return HttpResponse('Ops! We are having problems, please get in touch throught the Earlahm Institute!')
             return render(request, "japps/contact.html", {"form": contact_form, "username": username})
     else:
         return render(request, "japps/contact.html", {"form": contact_form, "username": username})
