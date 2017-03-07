@@ -274,11 +274,11 @@ def contact(request):
             )
             try:
                 email_this.send(fail_silently=False)
-                messages.success(request, 'Your request has been submitted.')
+                messages.success(request, "Your request has been submitted. We'll reply as soon as possible. Need more help?")
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             except SMTPAuthenticationError:
-                return HttpResponse('Ops! We are having problems, please get in touch throught the Earlham Institute!')
+                return HttpResponse('Ops! We are having problems, please get in touch throught the Earlham Institute or our Twitter @cyverseuk!')
             return render(request, "japps/contact.html", {"form": contact_form, "username": username})
     else:
         return render(request, "japps/contact.html", {"form": contact_form, "username": username})
