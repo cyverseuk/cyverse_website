@@ -4,7 +4,7 @@
   {% if logged %}
     <ul class="main_list">
       {% for el in risposta %}
-        <li><a href="{% url 'japps:submission' application=el %}">{{ el|slice:":-2" }}</a></li>
+        <li><a href="{% url 'japps:submission' application=el %}">{{ el|slice:":-2"|capfirst }}</a></li>
       {% endfor %}
     </ul>
   {% else %}
