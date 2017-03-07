@@ -1,0 +1,15 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/raxml.jpg' %}" alt="[IMAGE: RAxML logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p>From the manual:</p>
+  <blockquote><p><strong>RAxML</strong> (Randomized Axelerated Maximum Likelihood) is a program for sequential and parallel Maximum Likelihood based inference of large phylogenetic trees. It can also be used for post-analyses of sets of phylogenetic trees, analyses of alignments and, evolutionary placement of short reads.</br>It has originally been derived from fastDNAml which in turn was derived from Joe Felsentein’s dnaml which is part of the PHYLIP package. </p></blockquote>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://sco.h-its.org/exelixis/resource/download/NewManual.pdf">manual</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li> A. Stamatakis: "RAxML Version 8: A tool for Phylogenetic Analysis and Post-Analysis of Large Phylogenies". In Bioinformatics, 2014, <a href="https://academic.oup.com/bioinformatics/article/30/9/1312/238053/RAxML-version-8-a-tool-for-phylogenetic-analysis">open access</a></li>
+{% endblock %}

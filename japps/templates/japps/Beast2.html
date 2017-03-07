@@ -1,0 +1,24 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/cropped-Beast2-logo.jpg' %}" alt="[IMAGE: Beast2 logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p>From the documentation:</p>
+  <blockquote><p><strong>Beast2</strong> is a cross-platform program for Bayesian phylogenetic analysis of molecular sequences. It estimates rooted, time-measured phylogenies using strict or relaxed molecular clock models. It can be used as a method of reconstructing phylogenies but is also a framework for testing evolutionary hypotheses without conditioning on a single tree topology. BEAST 2 uses Markov chain Monte Carlo (MCMC) to average over tree space, so that each tree is weighted proportional to its posterior probability. BEAST 2 includes a graphical user-interface for setting up standard analyses and a suit of programs for analysing the results.</p></blockquote>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://www.beast2.org/">official website</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Bouckaert, R., Heled, J., Kühnert, D., Vaughan, T., Wu, C-H., Xie, D., Suchard, MA., Rambaut, A., & Drummond, A. J. (2014). BEAST 2: A Software Platform for Bayesian Evolutionary Analysis. PLoS Computational Biology, 10(4), e1003537. doi:10.1371/journal.pcbi.1003537 </li>
+  <li>Drummond AJ, Suchard MA, Xie D & Rambaut A (2012) Bayesian phylogenetics with BEAUti and the BEAST 1.7 Molecular Biology And Evolution 29: 1969-1973</li>
+  <li>Drummond AJ & Rambaut A (2007) “BEAST: Bayesian evolutionary analysis by sampling trees.” BMC Evolutionary Biology 7, 214</li>
+  <li>Lemey P, Rambaut A, Drummond AJ & Suchard MA (2009) PLoS Computational Biology 5, e1000520.</li>
+  <li>Lemey P, Rambaut A, Welch JJ & Suchard MA (2010) Mol Biol Evol 27, 1877-1885.</li>
+  <li>Drummond AJ, Ho SYW, Phillips MJ & Rambaut A (2006) PLoS Biology 4, e88.</li>
+  <li>Drummond AJ & Suchard MA (2010) BMC Biology 8, 114.</li>
+  <li>Drummond AJ, Rambaut A, Shapiro B & Pybus OG (2005) Mol Biol Evol 22, 1185-1192.</li>
+  <li>Minin VN, Bloomquist EW & Suchard MA (2008) Mol Bio Evol  25, 1459-1471.</li>
+  <li>Drummond AJ, Nicholls GK, Rodrigo AG & Solomon W (2002) Genetics 161, 1307-1320.</li>
+{% endblock %}
