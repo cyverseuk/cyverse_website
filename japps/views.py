@@ -113,9 +113,10 @@ def create_form(request, application):
                                         #create a temporary directory to uploads the file to (if it doesn't exist already) ####move it from here
                                         json_run["inputs"].setdefault(field,[])
                                         niceurl=str(url).split('/')[-1]
-                                        json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+niceurl)
-                                        requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
-                                        requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", data={"urlToIngest": url}, headers=header)
+                                        json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/"+username+"/temp/"+job_time+"/"+niceurl)
+                                        requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"?pretty=true", data={"action":"mkdir","path":"temp"}, headers=header)
+                                        requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
+                                        requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/temp/"+job_time+"/?pretty=true", data={"urlToIngest": url}, headers=header)
                                     except ValidationError, e: ###that's not a valid url
                                         print e
                 elif field=="email":
@@ -127,12 +128,13 @@ def create_form(request, application):
                         json_run["notifications"][0]["url"]=nice_form.cleaned_data.get(field)
             if len(request.FILES)>0:
                 #create a temporary directory to uploads the files to
-                requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
+                requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"?pretty=true", data={"action":"mkdir","path":"temp"}, headers=header)
+                requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/temp/?pretty=true", data={"action":"mkdir","path":job_time}, headers=header)
             for field in request.FILES:
                 json_run["inputs"][field]=[]
                 for fie in request.FILES.getlist(field):
-                    json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/temp/"+job_time+"/"+fie.name)
-                    rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/temp/"+job_time+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
+                    json_run["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/"+username+"/temp/"+job_time+"/"+fie.name)
+                    rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+username+"/temp/"+job_time+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=header)
                     print rr.json()
             json_run=json.dumps(json_run)
             header={"Authorization": "Bearer "+token, 'Content-Type': 'application/json'}
