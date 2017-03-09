@@ -1,5 +1,6 @@
 {% extends "japps/base.html" %}
 {% block body %}
   <h1>Error 404</h1>
-  <p>Page not found.</p>
+  <h3>Sorry, the page you are looking for doesn't exist!</h3>
+  <p>Are you sure the URL is correct? If you found a broken link, please <a href="{% url 'japps:contact' %}">let us know!<a></p>
 {% endblock %}
