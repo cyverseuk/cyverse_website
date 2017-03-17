@@ -269,9 +269,9 @@ def contact(request):
             email_this=EmailMessage(
                 "New contact form submission: "+subject, #subject
                 mail_content, #body
-                email, #from email
+                #email, #from email
                 #"CyverseUK website" +'', #from_email
-                to=[os.environ.get('CYVERSE_MAIL')], #to
+                to=[os.environ.get('ALIAS_MAIL')], #to
                 headers = {'Reply-To': email } #Reply-To adresses
             )
             try:
