@@ -6,7 +6,6 @@ cyapps/MikadoApp.json
 cyapps/PolymarkerApp.json
 cyapps/token.txt
 cyenv/
-db.sqlite3
 .env
 .keyfile
 et 362886c7f3489016d5b2b910287e169197769e47
