@@ -61,15 +61,15 @@ def create_form(request, application):
         ######fix here
     header={"Authorization": "Bearer "+request.session["token"]}
     r=requests.get("https://agave.iplantc.org/apps/v2/"+application+"?pretty=true", headers=header)
-    request.session["ex_json"]=r.json()
-    if request.session["ex_json"].has_key("fault"):
+    ex_json=r.json()
+    if ex_json.has_key("fault"):
         """
         expired token during browser session, return user to main page
         """
-        risposta=request.session["ex_json"]["fault"]["message"]
+        risposta=ex_json["fault"]["message"]
         return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "auth_link": auth_link})
         #######fix here
-    nameapp=request.session["ex_json"]["result"]["name"]
+    nameapp=ex_json["result"]["name"]
     request.session["job_time"]=str(timezone.now().date())+"-"+str(timezone.now().strftime('%H%M%S'))
     if request.method=='POST':
         """
@@ -89,7 +89,7 @@ def create_form(request, application):
             #print "*************************************************************"
             #print nice_form.cleaned_data["name_job"]
             #print bool(nice_form.cleaned_data["name_job"])
-            request.session["json_run"]["appId"]=request.session["ex_json"]['result']["id"]
+            request.session["json_run"]["appId"]=ex_json['result']["id"]
             #print json_run
             request.session["json_run"]["inputs"]={}
             request.session["json_run"]["parameters"]={}
@@ -169,16 +169,14 @@ def create_form(request, application):
         """
         dynamically create a form accordingly to the json file
         """
-        nice_form=AppForm(ex_json=request.session["ex_json"], token=request.session["token"], job_time=request.session["job_time"])
-    return render(request, 'japps/submission.html', { "title": nameapp, "description": request.session["ex_json"]["result"]["longDescription"], "nice_form": nice_form, "username": request.session["username"] } )
+        nice_form=AppForm(ex_json=ex_json, token=request.session["token"], job_time=request.session["job_time"])
+    return render(request, 'japps/submission.html', { "title": nameapp, "description": ex_json["result"]["longDescription"], "nice_form": nice_form, "username": request.session["username"] } )
 
 def submitted(request):
     #request.session["username"]
     try:
       # request.session["job_id"]
-      if request.session.get("job_id", "")=="":
-          request.session["job_id"]=""
-      return render(request, "japps/job_submitted.html", {"job_id": request.session["job_id"], "username": request.session["username"]})
+      return render(request, "japps/job_submitted.html", {"job_id": request.session.get("job_id",""), "username": request.session["username"]})
     except NameError:
       return redirect('japps:index')
 
@@ -296,8 +294,8 @@ def app_description(request, app_name):
 def logout(request):
     #request.session["username"]
     #request.session["token"]
-    del request.session["username"]
-    del request.session["token"]
+    request.session["username"]=""
+    request.session["token"]=""
     print request.META.get("HTTP_REFERER", "")
     print request.META.get("HTTP_REFERER", "").split("?")[0]
     if request.META.get("HTTP_REFERER","")!="":
