@@ -51,7 +51,7 @@ def create_form(request, application):
     #request.session["job_id"]
     #request.session["username"]
     global auth_link
-    if request.session["token"]=="":
+    if request.session.get("token","")=="":
         """
         deal with the posssibility that an user try to access an url in the form
         submission/<app_name> directly from his browser history
@@ -308,7 +308,7 @@ def logout(request):
 def archive(request):
     #request.session["username"]
     #request.session["token"]
-    if request.session["username"]=="":
+    if request.session.get("username","")=="":
         return redirect('japps:index')
     request.session["header"]={"Authorization": "Bearer "+request.session["token"]}
     download=request.GET.get('download','')
