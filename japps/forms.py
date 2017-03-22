@@ -122,7 +122,7 @@ class AppForm(forms.Form):
                 attributes=self.widget_features(field)
                 self.fields[field["id"]]=forms.FileField(widget=forms.ClearableFileInput(attrs=attributes))
                 self.fields[field["id"]+"_url"]=forms.URLField(widget=forms.URLInput(attrs=attributes))
-                self.fields[field["id"]+"_url"].initial="comma separated list"
+                #self.fields[field["id"]+"_url"].initial="comma separated list"
             else:
                 attributes={}
                 if field["value"].get("required")==True:
