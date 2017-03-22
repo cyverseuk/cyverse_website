@@ -170,7 +170,7 @@ def create_form(request, application):
         dynamically create a form accordingly to the json file
         """
         nice_form=AppForm(ex_json=request.session["ex_json"], token=request.session["token"], job_time=request.session["job_time"])
-    return render(request, 'japps/submission.html', { "title": request.session["nameapp"], "description": request.session["ex_json"]["result"]["longDescription"], "nice_form": request.session["nice_form"], "username": request.session["username"] } )
+    return render(request, 'japps/submission.html', { "title": nameapp, "description": request.session["ex_json"]["result"]["longDescription"], "nice_form": nice_form, "username": request.session["username"] } )
 
 def submitted(request):
     #request.session["username"]
@@ -197,17 +197,17 @@ def list_apps(request):
         request.session["code"]=request.GET.get('code', '')
         #print code
         if request.session.get("code","")!="":
-            request.session["r"]=requests.post("https://agave.iplantc.org/token", data={"grant_type": "authorization_code", "code": code, "redirect_uri": RED_URI, "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})
-            request.session["token"]=request.session["r"].json()["access_token"]
+            r=requests.post("https://agave.iplantc.org/token", data={"grant_type": "authorization_code", "code": request.session.get("code",""), "redirect_uri": RED_URI, "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})
+            request.session["token"]=r.json()["access_token"]
             #print r.json()
             #print token
             request.session["header"]={"Authorization": "Bearer "+request.session["token"]}
-            request.session["r"]=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=request.session["header"])
-            request.session["userreq"]=requests.get("https://agave.iplantc.org/profiles/v2/me?pretty=true&naked=true", headers=request.session["header"])
-            request.session["username"]=request.session["userreq"].json()["username"]
+            r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=request.session["header"])
+            userreq=requests.get("https://agave.iplantc.org/profiles/v2/me?pretty=true&naked=true", headers=request.session["header"])
+            request.session["username"]=userreq.json()["username"]
             print request.session["username"]
             display_list=[]
-            request.session["risposta"]=request.session["r"].json()
+            request.session["risposta"]=r.json()
             if request.session["risposta"].has_key("fault"):
                 message=request.session["risposta"]["fault"]["message"]
                 request.session["token"]=""
@@ -231,9 +231,9 @@ def list_apps(request):
     else:
         print "user is authenticated, getting list of apps"
         request.session["header"]={"Authorization": "Bearer "+request.session["token"]}
-        request.session["r"]=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=request.session["header"])
+        r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=request.session["header"])
         display_list=[]
-        request.session["risposta"]=request.session["r"].json()
+        request.session["risposta"]=r.json()
         if request.session["risposta"].has_key("fault"):
             print "2"
             message=request.session["risposta"]["fault"]["message"]
@@ -281,23 +281,23 @@ def contact(request):
                 return HttpResponse('Invalid header found.')
             except SMTPAuthenticationError:
                 return HttpResponse('Ops! We are having problems, please get in touch throught the Earlham Institute or our Twitter @cyverseuk!')
-            return render(request, "japps/contact.html", {"form": contact_form, "username": request.session["username"]})
+            return render(request, "japps/contact.html", {"form": contact_form, "username": request.session.get("username","")})
     else:
-        return render(request, "japps/contact.html", {"form": contact_form, "username": request.session["username"]})
+        return render(request, "japps/contact.html", {"form": contact_form, "username": request.session.get("username","")})
 
 def applications(request):
     #request.session["username"]
-    return render(request,'japps/static_description.html', {"username": request.session["username"]})
+    return render(request,'japps/static_description.html', {"username": request.session.get("username", "")})
 
 def app_description(request, app_name):
     #request.session["username"]
-    return render(request, 'japps/%(app_name)s.html' % {"app_name": app_name}, {"username": request.session["username"]})
+    return render(request, 'japps/%(app_name)s.html' % {"app_name": app_name}, {"username": request.session.get("username","")})
 
 def logout(request):
     #request.session["username"]
     #request.session["token"]
-    request.session["username"]=""
-    request.session["token"]=""
+    del request.session["username"]
+    del request.session["token"]
     print request.META.get("HTTP_REFERER", "")
     print request.META.get("HTTP_REFERER", "").split("?")[0]
     if request.META.get("HTTP_REFERER","")!="":
