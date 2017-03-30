@@ -1,0 +1,14 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/tuxedo.png' %}" alt="[IMAGE: Tuxedo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>Tuxedo suite pipeline</strong> is a workflow useful to analyse RNA-Seq data using Bowtie, TopHat and Cufflinks</p>
+{% endblock %}
+{% block doclink %}
+  <p>See <a href="http://link.springer.com/protocol/10.1007%2F978-1-4939-3167-5_18">"Analysis of RNA-Seq Data Using TopHat and Cufflinks"</a> for details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Sreya Ghosh , Chon-Kit Kenneth Chan, Analysis of RNA-Seq Data Using TopHat and Cufflinks, Plant Bioinformatics Volume 1374 of the series Methods in Molecular Biology pp 339-361
+{% endblock %}
