@@ -7,7 +7,7 @@
 {% block body %}
   <div class="container-fluid">
 
-    <div class="row">
+    <div class="row" style="flex-wrap:wrap">
       <!--<h1>Earlham deveoped applications</h1>-->
       <div class="col-xs-12 col-md-10 col-md-offset-1">
         <div class="col-xs-12 col-sm-4">
@@ -20,6 +20,10 @@
         </div>
         <div class="col-xs-12 col-sm-4">
           <a href="{% url 'japps:app_description' app_name='Portcullis' %}"><img class="des_logo" src="{% static 'japps/images/portcullis_logo.png' %}" alt="[IMAGE: Portcullis logo]"/></a>
+          <p></p>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+          <a href="{% url 'japps:app_description' app_name='Brassica' %}"><img class="des_logo" src="{% static 'japps/images/RetBIPPheno.png' %}" alt="[IMAGE: Brassica logo]" /></a>
           <p></p>
         </div>
       </div>

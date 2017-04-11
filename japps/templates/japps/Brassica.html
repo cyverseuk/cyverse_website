@@ -1,0 +1,17 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/RetBIPPheno.png' %}" alt="[IMAGE: Brassica logo ]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>Retrieve-Brassica-Phenotypes</strong> imports standardised Brassica trait data from the <a href="https://bip.earlham.ac.uk/">Brassica Information Portal</a> (BIP) into CyVerse, so that the user can subsequently integrate this data into genotype-phenotype association analysis worflows.</br>Inputs are the trial name as it is registered in the BIP, as well as the BIP-API-key. You need to have a BIP account to retrieve your API-key. It is free to sign up and you can use your ORCiD for it.
+    <p><em><strong style="background-color:#2ECECE;">Please click renew your BIP-API-key in the BIP website after you downloaded data.</strong></em></p>
+    <p>The main output file will be a .csv-file with accession identifiers, SRA-identifiers and the trait measurements of the trial. Sequence IDs get passed on into a Seq_names.txt file for further queries. It also creates a Sequence_IDs_log.txt, where the user can see whether some accessions did not have any or multiple Sequence IDs.</p>
+  <p>Any feedback, praise or questions? contact us on bip@earlham.ac.uk or tweet to us on <a href="https://twitter.com/BrassicaP">@BrassicaP</a></p>
+{% endblock %}
+{% block doclink %}
+  <p>For more information on the app, please see the <a href="https://github.com/cyverseuk/Retrieve_BIP_Phenotypes">documentation</a>.</p>
+{% endblock %}
+{% block ref_list %}
+  <!--<li></li>-->
+{% endblock %}
