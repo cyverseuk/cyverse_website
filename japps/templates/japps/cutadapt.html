@@ -1,0 +1,17 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/cutadapt.png' %}" alt="[IMAGE: cutadapt logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>Cutadapt</strong> finds and removes adapter sequences, primers, poly-A tails and other types of unwanted sequence from your high-throughput sequencing reads.</p>
+  <p>From the official documentation:</p>
+  <p><blockquote>Cleaning your data in this way is often required: Reads from small-RNA sequencing contain the 3’ sequencing adapter because the read is longer than the molecule that is sequenced. Amplicon reads start with a primer sequence. Poly-A tails are useful for pulling out RNA from your sample, but often you don’t want them to be in your reads. </br>Cutadapt helps with these trimming tasks by finding the adapter or primer sequences in an error-tolerant way. It can also modify and filter reads in various ways. Adapter sequences can contain IUPAC wildcard characters. Also, paired-end reads and even colorspace data is supported. If you want, you can also just demultiplex your input data, without removing adapter sequences at all.</blockquote></p>
+  <p>At the moment CyVerse UK provides the application to trim single end reads.</p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://cutadapt.readthedocs.io/en/stable/index.html">official website</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Marcel Martin. Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet.journal, vol.17, no.1 doi:10.14806/ej.17.1.200</li>
+{% endblock %}

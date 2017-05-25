@@ -1,0 +1,26 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/cufflinks.png' %}" alt="[IMAGE: Cufflinks logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>Cufflinks</strong> is a package for transcriptome assembly and differential expression analysis for RNA-Seq.</p>
+  <p>From the official page:</p>
+  <blockquote>Cufflinks assembles transcripts, estimates their abundances, and tests for differential expression and regulation in RNA-Seq samples. It accepts aligned RNA-Seq reads and assembles the alignments into a parsimonious set of transcripts. Cufflinks then estimates the relative abundances of these transcripts based on how many reads support each one, taking into account biases in library preparation protocols.</br> Cufflinks was originally developed as part of a collaborative effort between the Laboratory for Mathematical and Computational Biology, led by Lior Pachter at UC Berkeley, Steven Salzberg’s computational genomics group at the Institute of Genetic Medicine at Johns Hopkins University, and Barbara Wold’s lab at Caltech. The project is now maintained by Cole Trapnell’s lab at the University of Washington.</p></blockquote>
+  <p>CyVerse UK provides a number of Cufflinks applications:
+    <ul>
+      <li><strong>Cufflinks</strong> to assemble transcriptomes from RNA-Seq data and quantify their expression.</li>
+      <li><strong>Cuffmerge</strong> to merge different assemblies into a master transcriptome.</li>
+      <li><strong>Cuffdiff</strong> to compare expression levels of genes and transcripts in RNA-seq experiments.</li>
+    </ul>
+  </p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://cole-trapnell-lab.github.io/cufflinks/manual/">official website</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Cole Trapnell, Brian A Williams, Geo Pertea, Ali Mortazavi,	Gordon Kwan, Marijke J van Baren,	Steven L Salzberg, Barbara J Wold, Lior Pachter. Transcript assembly and quantification by RNA-Seq reveals unannotated transcripts and isoform switching during cell differentiation. Nature Biotechnology 28, 511–515 (2010) doi:10.1038/nbt.1621 </li>
+  <li>Adam Roberts, Cole Trapnell, Julie Donaghey, John L Rinn and Lior Pachter. Improving RNA-Seq expression estimates by correcting for fragment bias. Genome Biology201112:R22 doi: 10.1186/gb-2011-12-3-r22</li>
+  <li>Adam Roberts, Harold Pimentel, Cole Trapnell, Lior Pachter. Identification of novel transcripts in annotated genomes using RNA-Seq. Bioinformatics (2011) 27 (17): 2325-2329.<a href="https://doi.org/10.1093/bioinformatics/btr355">doi:10.1093/bioinformatics/btr355</a></li>
+  <li>Cole Trapnell,	David G Hendrickson,	Martin Sauvageau,	Loyal Goff,	John L Rinn, Lior Pachter. Differential analysis of gene regulation at transcript resolution with RNA-seq. Nature Biotechnology 31, 46–53 (2013) doi:10.1038/nbt.2450</li>
+{% endblock %}

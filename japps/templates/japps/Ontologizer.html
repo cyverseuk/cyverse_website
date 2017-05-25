@@ -1,0 +1,14 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/ontologizer.png' %}" alt="[IMAGE: ontologizer logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>Ontologizer</strong> is a tool for the statistical analysis and visualization of high-throughput biological data using Gene Ontology.</p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://ontologizer.de/">official website</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Sebastian Bauer, Steffen Grossmann, Martin Vingron, Peter N. Robinson. Ontologizer 2.0—a multifunctional tool for GO term enrichment analysis and data exploration. Bioinformatics (2008) 24 (14): 1650-1651. doi:10.1093/bioinformatics/btn250s</li>
+{% endblock %}

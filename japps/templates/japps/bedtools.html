@@ -1,0 +1,16 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/bedtools.png' %}" alt="[IMAGE: bedtools logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>bedtools</strong> is a powerful toolset for genome arithmetic.</p>
+  <p><blockquote>Collectively, the bedtools utilities are a swiss-army knife of tools for a wide-range of genomics analysis tasks. The most widely-used tools enable genome arithmetic: that is, set theory on the genome. For example, bedtools allows one to intersect, merge, count, complement, and shuffle genomic intervals from multiple files in widely-used genomic file formats such as BAM, BED, GFF/GTF, VCF. While each individual tool is designed to do a relatively simple task (e.g., intersect two interval files), quite sophisticated analyses can be conducted by combining multiple bedtools operations on the UNIX command line.</blockquote></p>
+  <p>At the moment CyVerse UK provides the <a href="http://bedtools.readthedocs.io/en/latest/content/tools/coverage.html">bedcoverage</a> application.</p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://bedtools.readthedocs.io/en/latest/index.html">official website</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Aaron R. Quinlan, Ira M. Hall. BEDTools: a flexible suite of utilities for comparing genomic features. Bioinformatics (2010) 26 (6): 841-842. doi:10.1093/bioinformatics/btq033</li>
+{% endblock %}

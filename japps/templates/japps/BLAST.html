@@ -1,0 +1,50 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/blast.png' %}" alt="[IMAGE: BLAST logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p><strong>BLAST</strong> (<strong>B</strong>asic <strong>L</strong>ocal <strong>A</strong>lignment <strong>S</strong>earch <strong>T</strong>ool) finds regions of similarity between biological sequences. The program compares nucleotide or protein sequences to sequence databases and calculates the statistical significance.</p>
+  <p>CyVerse UK provides the following BLAST applications:
+    <ul>
+      <li><strong>Create BLAST db</strong>, to create a database to use in one of the BLAST comparison tool.</li>
+      <li><strong>BLASTp</strong> for nucleotide sequences comparison.</li>
+      <li><strong>BLATn</strong> for protein sequences comparison.</li>
+    </ul>
+  </p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi">NCBI BLAST page</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li> Altschul, S.F., Gish, W., Miller, W., Myers, E.W. & Lipman, D.J. (1990) "Basic local alignment search tool." J. Mol. Biol. 215:403-410.</li>
+  <li>Gish, W. & States, D.J. (1993) "Identification of protein coding regions by database similarity search." Nature Genet. 3:266-272.</li>
+  <li>Madden, T.L., Tatusov, R.L. & Zhang, J. (1996) "Applications of network BLAST server" Meth. Enzymol. 266:131-141.</li>
+  <li>Altschul, S.F., Madden, T.L., Schäffer, A.A., Zhang, J., Zhang, Z., Miller, W. & Lipman, D.J. (1997) "Gapped BLAST and PSI-BLAST: a new generation of protein database search programs." Nucleic Acids Res. 25:3389-3402.</li>
+  <li>Zhang Z., Schwartz S., Wagner L., & Miller W. (2000), "A greedy algorithm for aligning DNA sequences" J Comput Biol 2000; 7(1-2):203-14.</li>
+  <li>Zhang, J. & Madden, T.L. (1997) "PowerBLAST: A new network BLAST application for interactive or automated sequence analysis and annotation." Genome Res. 7:649-656.</li>
+  <li>Morgulis A., Coulouris G., Raytselis Y., Madden T.L., Agarwala R., & Schäffer A.A. (2008) "Database indexing for production MegaBLAST searches." Bioinformatics 15:1757-1764.</li>
+  <li>Camacho C., Coulouris G., Avagyan V., Ma N., Papadopoulos J., Bealer K., & Madden T.L. (2008) "BLAST+: architecture and applications." BMC Bioinformatics 10:421.</li>
+  <li>Boratyn GM, Schäffer AA, Agarwala R, Altschul SF, Lipman DJ, & Madden T.L. (2012) "Domain enhanced lookup time accelerated BLAST." Biol Direct. 2012 Apr 17;7:12.</li>
+  <li>Altschul, S.F., Boguski, M.S., Gish, W. & Wootton, J.C. (1994) "Issues in searching molecular sequence databases." Nature Genet. 6:119-129.</li>
+  <li>McGinnis S., & Madden T.L. (2004) "BLAST: at the core of a powerful and diverse set of sequence analysis tools." Nucleic Acids Res. 32:W20-W25.</li>
+  <li>Ye J., McGinnis S, & Madden T.L. (2006) "BLAST: improvements for better sequence analysis." Nucleic Acids Res. 34:W6-W9.</li>
+  <li>Johnson M, Zaretskaya I, Raytselis Y, Merezhuk Y, McGinnis S, & Madden T.L. (2008) "NCBI BLAST: a better web interface" Nucleic Acids Res. 36:W5-W9.</li>
+  <li>Boratyn GM, Camacho C, Cooper PS, Coulouris G, Fong A, Ma N, Madden TL, Matten WT, McGinnis SD, Merezhuk Y, Raytselis Y, Sayers EW, Tao T, Ye J, & Zaretskaya I. (2013) "BLAST: a more efficient report with usability improvements." Nucleic Acids Res. 41:W29-W33.</li>
+  <li>Wootton, J.C. & Federhen, S. (1996) "Analysis of compositionally biased regions in sequence databases." Meth. Enzymol. 266:554-571.</li>
+  <li>Wootton, J.C. & Federhen, S. (1993) "Statistics of local complexity in amino acid sequences and sequence databases." Comput. Chem. 17:149-163.</li>
+  <li>Hancock, J.M. & Armstrong, J.S. (1994) "SIMPLE34: an improved and enhanced implementation for VAX and Sun computers of the SIMPLE algorithm for analysis of clustered repetitive motifs in nucleotide sequences." Comput. Appl. Biosci. 10:67-70.</li>
+  <li>Dayhoff, M.O., Schwartz, R.M. & Orcutt, B.C. (1978) "A model of evolutionary change in proteins." In "Atlas of Protein Sequence and Structure, vol. 5, suppl. 3." M.O. Dayhoff (ed.), pp. 345-352, Natl. Biomed. Res. Found., Washington, DC.</li>
+  <li>Schwartz, R.M. & Dayhoff, M.O. (1978) "Matrices for detecting distant relationships." In "Atlas of Protein Sequence and Structure, vol. 5, suppl. 3." M.O. Dayhoff (ed.), pp. 353-358, Natl. Biomed. Res. Found., Washington, DC.</li>
+  <li>Altschul, S.F. (1991) "Amino acid substitution matrices from an information theoretic perspective." J. Mol. Biol. 219:555-565.</li>
+  <li>States, D.J., Gish, W., Altschul, S.F. (1991) "Improved sensitivity of nucleic acid database searches using application-specific scoring matrices." Methods 3:66-70.</li>
+  <li>Henikoff, S. & Henikoff, J.G. (1992) "Amino acid substitution matrices from protein blocks." Proc. Natl. Acad. Sci. USA 89:10915-10919.</li>
+  <li>Altschul, S.F. (1993) "A protein alignment scoring system sensitive at all evolutionary distances." J. Mol. Evol. 36:290-300.</li>
+  <li>Altschul, S.F. & Gish, W. (1996) "Local alignment statistics." Meth. Enzymol. 266:460-480.</li>
+  <li> Karlin, S. & Altschul, S.F. (1990) "Methods for assessing the statistical significance of molecular sequence features by using general scoring schemes." Proc. Natl. Acad. Sci. USA 87:2264-2268.</li>
+  <li>Karlin, S. & Altschul, S.F. (1993) "Applications and statistics for multiple high-scoring segments in molecular sequences." Proc. Natl. Acad. Sci. USA 90:5873-5877.</li>
+  <li>Dembo, A., Karlin, S. & Zeitouni, O. (1994) "Limit distribution of maximal non-aligned two-sequence segmental score." Ann. Prob. 22:2022-2039.</li>
+  <li>Altschul, S.F. (1997) "Evaluating the statistical significance of multiple distinct local alignments." In "Theoretical and Computational Methods in Genome Research." (S. Suhai, ed.), pp. 1-14, Plenum, New York.</li>
+  <li>Schaffer AA, Aravind L, Madden TL, Shavirin S, Spouge JL, Wolf YI, Koonin EV, Altschul SF. (2001) "Improving the accuracy of PSI-BLAST protein database searches with composition-based statistics and other refinements." Nucleic Acids Res. 2001 Jul 15;29(14):2994-3005.</li>
+  <li>Park Y, Sheetlin S, Ma N, Madden TL, & Spouge JL. (2012) "New finite-size correction for local alignment score distributions." BMC Res Notes. 2012 Jun 12;5:286.</li>
+{% endblock %}

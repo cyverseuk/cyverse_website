@@ -1,0 +1,25 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/samtools.png' %}" alt="[IMAGE: SAMtools logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p>From the documentation:</p>
+  <blockquote><p><strong>SAM Tools</strong> provide various utilities for manipulating alignments in the SAM format, including sorting, merging, indexing and generating alignments in a per-position format.</p></blockquote>
+  <p>CyVerse UK provides the following SAMtools applications:
+    <ul>
+      <li>convert SAM to sorted BAM</li>
+      <li>index BAM file</li>
+      <li>index BAM file and get stats</li>
+      <li>sort BAM</li>
+      <li>index FASTA file</li>
+    </ul>
+  </p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="http://samtools.sourceforge.net/">official website</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Li H.*, Handsaker B.*, Wysoker A., Fennell T., Ruan J., Homer N., Marth G., Abecasis G., Durbin R. and 1000 Genome Project Data Processing Subgroup (2009) The Sequence alignment/map (SAM) format and SAMtools. Bioinformatics, 25, 2078-9. [PMID: 19505943] </li>
+  <li>Li H A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data. Bioinformatics. 2011 Nov 1;27(21):2987-93. Epub 2011 Sep 8. [PMID: 21903627]</li>
+{% endblock %}

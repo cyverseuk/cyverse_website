@@ -1,0 +1,22 @@
+{% extends "japps/app_description.html" %}
+{% load static %}
+{% block image %}
+  <img img src="{% static 'japps/images/sickle.png' %}" alt="[IMAGE: Sickle logo]" style="max-width: 100%"/>
+{% endblock %}
+{% block description %}
+  <p>From the GitHub page:</p>
+  <blockquote><p><strong>Sickle</strong> is a tool that uses sliding windows along with quality and length thresholds to determine when quality is sufficiently low to trim the 3'-end of reads and also determines when the quality is sufficiently high enough to trim the 5'-end of reads. It will also discard reads based upon the length threshold.</p></blockquote>
+  <p>CyVerse UK provides two sickle applications:
+    <ul>
+      <li>one to be used for single reads</li>
+      <li>one to be used for paired end reads (both in separate files or in a single interleaved file)</li>
+    </ul>
+  </p>
+{% endblock %}
+{% block doclink %}
+  <p>See the <a href="https://github.com/najoshi/sickle">github project</a> for more details.</p>
+{% endblock %}
+{% block ref_list %}
+  <li>Joshi NA, Fass JN. (2011). Sickle: A sliding-window, adaptive, quality-based trimming tool for FastQ files
+(Version 1.33) [Software].  Available at <a href="https://github.com/najoshi/sickle">https://github.com/najoshi/sickle</a>.</li>
+{% endblock %}
