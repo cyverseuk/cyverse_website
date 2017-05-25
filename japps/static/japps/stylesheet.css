@@ -261,3 +261,8 @@ form table td ul li {
 form table td ul li input {
   display: inline !important;
 }
+.equal {
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+}
