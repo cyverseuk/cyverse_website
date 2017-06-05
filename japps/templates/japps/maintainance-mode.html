@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>CyVerse UK</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"/> -->
+    <meta name="description" content="a web page to submit jobs to the cyverse infrasctructure in the UK"/>
+    <meta name"author" content="Alice Minotto"/>
+    <meta property="og:title" content="CyVerse UK"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content="https://github.com/cyverseuk/cyverse_website/blob/master/japps/static/japps/images/cyverse_small.png?raw=true"/>
+    <meta property="og:description" content="job submission to Earlham Insitute cluster for bioinformatics pipelines"/>
+    <meta property="og:url" content="https://cyverseuk.herokuapp.com/japps"/>
+    <meta name="viewport" content="initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'japps/stylesheet.css' %}" media="screen">
+    <link rel="stylesheet" type="text/css" href="{% static 'japps/fonts.css' %}" media="screen">
+    <link rel="stylesheet" type="text/css" href="{% static 'japps/sass_extension.css' %}" media="screen">
+    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'japps/dropprofile.js' %}"></script>
+    <link rel="icon" href="https://github.com/cyverseuk/cyverse_website/blob/master/japps/static/japps/images/cyverse_small.png?raw=true">
+  </head>
+<body>
+  <header style="display: block">
+    <a href="{% url 'japps:index' %}"><img id="cyverse_logo" src="https://github.com/cyverseuk/cyverse_website/blob/master/japps/static/japps/images/cyverse_rgb.png?raw=true" alt="[IMAGE: CyVerse logo]"/></a>
+    <ul class="menu">
+    <ul class="menu">
+    </ul>
+  </header>
+  <div class="content">
+    <h1>Offline for Maintainance</h1>
+    <h3>This app is undergoing maintenance right now.</h3>
+    <p>Please check back later (or contact us at Earlham Institute or tweet us <a class="twitter-mention-button" href="https://twitter.com/intent/tweet?screen_name=cyverseuk">@cyverseuk</a>!)</p>
+  </div>
+  <footer>
+    <a href="http://earlham.ac.uk/"><img id="earlham_logo" src="https://github.com/cyverseuk/cyverse_website/blob/master/japps/static/japps/images/Earlham_Institute_single_line.png?raw=true" alt="[IMAGE: Earlham Institute]"/></a>
+  </footer>
+</body>
+</html>
