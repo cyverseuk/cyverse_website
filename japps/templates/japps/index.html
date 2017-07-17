@@ -3,8 +3,8 @@
   <h1>CyVerseUK Apps</h1>
   {% if logged %}
     <ul class="main_list">
-      {% for el in risposta %}
-        <li><a href="{% url 'japps:submission' application=el %}">{{ el|slice:":-2"|capfirst }}</a></li>
+      {% for el, link in risposta.items %}
+        <li><a href="{% url 'japps:submission' application=link %}">{{ el }}</a></li>
       {% endfor %}
     </ul>
   {% else %}

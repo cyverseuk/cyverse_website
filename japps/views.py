@@ -198,10 +198,13 @@ def list_apps(request):
             r=requests.post("https://agave.iplantc.org/token", data={"grant_type": "authorization_code", "code": request.session.get("code",""), "redirect_uri": RED_URI, "client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})
             request.session["token"]=r.json()["access_token"]
             #print r.json()
-            #print token
+            #print request.session["token"]
             request.session["header"]={"Authorization": "Bearer "+request.session["token"]}
+            print request.session["header"]
             r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=request.session["header"])
+            #print r.status_code, r.ok, r.text
             userreq=requests.get("https://agave.iplantc.org/profiles/v2/me?pretty=true&naked=true", headers=request.session["header"])
+            print userreq.status_code, userreq.ok, userreq.text
             request.session["username"]=userreq.json()["username"]
             print request.session["username"]
             display_list=[]
@@ -230,7 +233,7 @@ def list_apps(request):
         print "user is authenticated, getting list of apps"
         request.session["header"]={"Authorization": "Bearer "+request.session["token"]}
         r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=request.session["header"])
-        display_list=[]
+        display_list={}
         request.session["risposta"]=r.json()
         if request.session["risposta"].has_key("fault"):
             print "2"
@@ -240,12 +243,17 @@ def list_apps(request):
         else:
             print "3"
             for el in request.session["risposta"]["result"]:
-                display_list.append(el["id"])
-            display_list.sort(key=string.lower)
+                labeltu=el["label"]
+                idtu=el["id"]
+                if labeltu is not None:
+                    display_list[labeltu[0].upper()+labeltu[1:]]=idtu ####
+                else:
+                    display_list[idtu[0].upper()+idtu[1:-2]]=idtu
             #print request.META.get('HTTP_REFERER','')
             #print request.build_absolute_uri()
             print display_list
-            return render(request, "japps/index.html", {"risposta": display_list, "logged": True, "username": request.session["username"]})
+            finaldis=OrderedDict(sorted(display_list.items())) 
+            return render(request, "japps/index.html", {"risposta": finaldis, "logged": True, "username": request.session["username"]})
 
 def contact(request):
     #request.session["username"]
