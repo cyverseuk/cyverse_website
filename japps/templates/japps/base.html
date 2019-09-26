@@ -9,7 +9,7 @@
     <meta name"author" content="Alice Minotto"/>
     <meta property="og:title" content="CyVerse UK"/>
     <meta property="og:type" content="website"/>
-    <meta property="og:image" content="{% static 'japps/images/cyverse_small.png' %}"/>
+    <meta property="og:image" content="{% static 'japps/images/cyverse_swirl.png' %}"/>
     <meta property="og:description" content="job submission to Earlham Insitute cluster for bioinformatics pipelines"/>
     <meta property="og:url" content="https://cyverseuk.herokuapp.com/japps"/>
     <meta name="viewport" content="initial-scale=1"/>
@@ -20,11 +20,11 @@
     <script type="text/javascript" src="{% static 'japps/dropprofile.js' %}"></script>
     {% block more_styles %}
     {% endblock %}
-    <link rel="icon" href="{% static 'japps/images/cyverse_small.png' %}">
+    <link rel="icon" href="{% static 'japps/images/cyverse_swirl.png' %}">
   </head>
 <body>
   <header style="display: block">
-    <a href="{% url 'japps:index' %}"><img id="cyverse_logo" src="{% static 'japps/images/cyverse_rgb.png' %}" alt="[IMAGE: CyVerse logo]"/></a>
+    <a href="{% url 'japps:index' %}"><img id="cyverse_logo" src="{% static 'japps/images/cyverseuk_rgb.png' %}" alt="[IMAGE: CyVerse logo]"/></a>
     <ul class="menu">
       <li><a href="{% url 'japps:applications' %}">Available Apps</a></li>
       <li><a href="{% url 'japps:contact' %}">Contact us</a></li>
