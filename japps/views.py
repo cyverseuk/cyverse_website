@@ -124,7 +124,7 @@ def create_form(request, application):
                         request.session["json_run"]["notifications"]=[]
                         request.session["json_run"]["notifications"].append({})
                         request.session["json_run"]["notifications"][0]["event"]="*"
-                        request.session["json_run"]["notifications"][0]["persistent"]="true"
+                        request.session["json_run"]["notifications"][0]["persistent"]=True
                         request.session["json_run"]["notifications"][0]["url"]=nice_form.cleaned_data.get(field)
             if len(request.FILES)>0:
                 #create a temporary directory to uploads the files to
@@ -252,7 +252,7 @@ def list_apps(request):
             #print request.META.get('HTTP_REFERER','')
             #print request.build_absolute_uri()
             print display_list
-            finaldis=OrderedDict(sorted(display_list.items())) 
+            finaldis=OrderedDict(sorted(display_list.items()))
             return render(request, "japps/index.html", {"risposta": finaldis, "logged": True, "username": request.session["username"]})
 
 def contact(request):
