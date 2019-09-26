@@ -30,4 +30,4 @@ websocket-client==0.29.0
 Jinja2==2.10.1
 websocket-client==0.29.0
 wsgiref==0.1.2
-cryptography==2.1.4
+cryptography==2.3
