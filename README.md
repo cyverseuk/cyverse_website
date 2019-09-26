@@ -1,3 +1,8 @@
+    
+[![Known Vulnerabilities](https://snyk.io//test/github/cyverseuk/cyverse_website/badge.svg?targetFile=requirements.txt)](https://snyk.io//test/github/cyverseuk/cyverse_website?targetFile=requirements.txt)
+
+  
+
 # CyVerseUK web app
 
 This code is deployed at <a href="https://cyverseuk.herokuapp.com/">cyverseuk.herokuapp.com</a>.  
