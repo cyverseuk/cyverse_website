@@ -5,6 +5,9 @@
 
 # CyVerseUK web app
 
+## Warning
+This code is now deployed from the python3 branch, which we'll merge into master if no issues arise. Vulnerabilities tag is therefore temporarely not accurate
+
 This code is deployed at <a href="https://cyverseuk.herokuapp.com/">cyverseuk.herokuapp.com</a>.  
 It doesn't represent an alternative to the <a href="https://de.cyverse.org/de/">Discovery Environment</a>, but provides a fast and easy way to use the applications hosted at the <a href="http://www.earlham.ac.uk/">Earlham Institute</a>.  
 
