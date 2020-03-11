@@ -62,7 +62,7 @@ def create_form(request, application):
     header={"Authorization": "Bearer "+request.session["token"]}
     r=requests.get("https://agave.iplantc.org/apps/v2/"+application+"?pretty=true", headers=header)
     ex_json=r.json()
-    if ex_json.has_key("fault"):
+    if "fault" in ex_json:
         """
         expired token during browser session, return user to main page
         """
@@ -117,8 +117,8 @@ def create_form(request, application):
                                         requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+request.session["username"]+"?pretty=true", data={"action":"mkdir","path":"temp"}, headers=header)
                                         requests.put("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+request.session["username"]+"/temp/?pretty=true", data={"action":"mkdir","path":request.session["job_time"]}, headers=header)
                                         requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+request.session["username"]+"/temp/"+request.session["job_time"]+"/?pretty=true", data={"urlToIngest": url}, headers=header)
-                                    except ValidationError, e: ###that's not a valid url
-                                        print e
+                                    except ValidationError as e: ###that's not a valid url
+                                        print(e)
                 elif field=="email":
                     if nice_form.cleaned_data.get(field, "").strip()!="":
                         request.session["json_run"]["notifications"]=[]
@@ -135,12 +135,12 @@ def create_form(request, application):
                 for fie in request.FILES.getlist(field):
                     request.session["json_run"]["inputs"][field].append("agave://cyverseUK-Storage2//mnt/data/"+request.session["username"]+"/temp/"+request.session["job_time"]+"/"+fie.name)
                     rr=requests.post("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+request.session["username"]+"/temp/"+request.session["job_time"]+"/?pretty=true", files={"fileToUpload": (fie.name, fie.read())}, headers=request.session["header"])
-                    print rr.json()
+                    print((rr.json()))
             request.session["json_run"]=json.dumps(request.session["json_run"])
             request.session["header"]={"Authorization": "Bearer "+request.session["token"], 'Content-Type': 'application/json'}
             r=requests.post("https://agave.iplantc.org/jobs/v2/?pretty=true", data=request.session["json_run"], headers=request.session["header"])
             risposta=r.json()
-            if risposta.has_key("fault"):
+            if "fault" in risposta:
                 #the token is not valid or expired during the process
                 risposta=risposta["fault"]["message"]
                 #print "****************here***************"
@@ -157,12 +157,12 @@ def create_form(request, application):
                     return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "auth_link": auth_link})
                     #########fix here
             else:
-                print "B"
+                print("B")
                 request.session["job_id"]="job-"+str(risposta["result"]["id"])
             return redirect('japps:job_submitted')
         else:
             #print nice_form.errors.as_data()
-            print "the form is not valid"
+            print("the form is not valid")
             #get captured in the last render
 
     else:
@@ -192,6 +192,7 @@ def list_apps(request):
     #request.session["auth_link"]
     if request.session.get("token","")=="":
         risposta="user needs to authenticate"
+        print("user needs to authenticate")
         request.session["code"]=request.GET.get('code', '')
         #print code
         if request.session.get("code","")!="":
@@ -200,28 +201,28 @@ def list_apps(request):
             #print r.json()
             #print request.session["token"]
             request.session["header"]={"Authorization": "Bearer "+request.session["token"]}
-            print request.session["header"]
+            print((request.session["header"]))
             r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=request.session["header"])
             #print r.status_code, r.ok, r.text
             userreq=requests.get("https://agave.iplantc.org/profiles/v2/me?pretty=true&naked=true", headers=request.session["header"])
-            print userreq.status_code, userreq.ok, userreq.text
+            print((userreq.status_code, userreq.ok, userreq.text))
             request.session["username"]=userreq.json()["username"]
-            print request.session["username"]
+            print((request.session["username"]))
             display_list=[]
             request.session["risposta"]=r.json()
-            if request.session["risposta"].has_key("fault"):
+            if "fault" in request.session["risposta"]:
                 message=request.session["risposta"]["fault"]["message"]
                 request.session["token"]=""
                 return render(request, "japps/index.html", {"risposta": message, "logged": False, "auth_link": auth_link})
             else:
                 for el in request.session["risposta"]["result"]:
                     display_list.append(el["id"])
-                display_list.sort(key=string.lower)
-                print request.META.get('HTTP_REFERER','')
-                print request.build_absolute_uri()
-                print display_list
+                display_list.sort(key=str.lower)
+                print((request.META.get('HTTP_REFERER','')))
+                print((request.build_absolute_uri()))
+                print(display_list)
                 if request.META.get('HTTP_REFERER','')!=request.build_absolute_uri():
-                    print "*********************************"
+                    print("*********************************")
                     return render(request, "japps/index.html", {"risposta": display_list, "logged": True, "username": request.session["username"]})
                     #return HttpResponseRedirect(request.META.get('HTTP_REFERER',''))
                 else:
@@ -230,18 +231,19 @@ def list_apps(request):
         else:
             return render(request, "japps/index.html", {"risposta": risposta, "logged": False, "auth_link": auth_link})
     else:
-        print "user is authenticated, getting list of apps"
+        print("user is authenticated, getting list of apps")
         request.session["header"]={"Authorization": "Bearer "+request.session["token"]}
+        print(request.session["header"])
         r=requests.get("https://agave.iplantc.org/apps/v2?publicOnly=true&executionSystem.eq=cyverseUK-Batch2&pretty=true", headers=request.session["header"])
         display_list={}
         request.session["risposta"]=r.json()
-        if request.session["risposta"].has_key("fault"):
-            print "2"
+        if "fault" in request.session["risposta"]:
+            print("2")
             message=request.session["risposta"]["fault"]["message"]
             request.session["token"]=""
             return render(request, "japps/index.html", {"risposta": message, "logged": False, "auth_link": auth_link})
         else:
-            print "3"
+            print("3")
             for el in request.session["risposta"]["result"]:
                 labeltu=el["label"]
                 idtu=el["id"]
@@ -251,7 +253,7 @@ def list_apps(request):
                     display_list[idtu[0].upper()+idtu[1:-2]]=idtu
             #print request.META.get('HTTP_REFERER','')
             #print request.build_absolute_uri()
-            print display_list
+            print(display_list)
             finaldis=OrderedDict(sorted(display_list.items()))
             return render(request, "japps/index.html", {"risposta": finaldis, "logged": True, "username": request.session["username"]})
 
@@ -304,8 +306,8 @@ def logout(request):
     #request.session["token"]
     request.session["username"]=""
     request.session["token"]=""
-    print request.META.get("HTTP_REFERER", "")
-    print request.META.get("HTTP_REFERER", "").split("?")[0]
+    print((request.META.get("HTTP_REFERER", "")))
+    print((request.META.get("HTTP_REFERER", "").split("?")[0]))
     if request.META.get("HTTP_REFERER","")!="":
         return HttpResponseRedirect(request.META.get("HTTP_REFERER","").split("?")[0])
     else:
@@ -326,7 +328,7 @@ def archive(request):
     elif preview!='':
         data=requests.get("https://agave.iplantc.org/files/v2/media/system/cyverseUK-Storage2/"+request.session["username"]+"/archive/jobs/"+preview, headers=request.session["header"])
         content_type=magic.from_buffer(data.content, mime=True)
-        print content_type
+        print(content_type)
         if content_type=="text/plain" or content_type=="text/x-shellscript":
             response=HttpResponse("<pre>"+escape(data.content)+"</pre>")
             return response
@@ -340,21 +342,21 @@ def archive(request):
             return HttpResponse(response)
     else:
         path=request.GET.get('path', '')+"/"
-        print path
+        print(path)
         diclinks=OrderedDict()
         if path.strip('/')!='':
             splitpath=path.strip('/').split('/')
         else:
             splitpath=[]
-        print splitpath
+        print(splitpath)
         for n,key in enumerate(splitpath):
             diclinks[key]=('/').join(splitpath[:n+1])
-        print diclinks
+        print(diclinks)
         request.session["r"]=requests.get("https://agave.iplantc.org/files/v2/listings/system/cyverseUK-Storage2/"+request.session["username"]+"/archive/jobs/"+path+"?pretty=true", headers=request.session["header"])
         request.session["r"]=request.session["r"].json()
         subdir_list=[]
         file_list=[]
-        print request.session["r"]
+        print((request.session["r"]))
         if request.session["r"].get("result")!=None:
             for el in request.session["r"]["result"]:
                 if el["name"][0]!=".":

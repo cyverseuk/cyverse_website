@@ -135,19 +135,19 @@ class AppForm(forms.Form):
         for field in ex_json["result"]["parameters"]:
             if field["value"].get("type")==None:
                 #should never be here as this check is done by agave, add a test
-                print "#"*50
-                print "error, the app seems to be invalid. please contact us to report the error."
-                print "#"*50
+                print(("#"*50))
+                print("error, the app seems to be invalid. please contact us to report the error.")
+                print(("#"*50))
             else:
                 if field["value"]["type"]=="enumeration":
                     choices=[]
                     for pos in field["value"]["enum_values"]:
                         #####add a test here to check that this dictionary length is always 1
-                        if len(pos.keys())!=1:
-                            print "#"*50
-                            print "the app seems to be in an unexpected format!"
-                            print "#"*50
-                        choices.append((pos.keys()[0],pos.keys()[0]))
+                        if len(list(pos.keys()))!=1:
+                            print(("#"*50))
+                            print("the app seems to be in an unexpected format!")
+                            print(("#"*50))
+                        choices.append((list(pos.keys())[0],list(pos.keys())[0]))
                     choices=self.choice_feature(choices,field)
                     self.fields[field["id"]]=forms.ChoiceField(choices=choices)
                     self.additional_features(field)
